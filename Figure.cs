@@ -8,10 +8,13 @@ using System.Windows.Forms;
 
 namespace OOP_Paint {
     public abstract class Figure {
-        public int X { private set; get; }
-        public int Y { private set; get; }
-        public Color Color { private set; get; }
+        public int X { protected set; get; }
+        public int Y { protected set; get; }
+        public int Width { protected set; get; }
+        public int Height { protected set; get; }
+        public Pen Pen { protected set; get; }
 
-        public virtual void Draw(Point _upLeft, Point _downRight, Pen _pen, Graphics _screen) { }
+
+        public virtual void Draw(Graphics _screen) { }
     }
 }

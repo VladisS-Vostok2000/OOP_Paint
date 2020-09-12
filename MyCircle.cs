@@ -7,20 +7,53 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     class MyCircle : Figure {
-        public override void Draw(Point _firstClick, Point _secondClick, Pen _pen, Graphics _screen) {
-            CutCoordinatesRectangleToSquare(_firstClick, _secondClick);
-            int radius = FindRadius(_firstClick, _secondClick);
+        public int Radius { protected set; get; }
+        public Point Center { protected set; get; }
+        public MyCircle(Point _firstClick, Point _secondClick, Pen _pen) {
+            (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_firstClick, _secondClick);
+            {
+                Width = Math.Abs(p1.X - p2.X);
+                Height = Math.Abs(p1.Y - p2.Y);
+                Pen = _pen;
+                Radius = Width / 2;
+                Center = FindLeftUpCornerCoord(p1, p2);
+
+                Point leftCorn = FindLeftUpCornerCoord(p1, p2);
+                {
+                    X = leftCorn.X;
+                    Y = leftCorn.Y;
+                }
+            }
         }
-        private int FindRadius(Point _p1, Point _p2) {
-            var square = CutCoordinatesRectangleToSquare(Point _p1, Point _p2);
+        public MyCircle(Point _firstClick, Point _secondClick, Color _color, float _lineWidth) {
+            (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_firstClick, _secondClick);
+            {
+                Width = Math.Abs(p1.X - p2.X);
+                Height = Math.Abs(p1.Y - p2.Y);
+                Pen = new Pen(_color, _lineWidth);
+                Radius = Width / 2;
+                Center = FindLeftUpCornerCoord(p1, p2);
+
+                Point leftCorner = FindLeftUpCornerCoord(p1, p2);
+                {
+                    X = leftCorner.X;
+                    Y = leftCorner.Y;
+                }
+            }
         }
 
+
+        public override void Draw(Graphics _screen) {
+            _screen.DrawEllipse(Pen, X, Y, Width, Height);
+        }
+
+
         /// <summary>
-        /// Обрубает координатный прямоугольник до квадрата
+        /// Обрубает координатный прямоугольник до квадрата относительно первой точки
         /// </summary>
         /// <param name="_p1"></param>
         /// <param name="_p2"></param>
-        private void CutCoordinatesRectangleToSquare(Point _p1, Point _p2) {
+        private (Point, Point) CutCoordinatesRectangleToSquare(Point _p1, Point _p2) {
             int a = _p2.X - _p1.X;
             int b = _p2.Y - _p1.Y;
             if (Math.Abs(a) > Math.Abs(b)) {
@@ -29,6 +62,12 @@ namespace OOP_Paint {
             else {
                 _p2.Y = _p1.Y + a;
             }
+            return (_p1, _p2);
+        }
+        private Point FindLeftUpCornerCoord(Point _p1, Point _p2) {
+            int lowX = _p1.X > _p2.X ? _p2.X : _p1.Y;
+            int lowY = _p1.Y > _p2.Y ? _p2.Y : _p1.Y;
+            return new Point(lowX, lowY);
         }
     }
 }
