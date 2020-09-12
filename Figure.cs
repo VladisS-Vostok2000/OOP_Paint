@@ -12,6 +12,6 @@ namespace OOP_Paint {
         public int Y { private set; get; }
         public Color Color { private set; get; }
 
-         virtual public void Draw() { }
+        public virtual void Draw(Point _location, Color _color, Graphics _screen) { }
     }
 }
