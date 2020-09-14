@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyCircle : MyFigure {
-        public int Radius { protected set; get; }
+        public Int32 Radius { protected set; get; }
         public Point Center { protected set; get; }
-        public MyCircle() { }
+        private MyCircle()
         public MyCircle(Point _firstClick, Point _secondClick, Pen _pen) {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_firstClick, _secondClick);
             {
@@ -26,7 +26,7 @@ namespace OOP_Paint {
                 }
             }
         }
-        public MyCircle(Point _firstClick, Point _secondClick, Color _color, float _lineWidth) {
+        public MyCircle(Point _firstClick, Point _secondClick, Color _color, Single _lineWidth) {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_firstClick, _secondClick);
             {
                 Width = Math.Abs(p1.X - p2.X);
@@ -55,8 +55,8 @@ namespace OOP_Paint {
         /// <param name="_p1"></param>
         /// <param name="_p2"></param>
         private (Point, Point) CutCoordinatesRectangleToSquare(Point _p1, Point _p2) {
-            int a = _p2.X - _p1.X;
-            int b = _p2.Y - _p1.Y;
+            Int32 a = _p2.X - _p1.X;
+            Int32 b = _p2.Y - _p1.Y;
             if (Math.Abs(a) > Math.Abs(b)) {
                 _p2.X = _p1.X + b;
             }
@@ -66,8 +66,8 @@ namespace OOP_Paint {
             return (_p1, _p2);
         }
         private Point FindLeftUpCornerCoord(Point _p1, Point _p2) {
-            int lowX = _p1.X > _p2.X ? _p2.X : _p1.Y;
-            int lowY = _p1.Y > _p2.Y ? _p2.Y : _p1.Y;
+            Int32 lowX = _p1.X > _p2.X ? _p2.X : _p1.Y;
+            Int32 lowY = _p1.Y > _p2.Y ? _p2.Y : _p1.Y;
             return new Point(lowX, lowY);
         }
     }

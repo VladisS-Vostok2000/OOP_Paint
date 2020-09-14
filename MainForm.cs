@@ -40,7 +40,7 @@ namespace OOP_Paint {
             SelectedFigureChanged += MainForm_SelectedFigureChanged;
             figureConstructor = new List<Control>();
         }
-        private void Form1_Load(object sender, EventArgs e) {
+        private void Form1_Load(Object sender, EventArgs e) {
             //Пробую создание конструктора
             test_Circle = new List<Control>();
             var lbl = new Label() {
@@ -55,14 +55,14 @@ namespace OOP_Paint {
                 TabIndex = 1,
                 Location = new Point(lbl.Location.X, lbl.Location.Y + lbl.Height + lbl.Margin.Bottom)
             };
-            cmbbx.Items.AddRange(new string[] { "Ограниченная прямоугольником", "Описывающая прямоугольник"});
+            cmbbx.Items.AddRange(new String[] { "Ограниченная прямоугольником", "Описывающая прямоугольник"});
             test_Circle.Add(lbl);
             test_Circle.Add(cmbbx);
 
             //Попытка #2
             FiguresToDrawList = new List<Figure>();
         }
-        private void Form1_Shown(object sender, EventArgs e) {
+        private void Form1_Shown(Object sender, EventArgs e) {
         }
 
 
@@ -70,7 +70,7 @@ namespace OOP_Paint {
 
 
 
-        private void MainForm_SelectedFigureChanged(object sender, EventArgs e) {
+        private void MainForm_SelectedFigureChanged(Object sender, EventArgs e) {
             foreach (Control cntcl in figureConstructor) {
                 cntcl.Dispose();
             }
@@ -149,7 +149,7 @@ namespace OOP_Paint {
             cmbbx.Items.AddRange(_textVariants);
             return cmbbx;
         }
-        private void MainFormCmbbxFigureChoose_SelectionChangeCommitted(object sender, EventArgs e) {
+        private void MainFormCmbbxFigureChoose_SelectionChangeCommitted(Object sender, EventArgs e) {
             switch ((sender as ComboBox).SelectedItem) {
                 case "Круг":
                     CurrFigure = Figure.Circle;
@@ -160,7 +160,7 @@ namespace OOP_Paint {
                 default: throw new Exception();
             }
         }
-        private void MainForm_FigureConstructorCombobox_SelectedIndexChanged(object sender, EventArgs e) {
+        private void MainForm_FigureConstructorCombobox_SelectedIndexChanged(Object sender, EventArgs e) {
 
         }
 
@@ -171,7 +171,7 @@ namespace OOP_Paint {
             currClick++;
             switch(currClick) {
                 case 1:
-                    FiguresToDrawList.Add(new MyPoint((int)numericUpDown1.Value, (int)numericUpDown2.Value, Color.Red));
+                    FiguresToDrawList.Add(new MyPoint((Int32)numericUpDown1.Value, (Int32)numericUpDown2.Value, Color.Red));
                     break;
                 case 2:
                     FiguresToDrawList.Remove(new MyRectangle)
