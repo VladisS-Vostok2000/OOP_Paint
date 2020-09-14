@@ -16,19 +16,23 @@ namespace OOP_Paint {
             Circle,
             Rectangle,
         }
+        private Figure currFigue;
         private Figure CurrFigure {
-            set {
-                if (CurrFigure - value != 0) {
+            set     {
+                if (currFigue - value != 0) {
                     SelectedFigureChanged(this, new EventArgs());
-                    CurrFigure = value;
+                    currFigue = value;
                 }
             }
-            get => CurrFigure;
+            get => currFigue;
         }
         private Int32 currFigureConstructorLevel;
         private Graphics screen;
         private List<Control> figureConstructor;
         private const Int32 constructorMargin = 3;
+        private Int32 currClick;
+        private List<MyFigure> FiguresToDrawList;
+        private List<Control> test_Circle;
 
         public MainForm() {
             InitializeComponent();
@@ -37,10 +41,33 @@ namespace OOP_Paint {
             figureConstructor = new List<Control>();
         }
         private void Form1_Load(object sender, EventArgs e) {
+            //Пробую создание конструктора
+            test_Circle = new List<Control>();
+            var lbl = new Label() {
+                Text = "Вариант построения",
+                TabStop = true,
+                Location = new Point(MainFormCmbbxFigureChoose.Location.X +
+                MainFormCmbbxFigureChoose.Width +
+                MainFormCmbbxFigureChoose.Margin.Right,
+                MainFormLblFigureChoose.Location.Y)
+            };
+            var cmbbx = new ComboBox() {
+                TabIndex = 1,
+                Location = new Point(lbl.Location.X, lbl.Location.Y + lbl.Height + lbl.Margin.Bottom)
+            };
+            cmbbx.Items.AddRange(new string[] { "Ограниченная прямоугольником", "Описывающая прямоугольник"});
+            test_Circle.Add(lbl);
+            test_Circle.Add(cmbbx);
 
+            //Попытка #2
+            FiguresToDrawList = new List<Figure>();
         }
         private void Form1_Shown(object sender, EventArgs e) {
         }
+
+
+
+
 
 
         private void MainForm_SelectedFigureChanged(object sender, EventArgs e) {
@@ -52,9 +79,11 @@ namespace OOP_Paint {
 
             currFigureConstructorLevel = 1;
 
+
+
             switch (CurrFigure) {
                 case Figure.Circle:
-                    CreateNewContstructorCombobox(1, 150, "Ограниченный областью", "Описывающая прямоугольник", "Три точки");
+                    //(1, 150, "Выбор построения", "Ограниченный областью", "Описывающая прямоугольник", "Три точки");
 
                     //???А как насчёт динамического добавления полей? Тогда не придётся ебаться с координатными
                     //константами. А придётся ебаться с уникальными ивентами... Или же они вычисляются
@@ -111,7 +140,6 @@ namespace OOP_Paint {
         }
         private ComboBox CreateNewContstructorCombobox(Int32 _tabIndex, Int32 _width, String _labelText, params String[] _textVariants) {
             Point location = FindConstructorControlLocation(_tabIndex);
-            var lbl
             
             var cmbbx = new ComboBox() {
                 TabIndex = _tabIndex,
@@ -133,6 +161,24 @@ namespace OOP_Paint {
             }
         }
         private void MainForm_FigureConstructorCombobox_SelectedIndexChanged(object sender, EventArgs e) {
+
+        }
+
+        private void MainForm_Paint(Object sender, PaintEventArgs e) {
+        }
+
+        private void MainFromPctrbxScreen_Click(Object sender, EventArgs e) {
+            currClick++;
+            switch(currClick) {
+                case 1:
+                    FiguresToDrawList.Add(new MyPoint((int)numericUpDown1.Value, (int)numericUpDown2.Value, Color.Red));
+                    break;
+                case 2:
+                    FiguresToDrawList.Remove(new MyRectangle)
+            }
+        }
+
+        private void numericUpDown1_ValueChanged(Object sender, EventArgs e) {
 
         }
     }

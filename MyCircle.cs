@@ -6,9 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OOP_Paint {
-    class MyCircle : Figure {
+    public class MyCircle : MyFigure {
         public int Radius { protected set; get; }
         public Point Center { protected set; get; }
+        public MyCircle() { }
         public MyCircle(Point _firstClick, Point _secondClick, Pen _pen) {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_firstClick, _secondClick);
             {
