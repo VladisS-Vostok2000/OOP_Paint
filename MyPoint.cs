@@ -14,7 +14,7 @@ namespace OOP_Paint {
 
 
         public override void Draw(Graphics _screen) {
-            _screen.DrawLine(Pen, X, Y, X, Y);
+            _screen.DrawEllipse(Pen, X, Y, 2, 2);
         }
     }
 }

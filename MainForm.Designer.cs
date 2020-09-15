@@ -23,6 +23,7 @@
         /// содержимое этого метода с помощью редактора кода.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.MainFromPctrbxScreen = new System.Windows.Forms.PictureBox();
             this.MainFormCmbbxFigureChoose = new System.Windows.Forms.ComboBox();
             this.MainFormLblFigureChoose = new System.Windows.Forms.Label();
@@ -38,6 +39,7 @@
             this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
             this.button1 = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.MainFormTmr = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
@@ -49,7 +51,7 @@
             // 
             // MainFromPctrbxScreen
             // 
-            this.MainFromPctrbxScreen.BackColor = System.Drawing.Color.White;
+            this.MainFromPctrbxScreen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.MainFromPctrbxScreen.Location = new System.Drawing.Point(13, 13);
             this.MainFromPctrbxScreen.Name = "MainFromPctrbxScreen";
             this.MainFromPctrbxScreen.Size = new System.Drawing.Size(496, 290);
@@ -102,6 +104,7 @@
             this.numericUpDown2.Name = "numericUpDown2";
             this.numericUpDown2.Size = new System.Drawing.Size(40, 20);
             this.numericUpDown2.TabIndex = 3;
+            this.numericUpDown2.ValueChanged += new System.EventHandler(this.numericUpDown2_ValueChanged);
             // 
             // label2
             // 
@@ -162,6 +165,8 @@
             this.numericUpDown3.Name = "numericUpDown3";
             this.numericUpDown3.Size = new System.Drawing.Size(40, 20);
             this.numericUpDown3.TabIndex = 3;
+            this.numericUpDown3.ValueChanged += new System.EventHandler(this.numericUpDown3_ValueChanged);
+            this.numericUpDown3.Enter += new System.EventHandler(this.numericUpDown3_Enter);
             // 
             // numericUpDown4
             // 
@@ -169,6 +174,8 @@
             this.numericUpDown4.Name = "numericUpDown4";
             this.numericUpDown4.Size = new System.Drawing.Size(40, 20);
             this.numericUpDown4.TabIndex = 3;
+            this.numericUpDown4.ValueChanged += new System.EventHandler(this.numericUpDown4_ValueChanged);
+            this.numericUpDown4.Enter += new System.EventHandler(this.numericUpDown4_Enter);
             // 
             // button1
             // 
@@ -187,6 +194,12 @@
             this.listBox1.Size = new System.Drawing.Size(272, 290);
             this.listBox1.TabIndex = 7;
             // 
+            // MainFormTmr
+            // 
+            this.MainFormTmr.Enabled = true;
+            this.MainFormTmr.Interval = 20;
+            this.MainFormTmr.Tick += new System.EventHandler(this.MainFormTmr_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -203,7 +216,6 @@
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_Shown);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.MainForm_Paint);
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
@@ -235,6 +247,7 @@
         private System.Windows.Forms.NumericUpDown numericUpDown4;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Timer MainFormTmr;
     }
 }
 
