@@ -133,35 +133,24 @@ namespace OOP_Paint {
             #endregion
         }
         private void numericUpDown1_ValueChanged(Object sender, EventArgs e) {
-            if (currConstructorStage == 1) {
-                    currSupportFigure.Move((Int32)numericUpDown1.Value, currSupportFigure.Y);
-            }
-            else
-            //!!!else не нужен
-            if (currConstructorStage == 2) {
-                currSupportFigure.Move((Int32)numericUpDown1.Value, currSupportFigure.Y);
-            }
+            #region #20: попытка обойти событие 
+            ChangeCurrentSupportFifureProperties();
+            #endregion
         }
         private void numericUpDown2_ValueChanged(Object sender, EventArgs e) {
-            if (currConstructorStage == 1) {
-                currSupportFigure.Move(currSupportFigure.X, (Int32)numericUpDown2.Value);
-            }
-            else
-            //!!!Else не нужен
-            //!!!Повторяющийся код
-            if (currConstructorStage == 2) {
-                currSupportFigure.Move(currSupportFigure.X, (Int32)numericUpDown2.Value);
-            }
+            #region #20: попытка обойти событие 
+            ChangeCurrentSupportFifureProperties();
+            #endregion
         }
         private void numericUpDown3_ValueChanged(Object sender, EventArgs e) {
-            if (currConstructorStage == 2) {
-                currSupportFigure.Resize((Int32)(sender as NumericUpDown).Value, currSupportFigure.Height);
-            }
+            #region #20: попытка обойти событие 
+            ChangeCurrentSupportFifureProperties();
+            #endregion
         }
         private void numericUpDown4_ValueChanged(Object sender, EventArgs e) {
-            if (currConstructorStage == 2) {
-                currSupportFigure.Resize(currSupportFigure.Width, (Int32)(sender as NumericUpDown).Value);
-            }
+            #region #20: попытка обойти событие 
+            ChangeCurrentSupportFifureProperties();
+            #endregion
         }
         private void numericUpDown3_Enter(Object sender, EventArgs e) {
             if (currConstructorStage < 2) {
@@ -197,6 +186,26 @@ namespace OOP_Paint {
                     }
                 );
                 #endregion
+            }
+        }
+        private void ChangeCurrentSupportFifureProperties() {
+            //!!! #MF19: нумерики неправильно изменяют свойство вспомогательного прямоугольника 
+            switch (currConstructorStage) {
+                case 1:
+                    currSupportFigure = new MyPoint((int)numericUpDown1.Value, (int)numericUpDown2.Value, Color.Red);
+                    break;
+                case 2:
+                    currSupportFigure = new MyRectangle(
+                        (int)numericUpDown1.Value,
+                        (int)numericUpDown2.Value,
+                        (int)numericUpDown3.Value,
+                        (int)numericUpDown4.Value,
+                        Color.Red
+                      );
+                    currSupportFigure.Pen.DashStyle = DashStyle.Dash;
+                    currSupportFigure.Pen.Width = 1;
+                    break;
+                default: throw new Exception();
             }
         }
 
