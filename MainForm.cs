@@ -189,7 +189,6 @@ namespace OOP_Paint {
             }
         }
         private void ChangeCurrentSupportFifureProperties() {
-            //!!! #MF19: нумерики неправильно изменяют свойство вспомогательного прямоугольника 
             switch (currConstructorStage) {
                 case 1:
                     currSupportFigure = new MyPoint((int)numericUpDown1.Value, (int)numericUpDown2.Value, Color.Red);
