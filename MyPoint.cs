@@ -21,7 +21,6 @@ namespace OOP_Paint {
 
 
         public override void Draw(Graphics _screen) {
-            //!!! MyPoint #1: прорисовка изредка выдаёт пиксель
             _screen.DrawEllipse(new Pen(Color, 2), X, Y, 2, 2);
         }
     }

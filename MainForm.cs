@@ -37,12 +37,6 @@ namespace OOP_Paint {
         private readonly Graphics screen;
         private readonly List<MyFigure> figuresToDrawList;
 
-        //!!!Координаты углов не соответствуют своим названиям!
-        //!!!При толщине в 0 прямоугольник не прорисовывается
-        //!!! #18 Координаты углов отображают свойство прямоугольника некорректно:
-        //при смене фигуры Х и У уже не отображают координаты до обновления
-        //numeric. Возможно, связано, что X Y первые - "левый" угол.
-        //Вторые координаты - это не координаты, а ширина/высота
 
         public MainForm() {
             InitializeComponent();
@@ -137,6 +131,7 @@ namespace OOP_Paint {
             ChangeCurrentSupportFifureProperties();
             #endregion
         }
+        //!!! MainForm#1: оформить разрозненные точечные контролы в динамические
         private void numericUpDown2_ValueChanged(Object sender, EventArgs e) {
             #region #20: попытка обойти событие 
             ChangeCurrentSupportFifureProperties();
@@ -190,6 +185,9 @@ namespace OOP_Paint {
         }
         private void ChangeCurrentSupportFifureProperties() {
             switch (currConstructorStage) {
+                //??? Создание нового объекта *чрезвычайно* неэффективно,
+                //но наши свойства закрытые, в то время как создание через 4 
+                //координаты уже реализовано в конструкторе. Зачем поля закрыты?
                 case 1:
                     currSupportFigure = new MyPoint((int)numericUpDown1.Value, (int)numericUpDown2.Value, Color.Red);
                     break;
