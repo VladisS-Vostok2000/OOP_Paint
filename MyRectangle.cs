@@ -13,6 +13,7 @@ namespace OOP_Paint {
 
 
         public override void Draw(Graphics _screen) {
+            //!!!#MyRectangle #2: при ширине/высоте в 0 прорисовывается ничего
             _screen.DrawRectangle(Pen, X, Y, Width, Height);
         }
     }
