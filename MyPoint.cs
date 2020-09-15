@@ -8,13 +8,21 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyPoint : MyFigure {
-        public MyPoint(Int32 _x, Int32 _y) : base(_x, _y, _x, _y) { }
-        public MyPoint(Int32 _x, Int32 _y, Color _color) : base(_x, _y, _x, _y, _color) { }
-        public MyPoint(Int32 _x, Int32 _y, Pen _pen) : base(_x, _y, _x, _y, _pen) { }
+        public Color Color { private set; get; }
+        protected MyPoint(Int32 _x, Int32 _y) {
+            X = _x;
+            Y = _y;
+            Width = 0;
+            Height = 0;
+        }
+        public MyPoint(Int32 _x, Int32 _y, Color _color) : this(_x, _y) {
+            Color = _color;
+        }
 
 
         public override void Draw(Graphics _screen) {
-            _screen.DrawEllipse(Pen, X, Y, 2, 2);
+            //!!! MyPoint #1: прорисовка изредка выдаёт пиксель
+            _screen.DrawEllipse(new Pen(Color, 2), X, Y, 2, 2);
         }
     }
 }

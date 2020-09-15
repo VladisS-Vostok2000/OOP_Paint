@@ -15,6 +15,7 @@ namespace OOP_Paint {
         public Pen Pen { protected set; get; } = new Pen(Color.Black, 2);
 
         protected MyFigure() {
+        
         }
         protected MyFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             Point leftCorner = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);

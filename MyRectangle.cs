@@ -1,20 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyRectangle : MyFigure {
-        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base(_x1, _y1, _x2, _y2) { }
-        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : base(_x1, _y1, _x2, _y2, _pen) { }
-        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : base(_x1, _y1, _x2, _y2, _color) { }
+        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base(_x1, _y1, _x2, _y2) {
+        
+        }
+        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : base(_x1, _y1, _x2, _y2, _pen) {
+        
+        }
+        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : base(_x1, _y1, _x2, _y2, _color) {
+        
+        }
 
 
         public override void Draw(Graphics _screen) {
             //!!!#MyRectangle #2: при ширине/высоте в 0 прорисовывается ничего
+            if (Width != 0 && Height != 0) {
             _screen.DrawRectangle(Pen, X, Y, Width, Height);
+            }
+            else
+            if (Width != Height) {
+                _screen.DrawLine(Pen, X, Y, X + Width, Y + Height);
+            }
+            else {
+                new MyPoint(X, Y, Pen.Color).Draw(_screen);
+            }
         }
     }
 }
