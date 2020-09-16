@@ -126,12 +126,23 @@ namespace OOP_Paint {
             //}
             #endregion
         }
+        private void MainFormCmbbxFigureChoose_SelectionChangeCommitted(Object sender, EventArgs e) {
+            switch ((sender as ComboBox).SelectedItem) {
+                case "Круг":
+                    CurrSelectedFigure = Figure.Circle;
+                    break;
+                case "Прямоугольник":
+                    CurrSelectedFigure = Figure.Rectangle;
+                    break;
+                default: throw new Exception();
+            }
+        }
+        //!!! MainForm#1: оформить разрозненные точечные контролы в динамические
         private void numericUpDown1_ValueChanged(Object sender, EventArgs e) {
             #region #20: попытка обойти событие 
             ChangeCurrentSupportFifureProperties();
             #endregion
         }
-        //!!! MainForm#1: оформить разрозненные точечные контролы в динамические
         private void numericUpDown2_ValueChanged(Object sender, EventArgs e) {
             #region #20: попытка обойти событие 
             ChangeCurrentSupportFifureProperties();
@@ -150,41 +161,17 @@ namespace OOP_Paint {
         private void numericUpDown3_Enter(Object sender, EventArgs e) {
             if (currConstructorStage < 2) {
                 currConstructorStage = 2;
-
-                #region #17: попытка избегания обработки currConstructorStage через событие
-                currSupportFigure = new MyRectangle(
-                    (Int32)numericUpDown1.Value,
-                    (Int32)numericUpDown2.Value,
-                    (Int32)numericUpDown3.Value,
-                    (Int32)numericUpDown4.Value,
-                    new Pen(Color.Red, 1) {
-                        DashStyle = DashStyle.Dash
-                    }
-                );
-                #endregion
             }
-
         }
         private void numericUpDown4_Enter(Object sender, EventArgs e) {
             if (currConstructorStage < 2) {
                 currConstructorStage = 2;
-
-                //!!!Повторяющийся код
-                #region #17: попытка избегания обработки через событие
-                currSupportFigure = new MyRectangle(
-                    (Int32)numericUpDown1.Value,
-                    (Int32)numericUpDown2.Value,
-                    (Int32)numericUpDown3.Value,
-                    (Int32)numericUpDown4.Value,
-                    new Pen(Color.Red, 1) {
-                        DashStyle = DashStyle.Dash
-                    }
-                );
-                #endregion
             }
         }
         private void ChangeCurrentSupportFifureProperties() {
             switch (currConstructorStage) {
+                //???Динамеическое изменение получится здесь подключить?
+                //Если не просто создавать объект, а сразу рисовать?
                 //??? Создание нового объекта *чрезвычайно* неэффективно,
                 //но наши свойства закрытые, в то время как создание через 4 
                 //координаты уже реализовано в конструкторе. Зачем поля закрыты?
@@ -207,17 +194,6 @@ namespace OOP_Paint {
         }
 
 
-        private void MainFormCmbbxFigureChoose_SelectionChangeCommitted(Object sender, EventArgs e) {
-            switch ((sender as ComboBox).SelectedItem) {
-                case "Круг":
-                    CurrSelectedFigure = Figure.Circle;
-                    break;
-                case "Прямоугольник":
-                    CurrSelectedFigure = Figure.Rectangle;
-                    break;
-                default: throw new Exception();
-            }
-        }
 
 
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
