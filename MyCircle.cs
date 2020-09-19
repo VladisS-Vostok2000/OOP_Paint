@@ -9,7 +9,7 @@ namespace OOP_Paint {
     public class MyCircle : MyFigure {
         public Int32 Radius { protected set; get; }
         public Point Center { protected set; get; }
-        public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base() {
+        protected MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base() {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
             Width = Math.Abs(p1.X - p2.X);
             Height = Math.Abs(p1.Y - p2.Y);
@@ -50,8 +50,6 @@ namespace OOP_Paint {
         public override void Draw(Graphics _screen) {
             _screen.DrawEllipse(Pen, X, Y, Width, Height);
         }
-
-
 
     }
 }

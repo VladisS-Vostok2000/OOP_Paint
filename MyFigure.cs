@@ -14,8 +14,9 @@ namespace OOP_Paint {
         public Int32 Height { protected set; get; }
         public Pen Pen { protected set; get; } = new Pen(Color.Black, 2);
 
+
         protected MyFigure() {
-        
+
         }
         protected MyFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             Point leftCorner = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
@@ -30,7 +31,6 @@ namespace OOP_Paint {
         protected MyFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : this(_x1, _y1, _x2, _y2) {
             Pen = _pen;
         }
-
 
 
         /// <summary>
@@ -64,6 +64,7 @@ namespace OOP_Paint {
             Width = _newWidth;
             Height = _newHeight;
         }
+
 
         public virtual void Draw(Graphics _screen) { }
 
