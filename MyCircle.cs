@@ -10,6 +10,7 @@ namespace OOP_Paint {
         public Int32 Radius { protected set; get; }
         public Point Center { protected set; get; }
         protected MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base() {
+            Name = "Круг";
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
             Width = Math.Abs(p1.X - p2.X);
             Height = Math.Abs(p1.Y - p2.Y);
@@ -18,7 +19,7 @@ namespace OOP_Paint {
             X = leftCorner.X;
             Y = leftCorner.Y;
         }
-        public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : this(_x1, _x2, _y1, _y2) {
+        public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : this(_x1, _y1, _x2, _y2) {
             Pen = _pen;
         }
         public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : this(_x1, _x2, _y1, _y2) {

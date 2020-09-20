@@ -8,6 +8,8 @@ using System.Windows.Forms;
 
 namespace OOP_Paint {
     public abstract class MyFigure {
+        public String Name { protected set; get; }
+
         public Int32 X { protected set; get; }
         public Int32 Y { protected set; get; }
         public Int32 Width { protected set; get; }

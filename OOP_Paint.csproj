@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConstructorResult.cs" />
+    <Compile Include="MainCode.cs" />
     <Compile Include="MyFigure.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

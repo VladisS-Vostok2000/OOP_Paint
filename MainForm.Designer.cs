@@ -25,14 +25,15 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.MainFromPctrbxScreen = new System.Windows.Forms.PictureBox();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.MainFormLstbxFigures = new System.Windows.Forms.ListBox();
             this.MainFormTmr = new System.Windows.Forms.Timer(this.components);
             this.MainFormSttsstp = new System.Windows.Forms.StatusStrip();
-            this.MainFormStttsstpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormSttsstpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormSttsstpLblMouseX = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormSttsstpLblMouseY = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormBttnCircle = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -48,42 +49,42 @@
             this.MainFromPctrbxScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainFormSttsstp_MouseMove);
             this.MainFromPctrbxScreen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainFromPctrbxScreen_MouseUp);
             // 
-            // listBox1
+            // MainFormLstbxFigures
             // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(516, 13);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(272, 290);
-            this.listBox1.TabIndex = 7;
+            this.MainFormLstbxFigures.FormattingEnabled = true;
+            this.MainFormLstbxFigures.Location = new System.Drawing.Point(516, 13);
+            this.MainFormLstbxFigures.Name = "MainFormLstbxFigures";
+            this.MainFormLstbxFigures.Size = new System.Drawing.Size(272, 290);
+            this.MainFormLstbxFigures.TabIndex = 7;
             // 
             // MainFormTmr
             // 
             this.MainFormTmr.Enabled = true;
             this.MainFormTmr.Interval = 20;
-            this.MainFormTmr.Tick += new System.EventHandler(this.MainFormTmr_Tick);
             // 
             // MainFormSttsstp
             // 
             this.MainFormSttsstp.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.MainFormStttsstpLblHint,
             this.toolStripStatusLabel1,
             this.MainFormSttsstpLblMouseX,
             this.toolStripStatusLabel3,
-            this.MainFormSttsstpLblMouseY});
+            this.MainFormSttsstpLblMouseY,
+            this.MainFormSttsstpLblHint});
             this.MainFormSttsstp.Location = new System.Drawing.Point(0, 428);
             this.MainFormSttsstp.Name = "MainFormSttsstp";
             this.MainFormSttsstp.Size = new System.Drawing.Size(800, 22);
             this.MainFormSttsstp.TabIndex = 10;
             this.MainFormSttsstp.Text = "statusStrip1";
             // 
-            // MainFormStttsstpLblHint
+            // MainFormSttsstpLblHint
             // 
-            this.MainFormStttsstpLblHint.AutoSize = false;
-            this.MainFormStttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.MainFormStttsstpLblHint.Name = "MainFormStttsstpLblHint";
-            this.MainFormStttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.MainFormStttsstpLblHint.Size = new System.Drawing.Size(250, 17);
-            this.MainFormStttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.MainFormSttsstpLblHint.AutoSize = false;
+            this.MainFormSttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.MainFormSttsstpLblHint.Name = "MainFormSttsstpLblHint";
+            this.MainFormSttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
+            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(701, 17);
+            this.MainFormSttsstpLblHint.Spring = true;
+            this.MainFormSttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // toolStripStatusLabel1
             // 
@@ -113,13 +114,24 @@
             this.MainFormSttsstpLblMouseY.Size = new System.Drawing.Size(25, 17);
             this.MainFormSttsstpLblMouseY.Text = "888";
             // 
+            // MainFormBttnCircle
+            // 
+            this.MainFormBttnCircle.Location = new System.Drawing.Point(13, 310);
+            this.MainFormBttnCircle.Name = "MainFormBttnCircle";
+            this.MainFormBttnCircle.Size = new System.Drawing.Size(75, 23);
+            this.MainFormBttnCircle.TabIndex = 11;
+            this.MainFormBttnCircle.Text = "Круг";
+            this.MainFormBttnCircle.UseVisualStyleBackColor = true;
+            this.MainFormBttnCircle.Click += new System.EventHandler(this.MainFormBttnCircle_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.MainFormBttnCircle);
             this.Controls.Add(this.MainFormSttsstp);
-            this.Controls.Add(this.listBox1);
+            this.Controls.Add(this.MainFormLstbxFigures);
             this.Controls.Add(this.MainFromPctrbxScreen);
             this.Name = "MainForm";
             this.Text = "Form1";
@@ -136,14 +148,15 @@
         #endregion
 
         private System.Windows.Forms.PictureBox MainFromPctrbxScreen;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox MainFormLstbxFigures;
         private System.Windows.Forms.Timer MainFormTmr;
         private System.Windows.Forms.StatusStrip MainFormSttsstp;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseX;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseY;
-        private System.Windows.Forms.ToolStripStatusLabel MainFormStttsstpLblHint;
+        private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblHint;
+        private System.Windows.Forms.Button MainFormBttnCircle;
     }
 }
 

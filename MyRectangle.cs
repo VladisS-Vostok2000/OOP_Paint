@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace OOP_Paint {
     public class MyRectangle : MyFigure {
         protected MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base(_x1, _y1, _x2, _y2) {
-        
+            Name = "Прямоугольник";
         }
         public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : base(_x1, _y1, _x2, _y2, _pen) {
         

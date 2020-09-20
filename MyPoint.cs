@@ -9,9 +9,10 @@ using System.Threading.Tasks;
 namespace OOP_Paint {
     public class MyPoint : MyFigure {
         public Color Color { private set; get; }
-
+        
 
         protected MyPoint(Int32 _x, Int32 _y) {
+            Name = "Точка";
             X = _x;
             Y = _y;
             Width = 0;
