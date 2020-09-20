@@ -15,22 +15,30 @@ using System.Windows.Forms.VisualStyles;
 
 namespace OOP_Paint {
     class MainCode {
-
         public enum Figure {
             Null = 0,
             Circle,
             Rectangle,
         }
+        public enum BuildingVariants {
+            InRectangleTwoDots,
+            DotRadius,
+        }
+
+        public BuildingVariants BuildingVariant;
+        public BuildingVariants currBuildingVariant = 0;
+        private Int32 currConstructorStage = 0;
 
         private Figure currSelectedFigure = Figure.Null;
-        public Figure CurrSelectedFigure { 
+        public Figure CurrSelectedFigure {
             set {
                 CloseConstructor();
+
                 currSelectedFigure = value;
+                BuildingVariant = 0;
             }
             get => currSelectedFigure;
         }
-        private Int32 currConstructorStage = 0;
 
         public readonly BindingList<MyFigure> Figures = new BindingList<MyFigure>();
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
@@ -42,32 +50,48 @@ namespace OOP_Paint {
 
 
         public ConstructorResult AddMouseClick(Point _coord) {
-            if (currSelectedFigure == Figure.Null) {
-                return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
-            }
-
+            ConstructorResult out_result;
+            //!!!//???По-хорошему buildingVariant должен быть перечислением, ибо если
+            //хоть что-то изменить в списке вариантов, нужно трогать свич.
+            //Но перечисления для всех фигур невероятно громоздки.
             switch (currSelectedFigure) {
+                case Figure.Null:
+                    return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
                 case Figure.Circle:
-                    switch (currConstructorStage) {
-                        case 0:
-                            supportFigures.Add(new MyRectangle(_coord.X, _coord.Y, _coord.X, _coord.Y, supportPen));
-                            supportFigures.Add(new MyCircle(_coord.X, _coord.Y, _coord.X, _coord.Y, supportPen2));
-                            pointsList.Add(_coord);
-                            currConstructorStage++;
-                            return new ConstructorResult(ConstructorResult.OperationStatus.Continious, "Задайте вторую точку");
-                        case 1:
-                            if (pointsList[0] == _coord) {
-                                return new ConstructorResult(ConstructorResult.OperationStatus.Continious, "Задайте вторую точку");
-                            }
+                    switch (currBuildingVariant) {
+                        case BuildingVariants.InRectangleTwoDots:
+                            switch (currConstructorStage) {
+                                case 0:
+                                    supportFigures.Add(new MyRectangle(_coord.X, _coord.Y, _coord.X, _coord.Y, supportPen));
+                                    supportFigures.Add(new MyCircle(_coord.X, _coord.Y, _coord.X, _coord.Y, supportPen2));
+                                    pointsList.Add(_coord);
+                                    currConstructorStage++;
+                                    out_result =  new ConstructorResult(ConstructorResult.OperationStatus.Continious, "Задайте вторую точку");
+                                    break;
+                                case 1:
+                                    if (pointsList[0] == _coord) {
+                                        out_result = new ConstructorResult(ConstructorResult.OperationStatus.Continious, "Задайте вторую точку");
+                                        break;
+                                    }
 
-                            Figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _coord.X, _coord.Y, normalPen));
-                            CloseConstructor();
-                            return new ConstructorResult(ConstructorResult.OperationStatus.Finished, "");
+                                    Figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _coord.X, _coord.Y, normalPen));
+                                    CloseConstructor();
+                                    out_result = new ConstructorResult(ConstructorResult.OperationStatus.Finished, "");
+                                    break;
+                                default:
+                                    throw new Exception();
+                            }
+                            break;
+                        case BuildingVariants.DotRadius:
+                            throw new NotImplementedException();
                         default: throw new Exception();
                     }
-
-                default: throw new NotImplementedException();
+                    break;
+                case Figure.Rectangle:
+                    throw new NotImplementedException();
+                default: throw new Exception();
             }
+            return out_result;
         }
         public void DrawFigures(Graphics _screen) {
             foreach (var figure in Figures) {
@@ -75,9 +99,21 @@ namespace OOP_Paint {
             }
         }
         private void CloseConstructor() {
+            currBuildingVariant = 0;
             currConstructorStage = 0;
             supportFigures.Clear();
             pointsList.Clear();
+        }
+        private List<BuildingVariants> FingPossibleBuildingVariants(Figure _figure) {
+            var out_list = new List<BuildingVariants>();
+            switch (_figure) {
+                case Figure.Circle:
+                    out_list.Add(BuildingVariants.DotRadius);
+                    out_list.Add(BuildingVariants.InRectangleTwoDots);
+                    break;
+                default: throw new Exception();
+            }
+            return out_list;
         }
 
     }

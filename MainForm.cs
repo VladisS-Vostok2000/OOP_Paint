@@ -56,6 +56,7 @@ namespace OOP_Paint {
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
+
             Code.CurrSelectedFigure = MainCode.Figure.Circle;
         }
 
