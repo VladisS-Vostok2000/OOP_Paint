@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
-
+//#Projekt: Добавить перегрузку построения
 namespace OOP_Paint {
     class MainCode {
         public enum Figure {
@@ -48,6 +48,7 @@ namespace OOP_Paint {
         private static readonly Pen supportPen2 = new Pen(Color.Black, 2);
         private static readonly Pen normalPen = new Pen(Color.Black);
 
+        
         //???По-хорошему нужен отдельный метод для прорисовки
         //и обработки клика мыши, однако дублировать switsch 
         //очень плохо, тем более такой длинный. Тогда нужен MouseEvent
