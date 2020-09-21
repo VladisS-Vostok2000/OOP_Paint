@@ -15,7 +15,6 @@ using System.Windows.Forms.VisualStyles;
 
 namespace OOP_Paint {
     class MainCode {
-        //!!!#1: Hint некоректно работает.
         public enum Figure {
             Null = 0,
             Circle,
@@ -78,14 +77,14 @@ namespace OOP_Paint {
                                         supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen));
                                         pointsList.Add(e.Location);
                                         currConstructorStage++;
-                                        out_result = new ConstructorResult(ConstructorResult.OperationStatus.Continious, "Задайте вторую точку");
+                                        out_result = new ConstructorResult(ConstructorResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                         break;
                                     }
                                     else return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
                                 case 1:
                                     if (e.Button == MouseButtons.Left) {
                                         if (pointsList[0] == e.Location) {
-                                            out_result = new ConstructorResult(ConstructorResult.OperationStatus.Continious, "Задайте вторую точку");
+                                            out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
                                             break;
                                         }
 

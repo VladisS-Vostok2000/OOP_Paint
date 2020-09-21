@@ -20,41 +20,41 @@ namespace OOP_Paint {
         public MainForm() {
             InitializeComponent();
             screen = MainFromPctrbxScreen.CreateGraphics();
-            Code.Figures.ListChanged += Figures_ListChanged1;
+            Code.Figures.ListChanged += Figures_ListChanged;
         }
 
 
-        private void Figures_ListChanged1(Object sender, ListChangedEventArgs e) {
+        private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
             MainFormLstbxFigures.Items.Clear();
             foreach (var figure in sender as BindingList<MyFigure>) {
                 MainFormLstbxFigures.Items.Add(figure.Name + $": ({figure.X},{figure.Y})");
             }
         }
-
-        private void Form1_Load(Object sender, EventArgs e) {
+        private void MainForm_Load(Object sender, EventArgs e) {
 
         }
-        private void Form1_Shown(Object sender, EventArgs e) {
+        private void MainForm_Shown(Object sender, EventArgs e) {
 
         }
 
 
         private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
             Point mouseLocation = e.Location;
-            MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString();
-            MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString();
+            MainFormSttsstpLblMouseX.Text = (mouseLocation.X.ToString()).PadLeft(3);
+            MainFormSttsstpLblMouseY.Text = (mouseLocation.Y.ToString()).PadLeft(3);
 
             ConstructorResult constructorResult = Code.ThreatMouseEvent(e);
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
-            if (e.X > (sender as PictureBox).Width || e.X < 0 || 
-                e.Y>(sender as PictureBox).Height || e.Y < 0) {
+            if (e.X > (sender as PictureBox).Width || e.X < 0 ||
+                e.Y > (sender as PictureBox).Height || e.Y < 0) {
                 return;
             }
 
             ConstructorResult constructorResult = Code.ThreatMouseEvent(e);
             if (constructorResult.Result == ConstructorResult.OperationStatus.Continious) {
                 MainFormTmr.Enabled = true;
+                MainFormSttsstpLblHint.Text = constructorResult.OperationMessage;
             }
             else
             if (constructorResult.Result == ConstructorResult.OperationStatus.Canselled) {
@@ -76,6 +76,7 @@ namespace OOP_Paint {
             Code.CurrSelectedFigure = MainCode.Figure.Circle;
 
         }
+
 
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
             Code.DrawFigures(screen);

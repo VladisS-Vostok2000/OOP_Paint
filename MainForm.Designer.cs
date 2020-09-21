@@ -86,9 +86,10 @@
             // MainFormSttsstpLblMouseX
             // 
             this.MainFormSttsstpLblMouseX.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.MainFormSttsstpLblMouseX.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainFormSttsstpLblMouseX.Name = "MainFormSttsstpLblMouseX";
-            this.MainFormSttsstpLblMouseX.Size = new System.Drawing.Size(25, 17);
-            this.MainFormSttsstpLblMouseX.Text = "888";
+            this.MainFormSttsstpLblMouseX.Size = new System.Drawing.Size(29, 17);
+            this.MainFormSttsstpLblMouseX.Text = "   ";
             // 
             // toolStripStatusLabel3
             // 
@@ -100,9 +101,10 @@
             // MainFormSttsstpLblMouseY
             // 
             this.MainFormSttsstpLblMouseY.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.MainFormSttsstpLblMouseY.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainFormSttsstpLblMouseY.Name = "MainFormSttsstpLblMouseY";
-            this.MainFormSttsstpLblMouseY.Size = new System.Drawing.Size(25, 17);
-            this.MainFormSttsstpLblMouseY.Text = "888";
+            this.MainFormSttsstpLblMouseY.Size = new System.Drawing.Size(29, 17);
+            this.MainFormSttsstpLblMouseY.Text = "   ";
             // 
             // MainFormSttsstpLblHint
             // 
@@ -110,7 +112,7 @@
             this.MainFormSttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MainFormSttsstpLblHint.Name = "MainFormSttsstpLblHint";
             this.MainFormSttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(701, 17);
+            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(693, 17);
             this.MainFormSttsstpLblHint.Spring = true;
             this.MainFormSttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -134,9 +136,9 @@
             this.Controls.Add(this.MainFormLstbxFigures);
             this.Controls.Add(this.MainFromPctrbxScreen);
             this.Name = "MainForm";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.Shown += new System.EventHandler(this.Form1_Shown);
+            this.Text = "MainForm";
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).EndInit();
             this.MainFormSttsstp.ResumeLayout(false);
             this.MainFormSttsstp.PerformLayout();
