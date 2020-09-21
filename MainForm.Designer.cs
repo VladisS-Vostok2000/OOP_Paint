@@ -28,11 +28,11 @@
             this.MainFormLstbxFigures = new System.Windows.Forms.ListBox();
             this.MainFormTmr = new System.Windows.Forms.Timer(this.components);
             this.MainFormSttsstp = new System.Windows.Forms.StatusStrip();
-            this.MainFormSttsstpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormSttsstpLblMouseX = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormSttsstpLblMouseY = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormSttsstpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormBttnCircle = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
@@ -61,6 +61,7 @@
             // 
             this.MainFormTmr.Enabled = true;
             this.MainFormTmr.Interval = 20;
+            this.MainFormTmr.Tick += new System.EventHandler(this.MainFormTmr_Tick);
             // 
             // MainFormSttsstp
             // 
@@ -75,16 +76,6 @@
             this.MainFormSttsstp.Size = new System.Drawing.Size(800, 22);
             this.MainFormSttsstp.TabIndex = 10;
             this.MainFormSttsstp.Text = "statusStrip1";
-            // 
-            // MainFormSttsstpLblHint
-            // 
-            this.MainFormSttsstpLblHint.AutoSize = false;
-            this.MainFormSttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.MainFormSttsstpLblHint.Name = "MainFormSttsstpLblHint";
-            this.MainFormSttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(701, 17);
-            this.MainFormSttsstpLblHint.Spring = true;
-            this.MainFormSttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // toolStripStatusLabel1
             // 
@@ -113,6 +104,16 @@
             this.MainFormSttsstpLblMouseY.Name = "MainFormSttsstpLblMouseY";
             this.MainFormSttsstpLblMouseY.Size = new System.Drawing.Size(25, 17);
             this.MainFormSttsstpLblMouseY.Text = "888";
+            // 
+            // MainFormSttsstpLblHint
+            // 
+            this.MainFormSttsstpLblHint.AutoSize = false;
+            this.MainFormSttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.MainFormSttsstpLblHint.Name = "MainFormSttsstpLblHint";
+            this.MainFormSttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
+            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(701, 17);
+            this.MainFormSttsstpLblHint.Spring = true;
+            this.MainFormSttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // MainFormBttnCircle
             // 

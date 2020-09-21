@@ -55,20 +55,20 @@ namespace OOP_Paint {
 
             ConstructorResult constructorResult = Code.AddMouseClick(e.Location);
             if (constructorResult.Result == ConstructorResult.OperationStatus.Continious) {
-                isFigureDrawing = true;
+                MainFormTmr.Enabled = true;
             }
             else
             if (constructorResult.Result == ConstructorResult.OperationStatus.Canselled) {
-                isFigureDrawing = false;
+                MainFormTmr.Enabled = false;
                 MainFormSttsstpLblHint.Text = "Отменено";
             }
             else
             if (constructorResult.Result == ConstructorResult.OperationStatus.Finished) {
-                isFigureDrawing = false;
+                MainFormTmr.Enabled = false;
                 Code.DrawFigures(screen);
                 MainFormSttsstpLblHint.Text = "Успешно.";
             }
-            
+
         }
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
@@ -77,5 +77,8 @@ namespace OOP_Paint {
 
         }
 
+        private void MainFormTmr_Tick(Object sender, EventArgs e) {
+            Code.DrawFigures(screen);
+        }
     }
 }

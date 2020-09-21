@@ -51,7 +51,7 @@ namespace OOP_Paint {
 
         public ConstructorResult AddMouseClick(Point _coord) {
             ConstructorResult out_result;
-            //!!!//???По-хорошему buildingVariant должен быть перечислением, ибо если
+            //???По-хорошему buildingVariant должен быть перечислением, ибо если
             //хоть что-то изменить в списке вариантов, нужно трогать свич.
             //Но перечисления для всех фигур невероятно громоздки.
             switch (currSelectedFigure) {
@@ -59,7 +59,6 @@ namespace OOP_Paint {
                     out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
                     break;
                 case Figure.Circle:
-                    //!!!Круг по диогонали строится неправильно: получается слишком маленьким. Строится точка.
                     switch (currBuildingVariant) {
                         case BuildingVariants.InRectangleTwoDots:
                             switch (currConstructorStage) {
