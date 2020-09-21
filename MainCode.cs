@@ -15,6 +15,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace OOP_Paint {
     class MainCode {
+        //!!!#1: Hint некоректно работает.
         public enum Figure {
             Null = 0,
             Circle,
@@ -44,16 +45,25 @@ namespace OOP_Paint {
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 
-        private static readonly Pen supportPen = new Pen(Color.Red) { Width = 2, DashStyle = DashStyle.Dash };
-        private static readonly Pen supportPen2 = new Pen(Color.Black, 1);
+        private static readonly Pen supportPen = new Pen(Color.Red) { Width = 1, DashStyle = DashStyle.Dash };
+        private static readonly Pen supportPen2 = new Pen(Color.Black, 2);
         private static readonly Pen normalPen = new Pen(Color.Black);
 
-
-        public ConstructorResult AddMouseClick(Point _coord) {
+        //???По-хорошему нужен отдельный метод для прорисовки
+        //и обработки клика мыши, однако дублировать switsch 
+        //очень плохо, тем более такой длинный. Тогда нужен MouseEvent
+        //для понимания, клик это или движение, что в свою очередь
+        //ведёт упаковку в object, т.к. это класс.
+        //upd: Повезло, класс один. Но всё равно один метод вмещает 2 из-за switsch ("if (e.Button == MouseButtons.Left)".)
+        public ConstructorResult ThreatMouseEvent(MouseEventArgs e) {
             ConstructorResult out_result;
             //???По-хорошему buildingVariant должен быть перечислением, ибо если
             //хоть что-то изменить в списке вариантов, нужно трогать свич.
             //Но перечисления для всех фигур невероятно громоздки.
+            ///currSelectedFigure -> Выбор фигуры построения
+            ///currBuildingVariant -> Выбор варианта построения фигуры
+            ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
+            ///MouseButtons -> Выбор, движение мыши (изменение вспомогательных фигур) или клик, переход к следующей стадии построения.
             switch (currSelectedFigure) {
                 case Figure.Null:
                     out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
@@ -63,22 +73,34 @@ namespace OOP_Paint {
                         case BuildingVariants.InRectangleTwoDots:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyRectangle(_coord.X, _coord.Y, _coord.X, _coord.Y, supportPen));
-                                    supportFigures.Add(new MyCircle(_coord.X, _coord.Y, _coord.X, _coord.Y, supportPen2));
-                                    pointsList.Add(_coord);
-                                    currConstructorStage++;
-                                    out_result =  new ConstructorResult(ConstructorResult.OperationStatus.Continious, "Задайте вторую точку");
-                                    break;
-                                case 1:
-                                    if (pointsList[0] == _coord) {
+                                    if (e.Button == MouseButtons.Left) {
+                                        supportFigures.Add(new MyRectangle(e.X, e.Y, e.X, e.Y, supportPen));
+                                        supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen));
+                                        pointsList.Add(e.Location);
+                                        currConstructorStage++;
                                         out_result = new ConstructorResult(ConstructorResult.OperationStatus.Continious, "Задайте вторую точку");
                                         break;
                                     }
+                                    else return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+                                case 1:
+                                    if (e.Button == MouseButtons.Left) {
+                                        if (pointsList[0] == e.Location) {
+                                            out_result = new ConstructorResult(ConstructorResult.OperationStatus.Continious, "Задайте вторую точку");
+                                            break;
+                                        }
 
-                                    Figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _coord.X, _coord.Y, normalPen));
-                                    CloseConstructor();
-                                    out_result = new ConstructorResult(ConstructorResult.OperationStatus.Finished, "");
-                                    break;
+                                        Figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, normalPen));
+                                        CloseConstructor();
+                                        out_result = new ConstructorResult(ConstructorResult.OperationStatus.Finished, "");
+                                        break;
+                                    }
+                                    else if (e.Button == MouseButtons.None) {
+                                        supportFigures[supportFigures.Count - 1] = new MyRectangle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, supportPen);
+                                        out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+                                        break;
+                                    }
+                                    else return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+
                                 default:
                                     throw new Exception();
                             }
@@ -94,6 +116,8 @@ namespace OOP_Paint {
             }
             return out_result;
         }
+
+
         private void CloseConstructor() {
             currBuildingVariant = 0;
             currConstructorStage = 0;
@@ -107,7 +131,7 @@ namespace OOP_Paint {
             foreach (var figure in Figures) {
                 figure.Draw(_screen);
             }
-            foreach(var figure in supportFigures) {
+            foreach (var figure in supportFigures) {
                 figure.Draw(_screen);
             }
         }

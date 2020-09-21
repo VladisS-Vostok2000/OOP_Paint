@@ -39,13 +39,12 @@ namespace OOP_Paint {
         }
 
 
-        private void MainFormSttsstp_MouseMove(Object sender, MouseEventArgs e) {
+        private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
             Point mouseLocation = e.Location;
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString();
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString();
-            if (isFigureDrawing) {
-               Code.DrawFigures(screen);
-            }
+
+            ConstructorResult constructorResult = Code.ThreatMouseEvent(e);
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
             if (e.X > (sender as PictureBox).Width || e.X < 0 || 
@@ -53,7 +52,7 @@ namespace OOP_Paint {
                 return;
             }
 
-            ConstructorResult constructorResult = Code.AddMouseClick(e.Location);
+            ConstructorResult constructorResult = Code.ThreatMouseEvent(e);
             if (constructorResult.Result == ConstructorResult.OperationStatus.Continious) {
                 MainFormTmr.Enabled = true;
             }
@@ -70,6 +69,7 @@ namespace OOP_Paint {
             }
 
         }
+
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";

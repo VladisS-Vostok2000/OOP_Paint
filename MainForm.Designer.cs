@@ -46,7 +46,7 @@
             this.MainFromPctrbxScreen.Size = new System.Drawing.Size(496, 290);
             this.MainFromPctrbxScreen.TabIndex = 0;
             this.MainFromPctrbxScreen.TabStop = false;
-            this.MainFromPctrbxScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainFormSttsstp_MouseMove);
+            this.MainFromPctrbxScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainFormPctrbxScreen_MouseMove);
             this.MainFromPctrbxScreen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainFromPctrbxScreen_MouseUp);
             // 
             // MainFormLstbxFigures
@@ -59,7 +59,6 @@
             // 
             // MainFormTmr
             // 
-            this.MainFormTmr.Enabled = true;
             this.MainFormTmr.Interval = 20;
             this.MainFormTmr.Tick += new System.EventHandler(this.MainFormTmr_Tick);
             // 
