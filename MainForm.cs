@@ -16,7 +16,7 @@ namespace OOP_Paint {
     public sealed partial class MainForm : Form {
         private readonly Graphics screen;
         private readonly MainCode Code = new MainCode();
-
+        private bool isFigureDrawing = false;
         public MainForm() {
             InitializeComponent();
             screen = MainFromPctrbxScreen.CreateGraphics();
@@ -43,7 +43,9 @@ namespace OOP_Paint {
             Point mouseLocation = e.Location;
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString();
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString();
-            Code.DrawFigures(screen);
+            if (isFigureDrawing) {
+               Code.DrawFigures(screen);
+            }
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
             if (e.X > (sender as PictureBox).Width || e.X < 0 || 
@@ -52,12 +54,27 @@ namespace OOP_Paint {
             }
 
             ConstructorResult constructorResult = Code.AddMouseClick(e.Location);
+            if (constructorResult.Result == ConstructorResult.OperationStatus.Continious) {
+                isFigureDrawing = true;
+            }
+            else
+            if (constructorResult.Result == ConstructorResult.OperationStatus.Canselled) {
+                isFigureDrawing = false;
+                MainFormSttsstpLblHint.Text = "Отменено";
+            }
+            else
+            if (constructorResult.Result == ConstructorResult.OperationStatus.Finished) {
+                isFigureDrawing = false;
+                Code.DrawFigures(screen);
+                MainFormSttsstpLblHint.Text = "Успешно.";
+            }
+            
         }
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
-
             Code.CurrSelectedFigure = MainCode.Figure.Circle;
+
         }
 
     }

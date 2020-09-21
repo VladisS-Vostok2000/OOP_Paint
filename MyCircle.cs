@@ -33,7 +33,7 @@ namespace OOP_Paint {
         /// <param name="_p1"></param>
         /// <param name="_p2"></param>
         private (Point, Point) CutCoordinatesRectangleToSquare(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
-            var _p1 = new Point(_x1, _x2);
+            var _p1 = new Point(_x1, _y1);
             var _p2 = new Point(_x2, _y2);
 
             Int32 a = _p2.X - _p1.X;

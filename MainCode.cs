@@ -56,8 +56,10 @@ namespace OOP_Paint {
             //Но перечисления для всех фигур невероятно громоздки.
             switch (currSelectedFigure) {
                 case Figure.Null:
-                    return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+                    out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+                    break;
                 case Figure.Circle:
+                    //!!!Круг по диогонали строится неправильно: получается слишком маленьким. Строится точка.
                     switch (currBuildingVariant) {
                         case BuildingVariants.InRectangleTwoDots:
                             switch (currConstructorStage) {
@@ -93,18 +95,24 @@ namespace OOP_Paint {
             }
             return out_result;
         }
-        public void DrawFigures(Graphics _screen) {
-            foreach (var figure in Figures) {
-                figure.Draw(_screen);
-            }
-        }
         private void CloseConstructor() {
             currBuildingVariant = 0;
             currConstructorStage = 0;
             supportFigures.Clear();
             pointsList.Clear();
         }
-        private List<BuildingVariants> FingPossibleBuildingVariants(Figure _figure) {
+
+
+        public void DrawFigures(Graphics _screen) {
+            _screen.Clear(Color.FromArgb(250, 64, 64, 64));
+            foreach (var figure in Figures) {
+                figure.Draw(_screen);
+            }
+            foreach(var figure in supportFigures) {
+                figure.Draw(_screen);
+            }
+        }
+        public List<BuildingVariants> FingPossibleBuildingVariants(Figure _figure) {
             var out_list = new List<BuildingVariants>();
             switch (_figure) {
                 case Figure.Circle:
