@@ -49,6 +49,8 @@ namespace OOP_Paint {
         private static readonly Pen normalPen = new Pen(Color.Black);
 
 
+        //#3: построение через 3 грани прямоугольника неверно: окружность опирается только
+        //на верхнюю грань.
         //???По-хорошему нужен отдельный метод для прорисовки
         //и обработки клика мыши, однако дублировать switsch 
         //очень плохо, тем более такой длинный. Тогда нужен MouseEvent
@@ -169,7 +171,10 @@ namespace OOP_Paint {
             return out_list;
         }
         public string[] ReturnPossibleBuildingVariantsAsString() {
-            var list = FindPossibleBuildingVariants();
+            List<BuildingVariants> list = FindPossibleBuildingVariants();
+            if (list.Count == 0) {
+                throw new Exception("Отсутсвуют варианты построения для выбранной фигуры.");
+            }
             var out_array = new string[list.Count];
             for (int i = 0; i < list.Count; i++) {
                 switch (list[i]) {
@@ -177,7 +182,7 @@ namespace OOP_Paint {
                         out_array[i] = "Точка, радиус";
                         break;
                     case BuildingVariants.InRectangleTwoDots:
-                        out_array[i] = "Ограничивающий прямоугольник";
+                        out_array[i] = "3 грани прямоугольника";
                         break;
                     default: throw new NotImplementedException();
                 }

@@ -129,6 +129,7 @@
             // 
             // MainFormCmbbxBuildingVariants
             // 
+            this.MainFormCmbbxBuildingVariants.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.MainFormCmbbxBuildingVariants.FormattingEnabled = true;
             this.MainFormCmbbxBuildingVariants.Location = new System.Drawing.Point(13, 340);
             this.MainFormCmbbxBuildingVariants.Name = "MainFormCmbbxBuildingVariants";

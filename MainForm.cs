@@ -40,7 +40,6 @@ namespace OOP_Paint {
         }
 
 
-        //!!!MouseMove как-то при зажатии мыши в лист прорисовываются координаты мыши
         private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
             Point mouseLocation = e.Location;
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
@@ -82,7 +81,6 @@ namespace OOP_Paint {
             Code.CurrSelectedFigure = MainCode.Figure.Circle;
             MainFormCmbbxBuildingVariants.Items.Clear();
             MainFormCmbbxBuildingVariants.Items.AddRange(Code.ReturnPossibleBuildingVariantsAsString());
-
 
         }
 
