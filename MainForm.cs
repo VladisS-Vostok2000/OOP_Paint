@@ -16,14 +16,16 @@ namespace OOP_Paint {
     public sealed partial class MainForm : Form {
         private readonly Graphics screen;
         private readonly MainCode Code = new MainCode();
-        private bool isFigureDrawing = false;
         private static int test = 0;
+
+
         public MainForm() {
             InitializeComponent();
             screen = MainFromPctrbxScreen.CreateGraphics();
             Code.Figures.ListChanged += Figures_ListChanged;
 
         }
+
 
         private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
             MainFormLstbxFigures.Items.Clear();
@@ -88,5 +90,6 @@ namespace OOP_Paint {
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
             Code.DrawFigures(screen);
         }
+
     }
 }

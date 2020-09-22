@@ -15,7 +15,7 @@ namespace OOP_Paint {
             Width = Math.Abs(p1.X - p2.X);
             Height = Math.Abs(p1.Y - p2.Y);
             Radius = Width / 2;
-            Point leftCorner = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
+            Point leftCorner = FindLeftUpCornerCoord(p1.X, p2.Y, p2.X, p2.Y);
             X = leftCorner.X;
             Y = leftCorner.Y;
         }
@@ -26,7 +26,7 @@ namespace OOP_Paint {
             Pen = new Pen(_color, 2);
         }
 
-
+        //#3: не относительно первой точки, а относительно левой верхней
         /// <summary>
         /// Обрубает координатный прямоугольник до квадрата относительно первой точки
         /// </summary>

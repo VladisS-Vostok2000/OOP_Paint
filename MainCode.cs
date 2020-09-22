@@ -49,8 +49,6 @@ namespace OOP_Paint {
         private static readonly Pen normalPen = new Pen(Color.Black);
 
 
-        //#3: построение через 3 грани прямоугольника неверно: окружность опирается только
-        //на верхнюю грань.
         //???По-хорошему нужен отдельный метод для прорисовки
         //и обработки клика мыши, однако дублировать switsch 
         //очень плохо, тем более такой длинный. Тогда нужен MouseEvent
@@ -182,7 +180,7 @@ namespace OOP_Paint {
                         out_array[i] = "Точка, радиус";
                         break;
                     case BuildingVariants.InRectangleTwoDots:
-                        out_array[i] = "3 грани прямоугольника";
+                        out_array[i] = "Прямой угол, точка";
                         break;
                     default: throw new NotImplementedException();
                 }
