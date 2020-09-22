@@ -48,7 +48,7 @@ namespace OOP_Paint {
         private static readonly Pen supportPen2 = new Pen(Color.Black, 2);
         private static readonly Pen normalPen = new Pen(Color.Black);
 
-        
+
         //???По-хорошему нужен отдельный метод для прорисовки
         //и обработки клика мыши, однако дублировать switsch 
         //очень плохо, тем более такой длинный. Тогда нужен MouseEvent
@@ -73,7 +73,7 @@ namespace OOP_Paint {
                         case BuildingVariants.InRectangleTwoDots:
                             switch (currConstructorStage) {
                                 case 0:
-                                    if (e.Button == MouseButtons.Left) {
+                                    if (e.Button == MouseButtons.Left && e.Clicks == 1) {
                                         supportFigures.Add(new MyRectangle(e.X, e.Y, e.X, e.Y, supportPen));
                                         supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen));
                                         pointsList.Add(e.Location);
@@ -83,8 +83,8 @@ namespace OOP_Paint {
                                     }
                                     else return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
                                 case 1:
-                                    if (e.Button == MouseButtons.Left) {
-                                        if (pointsList[0] == e.Location) {
+                                    if (e.Button == MouseButtons.Left && e.Clicks == 1) {
+                                        if (pointsList[0].X == e.X || pointsList[0].Y == e.Y) {
                                             out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
                                             break;
                                         }
@@ -94,13 +94,17 @@ namespace OOP_Paint {
                                         out_result = new ConstructorResult(ConstructorResult.OperationStatus.Finished, "");
                                         break;
                                     }
-                                    else if (e.Button == MouseButtons.None) {
+                                    //else if (true) {
+                                    //    supportFigures[supportFigures.Count - 1] = new MyRectangle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, supportPen);
+                                    //    out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+                                    //    break;
+                                    //}
+                                    //else return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+                                    else {
                                         supportFigures[supportFigures.Count - 1] = new MyRectangle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, supportPen);
                                         out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
                                         break;
                                     }
-                                    else return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
-
                                 default:
                                     throw new Exception();
                             }
@@ -146,6 +150,40 @@ namespace OOP_Paint {
             }
             return out_list;
         }
+        /// <summary>
+        /// Возвращает список доступных вариантов строительства фигур
+        /// текущей выбранной фигуры.
+        /// </summary>
+        /// <returns>Список MainCode.BuildingVariants </returns>
+        public List<BuildingVariants> FindPossibleBuildingVariants() {
+            Figure figure = currSelectedFigure;
+            var out_list = new List<BuildingVariants>();
+            switch (figure) {
+                case Figure.Null: return out_list;
+                case Figure.Circle:
+                    out_list.Add(BuildingVariants.DotRadius);
+                    out_list.Add(BuildingVariants.InRectangleTwoDots);
+                    break;
+                default: throw new NotImplementedException();
+            }
+            return out_list;
+        }
+        public string[] ReturnPossibleBuildingVariantsAsString() {
+            var list = FindPossibleBuildingVariants();
+            var out_array = new string[list.Count];
+            for (int i = 0; i < list.Count; i++) {
+                switch (list[i]) {
+                    case BuildingVariants.DotRadius:
+                        out_array[i] = "Точка, радиус";
+                        break;
+                    case BuildingVariants.InRectangleTwoDots:
+                        out_array[i] = "Ограничивающий прямоугольник";
+                        break;
+                    default: throw new NotImplementedException();
+                }
+            }
 
+            return out_array;
+        }
     }
 }

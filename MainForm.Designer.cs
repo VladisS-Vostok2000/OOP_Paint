@@ -34,6 +34,7 @@
             this.MainFormSttsstpLblMouseY = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormSttsstpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormBttnCircle = new System.Windows.Forms.Button();
+            this.MainFormCmbbxBuildingVariants = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -126,15 +127,25 @@
             this.MainFormBttnCircle.UseVisualStyleBackColor = true;
             this.MainFormBttnCircle.Click += new System.EventHandler(this.MainFormBttnCircle_Click);
             // 
+            // MainFormCmbbxBuildingVariants
+            // 
+            this.MainFormCmbbxBuildingVariants.FormattingEnabled = true;
+            this.MainFormCmbbxBuildingVariants.Location = new System.Drawing.Point(13, 340);
+            this.MainFormCmbbxBuildingVariants.Name = "MainFormCmbbxBuildingVariants";
+            this.MainFormCmbbxBuildingVariants.Size = new System.Drawing.Size(150, 21);
+            this.MainFormCmbbxBuildingVariants.TabIndex = 12;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.MainFormCmbbxBuildingVariants);
             this.Controls.Add(this.MainFormBttnCircle);
             this.Controls.Add(this.MainFormSttsstp);
             this.Controls.Add(this.MainFormLstbxFigures);
             this.Controls.Add(this.MainFromPctrbxScreen);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
@@ -159,6 +170,7 @@
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseY;
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblHint;
         private System.Windows.Forms.Button MainFormBttnCircle;
+        private System.Windows.Forms.ComboBox MainFormCmbbxBuildingVariants;
     }
 }
 

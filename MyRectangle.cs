@@ -27,9 +27,7 @@ namespace OOP_Paint {
             if (Width != Height) {
                 _screen.DrawLine(Pen, X, Y, X + Width, Y + Height);
             }
-            else {
-                new MyPoint(X, Y, Pen.Color).Draw(_screen);
-            }
+
         }
 
     }

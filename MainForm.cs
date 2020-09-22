@@ -17,18 +17,20 @@ namespace OOP_Paint {
         private readonly Graphics screen;
         private readonly MainCode Code = new MainCode();
         private bool isFigureDrawing = false;
+        private static int test = 0;
         public MainForm() {
             InitializeComponent();
             screen = MainFromPctrbxScreen.CreateGraphics();
             Code.Figures.ListChanged += Figures_ListChanged;
-        }
 
+        }
 
         private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
             MainFormLstbxFigures.Items.Clear();
             foreach (var figure in sender as BindingList<MyFigure>) {
                 MainFormLstbxFigures.Items.Add(figure.Name + $": ({figure.X},{figure.Y})");
             }
+
         }
         private void MainForm_Load(Object sender, EventArgs e) {
 
@@ -38,11 +40,15 @@ namespace OOP_Paint {
         }
 
 
+        //!!!MouseMove как-то при зажатии мыши в лист прорисовываются координаты мыши
         private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
             Point mouseLocation = e.Location;
-            MainFormSttsstpLblMouseX.Text = (mouseLocation.X.ToString()).PadLeft(3);
-            MainFormSttsstpLblMouseY.Text = (mouseLocation.Y.ToString()).PadLeft(3);
-
+            MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
+            MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
+            test++;
+            if (test == 1000) {
+                MessageBox.Show(e.Clicks.ToString());
+            }
             ConstructorResult constructorResult = Code.ThreatMouseEvent(e);
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
@@ -74,6 +80,9 @@ namespace OOP_Paint {
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
             Code.CurrSelectedFigure = MainCode.Figure.Circle;
+            MainFormCmbbxBuildingVariants.Items.Clear();
+            MainFormCmbbxBuildingVariants.Items.AddRange(Code.ReturnPossibleBuildingVariantsAsString());
+
 
         }
 
