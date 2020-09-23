@@ -135,6 +135,7 @@
             this.MainFormCmbbxBuildingVariants.Name = "MainFormCmbbxBuildingVariants";
             this.MainFormCmbbxBuildingVariants.Size = new System.Drawing.Size(150, 21);
             this.MainFormCmbbxBuildingVariants.TabIndex = 12;
+            this.MainFormCmbbxBuildingVariants.SelectedIndexChanged += new System.EventHandler(this.MainFormCmbbxBuildingVariants_SelectedIndexChanged);
             // 
             // MainForm
             // 

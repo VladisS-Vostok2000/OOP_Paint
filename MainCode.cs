@@ -14,32 +14,59 @@ using System.Windows.Forms.VisualStyles;
 
 //#Projekt: Добавить перегрузку построения
 namespace OOP_Paint {
-    class MainCode {
+    public sealed class MainCode {
         public enum Figure {
-            Null = 0,
+            None = 0,
             Circle,
             Rectangle,
         }
         public enum BuildingVariants {
+            None,
             InRectangleTwoDots,
             DotRadius,
         }
+        private event EventHandler CurrBuildingVariantChanged;
 
-        public BuildingVariants BuildingVariant;
-        public BuildingVariants currBuildingVariant = 0;
+
         private Int32 currConstructorStage = 0;
+        private BuildingVariants currBuildingVariant = BuildingVariants.None;
+        public BuildingVariants CurrBuildingVariant {
+            set {
+                if (currBuildingVariant != value) {
+                    CurrBuildingVariant = value;
+                    BuildingVariantChanged?.Invoke(CurrBuildingVariant, new PropertyChangedEventArgs("CurrBuildingVariant"));
 
-        private Figure currSelectedFigure = Figure.Null;
+                }
+            }
+            get => currBuildingVariant;
+        }
+        private Figure currSelectedFigure = Figure.None;
+        //#MC4:
+        //???CloseContstructor не обнулят текущюю фигуру, тем не менее, использовать
+        //фигуру без определения варианта построения невозможно.
+        //Тогда в коде должен быть реализован автоматически обновляемый лист
+        //с доступными вариантами фигур, но выбрана архитектура, когда его нет,
+        //т.к. это громоздко. Тогда нужно либо обнулять фигуру, но тогда свойство или зациклится,
+        //или не среагирует на изменение value, либо создавать ивенты и как-то вязать это с GUI.
+        //Либо же всегда в метод передавать, какую фигуру строим. Но если у нас фигура поменяется в процессе?
+        //Кстати, в таком случае можно закрыть конструктор.
+        //Создавать ивент глупо, т.к. зачем коду нужно менять выбранную фигуру в процессе? Это
+        //должен делать GUI. Отменять её внезапно.
+        //fixed: CloseConstructor больше не обнуляет текущий вариант построения
+        //!!!Устанавливается текущий вариант построения, однако GUI этого не видит, возможны расхождения.
+        //При выборе фигуры должен быть задан вариант построения по умолчанию, и он отнюдь не первый.
+        //Отсюда нужно уведомлять GUI, какой вариант был задан. Отсюда двусторонняя привязка.
         public Figure CurrSelectedFigure {
             set {
                 CloseConstructor();
-
                 currSelectedFigure = value;
-                BuildingVariant = 0;
+                CurrBuildingVariant = FindPossibleBuildingVariants()[0];
             }
             get => currSelectedFigure;
         }
 
+        //???Лист реализует Binding-логику, которая необходима для реализации событий в GUI,
+        //однако он становится публичным и все его фигуры доступны для редактирования снаружи.
         public readonly BindingList<MyFigure> Figures = new BindingList<MyFigure>();
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
@@ -65,11 +92,11 @@ namespace OOP_Paint {
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             ///MouseButtons -> Выбор, движение мыши (изменение вспомогательных фигур) или клик, переход к следующей стадии построения.
             switch (currSelectedFigure) {
-                case Figure.Null:
+                case Figure.None:
                     out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
                     break;
                 case Figure.Circle:
-                    switch (currBuildingVariant) {
+                    switch (CurrBuildingVariant) {
                         case BuildingVariants.InRectangleTwoDots:
                             switch (currConstructorStage) {
                                 case 0:
@@ -111,7 +138,7 @@ namespace OOP_Paint {
                             break;
                         case BuildingVariants.DotRadius:
                             throw new NotImplementedException();
-                        default: throw new Exception();
+                        default: throw new Exception("Не может быть выбрана фигура без варианта построения.");
                     }
                     break;
                 case Figure.Rectangle:
@@ -123,7 +150,7 @@ namespace OOP_Paint {
 
 
         private void CloseConstructor() {
-            currBuildingVariant = 0;
+            //CurrBuildingVariant = BuildingVariants.None;
             currConstructorStage = 0;
             supportFigures.Clear();
             pointsList.Clear();
@@ -159,34 +186,34 @@ namespace OOP_Paint {
             Figure figure = currSelectedFigure;
             var out_list = new List<BuildingVariants>();
             switch (figure) {
-                case Figure.Null: return out_list;
+                case Figure.None: return out_list;
                 case Figure.Circle:
-                    out_list.Add(BuildingVariants.DotRadius);
                     out_list.Add(BuildingVariants.InRectangleTwoDots);
+                    out_list.Add(BuildingVariants.DotRadius);
                     break;
                 default: throw new NotImplementedException();
             }
             return out_list;
         }
-        public string[] ReturnPossibleBuildingVariantsAsString() {
+        public string[] ReturnPossibleBuildingVariantsNames() {
             List<BuildingVariants> list = FindPossibleBuildingVariants();
             if (list.Count == 0) {
                 throw new Exception("Отсутсвуют варианты построения для выбранной фигуры.");
             }
             var out_array = new string[list.Count];
+            
             for (int i = 0; i < list.Count; i++) {
-                switch (list[i]) {
-                    case BuildingVariants.DotRadius:
-                        out_array[i] = "Точка, радиус";
-                        break;
-                    case BuildingVariants.InRectangleTwoDots:
-                        out_array[i] = "Прямой угол, точка";
-                        break;
-                    default: throw new NotImplementedException();
-                }
+                out_array[i] = ReturnBuildingVariantName(list[i]);
             }
 
             return out_array;
+        }
+        public string ReturnBuildingVariantName(BuildingVariants _bv) {
+            switch(_bv) {
+                case BuildingVariants.DotRadius: return "Точка, радиус";
+                case BuildingVariants.InRectangleTwoDots: return "Прямой угол, точка";
+                default: throw new NotImplementedException();
+            }
         }
     }
 }

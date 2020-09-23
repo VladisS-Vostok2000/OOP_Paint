@@ -23,6 +23,7 @@ namespace OOP_Paint {
             InitializeComponent();
             screen = MainFromPctrbxScreen.CreateGraphics();
             Code.Figures.ListChanged += Figures_ListChanged;
+            Code.BuildingVariantChanged += Code_BuildingVariantChanged;
 
         }
 
@@ -82,13 +83,25 @@ namespace OOP_Paint {
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
             Code.CurrSelectedFigure = MainCode.Figure.Circle;
             MainFormCmbbxBuildingVariants.Items.Clear();
-            MainFormCmbbxBuildingVariants.Items.AddRange(Code.ReturnPossibleBuildingVariantsAsString());
+            MainFormCmbbxBuildingVariants.Items.AddRange(Code.ReturnPossibleBuildingVariantsNames());
+            MainFormCmbbxBuildingVariants.SelectedIndex = 0;
 
         }
 
 
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
             Code.DrawFigures(screen);
+        }
+
+        //!!!Зацикленные методы
+        private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
+            List<MainCode.BuildingVariants> lbv = Code.FindPossibleBuildingVariants();
+            Code.CurrBuildingVariant = lbv[(sender as ComboBox).SelectedIndex];
+
+        }
+        private void Code_BuildingVariantChanged(Object sender, PropertyChangedEventArgs e) {
+            Code.CurrBuildingVariant = MainFormCmbbxBuildingVariants.
+
         }
 
     }
