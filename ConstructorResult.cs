@@ -2,7 +2,7 @@
 
 
 namespace OOP_Paint {
-    public struct ConstructorResult {
+    public readonly struct ConstructorResult {
         public enum OperationStatus {
             None,
             Canselled,

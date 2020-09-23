@@ -23,7 +23,7 @@ namespace OOP_Paint {
             InitializeComponent();
             screen = MainFromPctrbxScreen.CreateGraphics();
             Code.Figures.ListChanged += Figures_ListChanged;
-            Code.BuildingVariantChanged += Code_BuildingVariantChanged;
+            Code.CurrBuildingVariantChanged += Code_BuildingVariantChanged;
 
         }
 
@@ -99,7 +99,7 @@ namespace OOP_Paint {
             Code.CurrBuildingVariant = lbv[(sender as ComboBox).SelectedIndex];
 
         }
-        private void Code_BuildingVariantChanged(Object sender, PropertyChangedEventArgs e) {
+        private void Code_BuildingVariantChanged(Object sender, EventArgs e) {
             Code.CurrBuildingVariant = MainFormCmbbxBuildingVariants.
 
         }

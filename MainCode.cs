@@ -20,12 +20,8 @@ namespace OOP_Paint {
             Circle,
             Rectangle,
         }
-        public enum BuildingVariants {
-            None,
-            InRectangleTwoDots,
-            DotRadius,
-        }
-        private event EventHandler CurrBuildingVariantChanged;
+
+        public event EventHandler CurrBuildingVariantChanged;
 
 
         private Int32 currConstructorStage = 0;
@@ -34,7 +30,8 @@ namespace OOP_Paint {
             set {
                 if (currBuildingVariant != value) {
                     CurrBuildingVariant = value;
-                    BuildingVariantChanged?.Invoke(CurrBuildingVariant, new PropertyChangedEventArgs("CurrBuildingVariant"));
+                    CurrBuildingVariantChanged?.Invoke(value, EventArgs.Empty);
+                    //BuildingVariantChanged?.Invoke(CurrBuildingVariant, new PropertyChangedEventArgs("CurrBuildingVariant"));
 
                 }
             }
