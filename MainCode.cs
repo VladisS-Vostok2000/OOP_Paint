@@ -25,8 +25,9 @@ namespace OOP_Paint {
 
 
         private Int32 currConstructorStage = 0;
-        private BuildingVariants currBuildingVariant = BuildingVariants.None;
-        public BuildingVariants CurrBuildingVariant {
+        private ConstructionMethod currBuildingVariant;
+//MC#4: отуствует перегрузка оператора новоявленной структуры
+        public ConstructionMethod CurrBuildingVariant {
             set {
                 if (currBuildingVariant != value) {
                     CurrBuildingVariant = value;
@@ -163,7 +164,7 @@ namespace OOP_Paint {
                 figure.Draw(_screen);
             }
         }
-        public List<BuildingVariants> FingPossibleBuildingVariants(Figure _figure) {
+        public List<ConstructorResult> FingPossibleBuildingVariants(Figure _figure) {
             var out_list = new List<BuildingVariants>();
             switch (_figure) {
                 case Figure.Circle:
@@ -179,7 +180,7 @@ namespace OOP_Paint {
         /// текущей выбранной фигуры.
         /// </summary>
         /// <returns>Список MainCode.BuildingVariants </returns>
-        public List<BuildingVariants> FindPossibleBuildingVariants() {
+        public List<ConstructorResult> FindPossibleBuildingVariants() {
             Figure figure = currSelectedFigure;
             var out_list = new List<BuildingVariants>();
             switch (figure) {
@@ -205,12 +206,6 @@ namespace OOP_Paint {
 
             return out_array;
         }
-        public string ReturnBuildingVariantName(BuildingVariants _bv) {
-            switch(_bv) {
-                case BuildingVariants.DotRadius: return "Точка, радиус";
-                case BuildingVariants.InRectangleTwoDots: return "Прямой угол, точка";
-                default: throw new NotImplementedException();
-            }
-        }
+
     }
 }

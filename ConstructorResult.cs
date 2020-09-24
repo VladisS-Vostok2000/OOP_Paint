@@ -16,5 +16,6 @@ namespace OOP_Paint {
             OperationMessage = _message;
         }
 
+
     }
 }
