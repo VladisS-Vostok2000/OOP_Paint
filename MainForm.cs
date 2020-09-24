@@ -97,10 +97,11 @@ namespace OOP_Paint {
             Code.DrawFigures(screen);
         }
 
-        //!!!Зацикленные методы
+        //!!!#MF5:Зацикленные методы
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
-            List<ConstructionMethod> lbv = Code.FindPossibleBuildingVariants();
-            Code.CurrBuildingVariant = lbv[(sender as ComboBox).SelectedIndex];
+            //Меняется свойство в Code
+            List<ConstructionMethod> pbv = Code.FindPossibleBuildingVariants();
+            Code.CurrBuildingVariant = pbv[(sender as ComboBox).SelectedIndex];
 
         }
         private void Code_BuildingVariantChanged(Object sender, EventArgs e) {

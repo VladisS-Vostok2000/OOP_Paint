@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-//#1CM: перевести код на структуру
 namespace OOP_Paint {
     public readonly struct ConstructionMethod {
         //???У меня readonly перечисление, их уникальное количество ограничено,
