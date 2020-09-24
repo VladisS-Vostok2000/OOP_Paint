@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-        //#1CM: перевести код на структуру
+//#1CM: перевести код на структуру
 namespace OOP_Paint {
     public readonly struct ConstructionMethod {
         //???У меня readonly перечисление, их уникальное количество ограничено,
@@ -21,7 +21,7 @@ namespace OOP_Paint {
             Name = ReturnBuildingVariantName(_bv);
         }
 
-        public readonly string Name;
+        public readonly String Name;
         public readonly BuildingVariants Method;
 
         private static String ReturnBuildingVariantName(BuildingVariants _bv) {
@@ -33,5 +33,23 @@ namespace OOP_Paint {
 
         }
 
+        public static Boolean operator ==(ConstructionMethod _cm1, ConstructionMethod _cm2) {
+            if (_cm1.Method == _cm2.Method) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        public static Boolean operator !=(ConstructionMethod _cm1, ConstructionMethod _cm2) {
+            if (_cm1.Method != _cm2.Method) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     }
+
+
 }

@@ -16,7 +16,7 @@ namespace OOP_Paint {
     public sealed partial class MainForm : Form {
         private readonly Graphics screen;
         private readonly MainCode Code = new MainCode();
-        private static int test = 0;
+        private static Int32 test = 0;
 
 
         public MainForm() {
@@ -51,7 +51,7 @@ namespace OOP_Paint {
             if (test == 1000) {
                 MessageBox.Show(e.Clicks.ToString());
             }
-            ConstructorResult constructorResult = Code.ThreatMouseEvent(e);
+            ConstructorOperationResult constructorResult = Code.ThreatMouseEvent(e);
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
             if (e.X > (sender as PictureBox).Width || e.X < 0 ||
@@ -59,18 +59,18 @@ namespace OOP_Paint {
                 return;
             }
 
-            ConstructorResult constructorResult = Code.ThreatMouseEvent(e);
-            if (constructorResult.Result == ConstructorResult.OperationStatus.Continious) {
+            ConstructorOperationResult constructorResult = Code.ThreatMouseEvent(e);
+            if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Continious) {
                 MainFormTmr.Enabled = true;
                 MainFormSttsstpLblHint.Text = constructorResult.OperationMessage;
             }
             else
-            if (constructorResult.Result == ConstructorResult.OperationStatus.Canselled) {
+            if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Canselled) {
                 MainFormTmr.Enabled = false;
                 MainFormSttsstpLblHint.Text = "Отменено";
             }
             else
-            if (constructorResult.Result == ConstructorResult.OperationStatus.Finished) {
+            if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Finished) {
                 MainFormTmr.Enabled = false;
                 Code.DrawFigures(screen);
                 MainFormSttsstpLblHint.Text = "Успешно.";
@@ -95,7 +95,7 @@ namespace OOP_Paint {
 
         //!!!Зацикленные методы
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
-            List<MainCode.BuildingVariants> lbv = Code.FindPossibleBuildingVariants();
+            List<ConstructionMethod> lbv = Code.FindPossibleBuildingVariants();
             Code.CurrBuildingVariant = lbv[(sender as ComboBox).SelectedIndex];
 
         }

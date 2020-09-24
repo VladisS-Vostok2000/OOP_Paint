@@ -80,8 +80,8 @@ namespace OOP_Paint {
         //для понимания, клик это или движение, что в свою очередь
         //ведёт упаковку в object, т.к. это класс.
         //upd: Повезло, класс один. Но всё равно один метод вмещает 2 из-за switsch ("if (e.Button == MouseButtons.Left)".)
-        public ConstructorResult ThreatMouseEvent(MouseEventArgs e) {
-            ConstructorResult out_result;
+        public ConstructorOperationResult ThreatMouseEvent(MouseEventArgs e) {
+            ConstructorOperationResult out_result;
             //???По-хорошему buildingVariant должен быть перечислением, ибо если
             //хоть что-то изменить в списке вариантов, нужно трогать свич.
             //Но перечисления для всех фигур невероятно громоздки.
@@ -91,7 +91,7 @@ namespace OOP_Paint {
             ///MouseButtons -> Выбор, движение мыши (изменение вспомогательных фигур) или клик, переход к следующей стадии построения.
             switch (currSelectedFigure) {
                 case Figure.None:
-                    out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+                    out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                     break;
                 case Figure.Circle:
                     switch (CurrBuildingVariant) {
@@ -103,20 +103,20 @@ namespace OOP_Paint {
                                         supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen));
                                         pointsList.Add(e.Location);
                                         currConstructorStage++;
-                                        out_result = new ConstructorResult(ConstructorResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                         break;
                                     }
-                                    else return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+                                    else return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                 case 1:
                                     if (e.Button == MouseButtons.Left && e.Clicks == 1) {
                                         if (pointsList[0].X == e.X || pointsList[0].Y == e.Y) {
-                                            out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+                                            out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                             break;
                                         }
 
                                         Figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, normalPen));
                                         CloseConstructor();
-                                        out_result = new ConstructorResult(ConstructorResult.OperationStatus.Finished, "");
+                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                         break;
                                     }
                                     //else if (true) {
@@ -127,7 +127,7 @@ namespace OOP_Paint {
                                     //else return new ConstructorResult(ConstructorResult.OperationStatus.None, "");
                                     else {
                                         supportFigures[supportFigures.Count - 1] = new MyRectangle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, supportPen);
-                                        out_result = new ConstructorResult(ConstructorResult.OperationStatus.None, "");
+                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                         break;
                                     }
                                 default:
@@ -164,7 +164,7 @@ namespace OOP_Paint {
                 figure.Draw(_screen);
             }
         }
-        public List<ConstructorResult> FingPossibleBuildingVariants(Figure _figure) {
+        public List<ConstructorOperationResult> FingPossibleBuildingVariants(Figure _figure) {
             var out_list = new List<BuildingVariants>();
             switch (_figure) {
                 case Figure.Circle:
@@ -180,7 +180,7 @@ namespace OOP_Paint {
         /// текущей выбранной фигуры.
         /// </summary>
         /// <returns>Список MainCode.BuildingVariants </returns>
-        public List<ConstructorResult> FindPossibleBuildingVariants() {
+        public List<ConstructorOperationResult> FindPossibleBuildingVariants() {
             Figure figure = currSelectedFigure;
             var out_list = new List<BuildingVariants>();
             switch (figure) {
@@ -193,14 +193,14 @@ namespace OOP_Paint {
             }
             return out_list;
         }
-        public string[] ReturnPossibleBuildingVariantsNames() {
+        public String[] ReturnPossibleBuildingVariantsNames() {
             List<BuildingVariants> list = FindPossibleBuildingVariants();
             if (list.Count == 0) {
                 throw new Exception("Отсутсвуют варианты построения для выбранной фигуры.");
             }
-            var out_array = new string[list.Count];
+            var out_array = new String[list.Count];
             
-            for (int i = 0; i < list.Count; i++) {
+            for (Int32 i = 0; i < list.Count; i++) {
                 out_array[i] = ReturnBuildingVariantName(list[i]);
             }
 
