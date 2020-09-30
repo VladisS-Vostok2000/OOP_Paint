@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace OOP_Paint {
-    //#FB1: некорректное проектирование: начало слияние FigureBuilding с MyFigure
+    //#FB1: некорректное проектирование: начало слияния FigureBuilding с MyFigure
     public readonly struct FigureBuilding {
         //???У меня readonly перечисление, их уникальное количество ограничено,
         //однако создать таких структур можно бесконечно много. Ошибка делать такую структуру?
@@ -15,6 +15,7 @@ namespace OOP_Paint {
             None,
             InRectangleTwoDots,
             DotRadius,
+
         }
 
         public readonly String Name;
@@ -22,10 +23,23 @@ namespace OOP_Paint {
         public readonly Method Methodd;
 
 
+
         public FigureBuilding(Method _bv) {
             Methodd = _bv;
             Name = ReturnBuildingVariantName(_bv);
         }
+
+
+
+        private static String ReturnBuildingVariantName(Method _bv) {
+            switch (_bv) {
+                case Method.DotRadius: return "Точка, радиус";
+                case Method.InRectangleTwoDots: return "Прямой угол, точка";
+                default: throw new NotImplementedException();
+            }
+
+        }
+
 
 
         public static Boolean operator ==(FigureBuilding _cm1, FigureBuilding _cm2) {
@@ -45,17 +59,6 @@ namespace OOP_Paint {
             }
         }
 
-
-        private static String ReturnBuildingVariantName(Method _bv) {
-            switch (_bv) {
-                case Method.DotRadius: return "Точка, радиус";
-                case Method.InRectangleTwoDots: return "Прямой угол, точка";
-                default: throw new NotImplementedException();
-            }
-
-        }
-
     }
-
 
 }

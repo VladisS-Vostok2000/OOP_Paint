@@ -161,6 +161,7 @@ namespace OOP_Paint {
                 figure.Draw(_screen);
             }
         }
+        //#MC20: неверное расположение FingPossibleBuildingVariants: должен быть в классе
         public List<FigureBuilding> FingPossibleBuildingVariants(Figure _figure) {
             var out_list = new List<FigureBuilding>();
             switch (_figure) {

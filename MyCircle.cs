@@ -7,6 +7,11 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyCircle : MyFigure {
+        new public enum BuildingMethod {
+
+        }
+
+
         public Int32 Radius { protected set; get; }
         public Point Center { protected set; get; }
         protected MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base() {
