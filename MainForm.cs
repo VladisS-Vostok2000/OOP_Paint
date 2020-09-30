@@ -22,8 +22,7 @@ namespace OOP_Paint {
         public MainForm() {
             InitializeComponent();
             screen = MainFromPctrbxScreen.CreateGraphics();
-            Code.Figures.ListChanged += Figures_ListChanged;
-            Code.CurrBuildingVariantChanged += Code_BuildingVariantChanged;
+            Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
 
         }
 
@@ -81,11 +80,11 @@ namespace OOP_Paint {
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
-            Code.CurrSelectedFigure = MainCode.Figure.Circle;
+            Code.SelectedFigure = MainCode.Figure.Circle;
             MainFormCmbbxBuildingVariants.Items.Clear();
-            List<ConstructionMethod> constructionMethods = Code.FindPossibleBuildingVariants();
+            List<FigureBuilding> constructionMethods = Code.FindPossibleBuildingVariants();
             var listNames = new List<string>();
-            foreach(var cm in constructionMethods) {
+            foreach (var cm in constructionMethods) {
                 listNames.Add(cm.Name);
             }
             MainFormCmbbxBuildingVariants.SelectedIndex = 0;
@@ -97,15 +96,19 @@ namespace OOP_Paint {
             Code.DrawFigures(screen);
         }
 
+        //Работа с Code
         //!!!#MF5:Зацикленные методы
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
-            //Меняется свойство в Code
-            List<ConstructionMethod> pbv = Code.FindPossibleBuildingVariants();
-            Code.CurrBuildingVariant = pbv[(sender as ComboBox).SelectedIndex];
+
+
+        }
+        private void Code_SelectedFigure_Changed(Object sender, EventArgs e) {
+            List<FigureBuilding> fbm = Code.FindPossibleBuildingVariants(sender as MainCode.Figure);
+
 
         }
         private void Code_BuildingVariantChanged(Object sender, EventArgs e) {
-            //Code.CurrBuildingVariant = MainFormCmbbxBuildingVariants.
+
 
         }
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -21,23 +22,24 @@ namespace OOP_Paint {
             Rectangle,
         }
 
-        public event EventHandler CurrBuildingVariantChanged;
 
 
-        private Int32 currConstructorStage = 0;
-        private ConstructionMethod currBuildingVariant;
-        public ConstructionMethod CurrBuildingVariant {
+        public event EventHandler SelectedFigureChanged;
+        public event EventHandler SelectedBuildingVariantChanged;
+
+        private FigureBuilding selectedBuildingVariant;
+        public FigureBuilding SelectedBuildingVariant {
             set {
-                if (currBuildingVariant != value) {
-                    CurrBuildingVariant = value;
-                    CurrBuildingVariantChanged?.Invoke(value, EventArgs.Empty);
+                if (selectedBuildingVariant != value) {
+                    SelectedBuildingVariant = value;
+                    SelectedBuildingVariantChanged?.Invoke(value, EventArgs.Empty);
                     //BuildingVariantChanged?.Invoke(CurrBuildingVariant, new PropertyChangedEventArgs("CurrBuildingVariant"));
 
                 }
             }
-            get => currBuildingVariant;
+            get => selectedBuildingVariant;
         }
-        private Figure currSelectedFigure = Figure.None;
+        private Figure selectedFigure = Figure.None;
         //???CloseContstructor не обнулят текущюю фигуру, тем не менее, использовать
         //фигуру без определения варианта построения невозможно.
         //Тогда в коде должен быть реализован автоматически обновляемый лист
@@ -52,14 +54,25 @@ namespace OOP_Paint {
         //!!!Устанавливается текущий вариант построения, однако GUI этого не видит, возможны расхождения.
         //При выборе фигуры должен быть задан вариант построения по умолчанию, и он отнюдь не первый.
         //Отсюда нужно уведомлять GUI, какой вариант был задан. Отсюда двусторонняя привязка.
-        public Figure CurrSelectedFigure {
+        public Figure SelectedFigure {
             set {
-                CloseConstructor();
-                currSelectedFigure = value;
-                CurrBuildingVariant = FindPossibleBuildingVariants()[0];
+                if (selectedFigure != value) {
+                    CloseConstructor();
+                    SelectedFigureChanged?.Invoke(value, EventArgs.Empty);
+                    selectedFigure = value;
+
+                    if (FingPossibleBuildingVariants(value).Count != 0) {
+                        SelectedBuildingVariant = FindPossibleBuildingVariants()[0];
+                    }
+                    else {
+                        SelectedBuildingVariant = new FigureBuilding(FigureBuilding.Method.None);
+                    }
+
+                }
             }
-            get => currSelectedFigure;
+            get => selectedFigure;
         }
+        private Int32 currConstructorStage = 0;
 
         //???Лист реализует Binding-логику, которая необходима для реализации событий в GUI,
         //однако он становится публичным и все его фигуры доступны для редактирования снаружи.
@@ -70,6 +83,7 @@ namespace OOP_Paint {
         private static readonly Pen supportPen = new Pen(Color.Red) { Width = 1, DashStyle = DashStyle.Dash };
         private static readonly Pen supportPen2 = new Pen(Color.Black, 2);
         private static readonly Pen normalPen = new Pen(Color.Black);
+
 
 
         //???По-хорошему нужен отдельный метод для прорисовки
@@ -88,8 +102,8 @@ namespace OOP_Paint {
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             ///MouseButtons -> Выбор, движение мыши (изменение вспомогательных фигур) или клик, переход к следующей стадии построения.
 
-            switch (CurrBuildingVariant.Method) {
-                case ConstructionMethod.BuildingVariants.InRectangleTwoDots:
+            switch (SelectedBuildingVariant.Methodd) {
+                case FigureBuilding.Method.InRectangleTwoDots:
                     switch (currConstructorStage) {
                         case 0:
                             if (e.Button == MouseButtons.Left && e.Clicks == 1) {
@@ -122,7 +136,7 @@ namespace OOP_Paint {
                             throw new Exception();
                     }
                     break;
-                case ConstructionMethod.BuildingVariants.DotRadius:
+                case FigureBuilding.Method.DotRadius:
                     throw new NotImplementedException();
                 default: throw new Exception("Не может быть выбрана фигура без варианта построения.");
             }
@@ -130,66 +144,52 @@ namespace OOP_Paint {
         }
 
 
-    private void CloseConstructor() {
-        //CurrBuildingVariant = BuildingVariants.None;
-        currConstructorStage = 0;
-        supportFigures.Clear();
-        pointsList.Clear();
-    }
-
-
-    public void DrawFigures(Graphics _screen) {
-        _screen.Clear(Color.FromArgb(250, 64, 64, 64));
-        foreach (var figure in Figures) {
-            figure.Draw(_screen);
+        private void CloseConstructor() {
+            //CurrBuildingVariant = BuildingVariants.None;
+            currConstructorStage = 0;
+            supportFigures.Clear();
+            pointsList.Clear();
         }
-        foreach (var figure in supportFigures) {
-            figure.Draw(_screen);
+
+
+        public void DrawFigures(Graphics _screen) {
+            _screen.Clear(Color.FromArgb(250, 64, 64, 64));
+            foreach (var figure in Figures) {
+                figure.Draw(_screen);
+            }
+            foreach (var figure in supportFigures) {
+                figure.Draw(_screen);
+            }
         }
-    }
-    public List<ConstructionMethod> FingPossibleBuildingVariants(Figure _figure) {
-        var out_list = new List<ConstructionMethod>();
-        switch (_figure) {
-            case Figure.Circle:
-                out_list.Add(new ConstructionMethod(ConstructionMethod.BuildingVariants.DotRadius));
-                out_list.Add(new ConstructionMethod(ConstructionMethod.BuildingVariants.InRectangleTwoDots));
-                break;
-            default: throw new Exception();
+        public List<FigureBuilding> FingPossibleBuildingVariants(Figure _figure) {
+            var out_list = new List<FigureBuilding>();
+            switch (_figure) {
+                case Figure.Circle:
+                    out_list.Add(new FigureBuilding(FigureBuilding.Method.DotRadius));
+                    out_list.Add(new FigureBuilding(FigureBuilding.Method.InRectangleTwoDots));
+                    break;
+                default: throw new Exception();
+            }
+            return out_list;
         }
-        return out_list;
-    }
-    /// <summary>
-    /// Возвращает список доступных вариантов строительства фигур
-    /// текущей выбранной фигуры.
-    /// </summary>
-    /// <returns>Список MainCode.BuildingVariants </returns>
-    public List<ConstructionMethod> FindPossibleBuildingVariants() {
-        Figure figure = currSelectedFigure;
-        var out_list = new List<ConstructionMethod>();
-        switch (figure) {
-            case Figure.None: return out_list;
-            case Figure.Circle:
-                out_list.Add(new ConstructionMethod(ConstructionMethod.BuildingVariants.InRectangleTwoDots));
-                out_list.Add(new ConstructionMethod(ConstructionMethod.BuildingVariants.DotRadius));
-                break;
-            default: throw new NotImplementedException();
+        /// <summary>
+        /// Возвращает список доступных вариантов строительства фигур
+        /// текущей выбранной фигуры.
+        /// </summary>
+        /// <returns>Список MainCode.BuildingVariants </returns>
+        public List<FigureBuilding> FindPossibleBuildingVariants() {
+            Figure figure = selectedFigure;
+            var out_list = new List<FigureBuilding>();
+            switch (figure) {
+                case Figure.None: return out_list;
+                case Figure.Circle:
+                    out_list.Add(new FigureBuilding(FigureBuilding.Method.InRectangleTwoDots));
+                    out_list.Add(new FigureBuilding(FigureBuilding.Method.DotRadius));
+                    break;
+                default: throw new NotImplementedException();
+            }
+            return out_list;
         }
-        return out_list;
+
     }
-
-    //public String[] ReturnPossibleBuildingVariantsNames() {
-    //    List<ConstructionMethod> list = FindPossibleBuildingVariants();
-    //    if (list.Count == 0) {
-    //        throw new Exception("Отсутсвуют варианты построения для выбранной фигуры.");
-    //    }
-    //    var out_array = new String[list.Count];
-
-    //    for (Int32 i = 0; i < list.Count; i++) {
-    //        out_array[i] = ReturnBuildingVariantName(list[i]);
-    //    }
-
-    //    return out_array;
-    //}
-
-}
 }

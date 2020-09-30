@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConstructionMethod.cs" />
+    <Compile Include="FigureBuilding.cs" />
     <Compile Include="ConstructorOperationResult.cs" />
     <Compile Include="MainCode.cs" />
     <Compile Include="MyFigure.cs" />
