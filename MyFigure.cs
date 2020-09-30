@@ -8,12 +8,12 @@ using System.Windows.Forms;
 
 namespace OOP_Paint {
     public abstract class MyFigure {
-        public String Name { protected set; get; }
-        public Int32 X { protected set; get; }
-        public Int32 Y { protected set; get; }
-        public Int32 Width { protected set; get; }
-        public Int32 Height { protected set; get; }
-        public Pen Pen { protected set; get; } = new Pen(Color.Black, 2);
+        public String Name { get; }
+        public Int32 X { set; get; }
+        public Int32 Y { set; get; }
+        public Int32 Width { set; get; }
+        public Int32 Height { set; get; }
+        public Pen Pen { set; get; } = new Pen(Color.Black, 2);
 
 
 
@@ -51,24 +51,7 @@ namespace OOP_Paint {
 
 
         //MyFigure#4: лишние методы: уничтожить, открыть свойства. 
-        /// <summary>
-        /// Переопределяет координаты верхнего левого угла
-        /// </summary>
-        /// <param name="_newX"></param>
-        /// <param name="_newY"></param>
-        public void Move(Int32 _newX, Int32 _newY) {
-            X = _newX;
-            Y = _newY;
-        }
-        /// <summary>
-        /// Переопределяет размер ограничивающего прямоугольника
-        /// </summary>
-        /// <param name="_newWidth"></param>
-        /// <param name="_newHeight"></param>
-        public void Resize(Int32 _newWidth, Int32 _newHeight) {
-            Width = _newWidth;
-            Height = _newHeight;
-        }
+
 
 
         public virtual void Draw(Graphics _screen) { }
