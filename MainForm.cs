@@ -19,12 +19,14 @@ namespace OOP_Paint {
         private static Int32 test = 0;
 
 
+
         public MainForm() {
             InitializeComponent();
             screen = MainFromPctrbxScreen.CreateGraphics();
             Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
 
         }
+
 
 
         private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
@@ -82,7 +84,7 @@ namespace OOP_Paint {
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
             Code.SelectedFigure = MainCode.Figure.Circle;
             MainFormCmbbxBuildingVariants.Items.Clear();
-            List<FigureBuilding> constructionMethods = Code.FindPossibleBuildingVariants();
+            List<MyFigureBuildingsVariants> constructionMethods = Code.FindPossibleBuildingVariants();
             var listNames = new List<string>();
             foreach (var cm in constructionMethods) {
                 listNames.Add(cm.Name);
@@ -103,7 +105,7 @@ namespace OOP_Paint {
 
         }
         private void Code_SelectedFigure_Changed(Object sender, EventArgs e) {
-            List<FigureBuilding> fbm = Code.FindPossibleBuildingVariants(sender as MainCode.Figure);
+            List<MyFigureBuildingsVariants> fbm = Code.FindPossibleBuildingVariants(sender as MainCode.Figure);
 
 
         }

@@ -8,17 +8,13 @@ using System.Windows.Forms;
 
 namespace OOP_Paint {
     public abstract class MyFigure {
-        public enum BuildingMethod {
-
-        }
-
         public String Name { protected set; get; }
-
         public Int32 X { protected set; get; }
         public Int32 Y { protected set; get; }
         public Int32 Width { protected set; get; }
         public Int32 Height { protected set; get; }
         public Pen Pen { protected set; get; } = new Pen(Color.Black, 2);
+
 
 
         protected MyFigure() {
@@ -39,6 +35,7 @@ namespace OOP_Paint {
         }
 
 
+
         /// <summary>
         /// Находит левый верхний угол прямоугольника по координатам двух точек
         /// </summary>
@@ -52,6 +49,8 @@ namespace OOP_Paint {
         }
 
 
+
+        //MyFigure#4: лишние методы: уничтожить, открыть свойства. 
         /// <summary>
         /// Переопределяет координаты верхнего левого угла
         /// </summary>

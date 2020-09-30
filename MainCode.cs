@@ -27,8 +27,8 @@ namespace OOP_Paint {
         public event EventHandler SelectedFigureChanged;
         public event EventHandler SelectedBuildingVariantChanged;
 
-        private FigureBuilding selectedBuildingVariant;
-        public FigureBuilding SelectedBuildingVariant {
+        private MyFigureBuildingsVariants selectedBuildingVariant;
+        public MyFigureBuildingsVariants SelectedBuildingVariant {
             set {
                 if (selectedBuildingVariant != value) {
                     SelectedBuildingVariant = value;
@@ -65,7 +65,7 @@ namespace OOP_Paint {
                         SelectedBuildingVariant = FindPossibleBuildingVariants()[0];
                     }
                     else {
-                        SelectedBuildingVariant = new FigureBuilding(FigureBuilding.Method.None);
+                        SelectedBuildingVariant = new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.None);
                     }
 
                 }
@@ -103,7 +103,7 @@ namespace OOP_Paint {
             ///MouseButtons -> Выбор, движение мыши (изменение вспомогательных фигур) или клик, переход к следующей стадии построения.
 
             switch (SelectedBuildingVariant.Methodd) {
-                case FigureBuilding.Method.InRectangleTwoDots:
+                case MyFigureBuildingsVariants.Method.CircleInRectangleByTwoDots:
                     switch (currConstructorStage) {
                         case 0:
                             if (e.Button == MouseButtons.Left && e.Clicks == 1) {
@@ -136,7 +136,7 @@ namespace OOP_Paint {
                             throw new Exception();
                     }
                     break;
-                case FigureBuilding.Method.DotRadius:
+                case MyFigureBuildingsVariants.Method.CircleDotRadius:
                     throw new NotImplementedException();
                 default: throw new Exception("Не может быть выбрана фигура без варианта построения.");
             }
@@ -162,12 +162,12 @@ namespace OOP_Paint {
             }
         }
         //#MC20: неверное расположение FingPossibleBuildingVariants: должен быть в классе
-        public List<FigureBuilding> FingPossibleBuildingVariants(Figure _figure) {
-            var out_list = new List<FigureBuilding>();
+        public List<MyFigureBuildingsVariants> FingPossibleBuildingVariants(Figure _figure) {
+            var out_list = new List<MyFigureBuildingsVariants>();
             switch (_figure) {
                 case Figure.Circle:
-                    out_list.Add(new FigureBuilding(FigureBuilding.Method.DotRadius));
-                    out_list.Add(new FigureBuilding(FigureBuilding.Method.InRectangleTwoDots));
+                    out_list.Add(new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.CircleDotRadius));
+                    out_list.Add(new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.CircleInRectangleByTwoDots));
                     break;
                 default: throw new Exception();
             }
@@ -178,14 +178,14 @@ namespace OOP_Paint {
         /// текущей выбранной фигуры.
         /// </summary>
         /// <returns>Список MainCode.BuildingVariants </returns>
-        public List<FigureBuilding> FindPossibleBuildingVariants() {
+        public List<MyFigureBuildingsVariants> FindPossibleBuildingVariants() {
             Figure figure = selectedFigure;
-            var out_list = new List<FigureBuilding>();
+            var out_list = new List<MyFigureBuildingsVariants>();
             switch (figure) {
                 case Figure.None: return out_list;
                 case Figure.Circle:
-                    out_list.Add(new FigureBuilding(FigureBuilding.Method.InRectangleTwoDots));
-                    out_list.Add(new FigureBuilding(FigureBuilding.Method.DotRadius));
+                    out_list.Add(new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.CircleInRectangleByTwoDots));
+                    out_list.Add(new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.CircleDotRadius));
                     break;
                 default: throw new NotImplementedException();
             }
