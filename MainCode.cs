@@ -18,25 +18,25 @@ using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public sealed class MainCode {
 
-
-        public event EventHandler SelectedFigureChanged;
+        public delegate void FigureHandler(Figure figure, EventArgs e);
+        public event FigureHandler SelectedFigureChanged;
         public event EventHandler SelectedBuildingVariantChanged;
 
-        private BuildingMethod selectedBuildingMethodIndex;
+        private BuildingMethod selectedBuildingMethod;
         public BuildingMethod SelectedBuildingMethod {
             set {
-                if (selectedBuildingMethodIndex != value) {
-                    SelectedBuildingMethod = value;
+                if (selectedBuildingMethod != value) {
+                    selectedBuildingMethod = value;
                     SelectedBuildingVariantChanged?.Invoke(value, EventArgs.Empty);
                     //BuildingVariantChanged?.Invoke(CurrBuildingVariant, new PropertyChangedEventArgs("CurrBuildingVariant"));
 
                 }
             }
-            get => selectedBuildingMethodIndex;
+            get => selectedBuildingMethod;
         }
         //???Не совсем понятно назначение этого перечисления. Единственный плюс - не нужно возиться
         //с объектом. Из минусов: каждый раз при использовании методов
-        //его нужно конвертировать в этот самый объект. Пустой.
+        //его нужно конвертировать в этот самый объект. Пустой. [Источник? Нет мест, где бы создавался такой объект]
         private Figure selectedFigure;
         public Figure SelectedFigure {
             set {
@@ -122,7 +122,7 @@ namespace OOP_Paint {
                             break;
                         case BuildingMethod.CircleDotRadius:
                             throw new NotImplementedException();
-                        default: throw new Exception("Неверный вариант построения выбранной фигуры.");
+                        default: throw new Exception("Фигура задана, но не задан вариант построения.");
                     }
                     break;
                 default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");

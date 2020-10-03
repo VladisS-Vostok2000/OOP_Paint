@@ -34,11 +34,14 @@ namespace OOP_Paint {
         //Избавиться от метода в классе нельзя, так как мне нужны объекты в списке,
         //классы для сравнения объектов. Выходит, перечисление лишнее?
         public static List<BuildingMethod> ReturnPossibleBuildingVariants(Figure _figure) {
-            var out_list = new List<BuildingMethod>() { BuildingMethod.None };
+            var out_list = new List<BuildingMethod>();
             switch(_figure) {
+                case Figure.None:
+                    out_list.Add(BuildingMethod.None);
+                    break;
                 case Figure.Circle:
-                    out_list.Add(BuildingMethod.CircleDotRadius);
                     out_list.Add(BuildingMethod.CircleInRectangleByTwoDots);
+                    out_list.Add(BuildingMethod.CircleDotRadius);
                     break;
                 default: throw new Exception("Неизвестная фигура.");
             }

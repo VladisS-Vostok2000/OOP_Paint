@@ -39,7 +39,6 @@ namespace OOP_Paint {
         }
 
 
-
         private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
             Point mouseLocation = e.Location;
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
@@ -87,6 +86,8 @@ namespace OOP_Paint {
         }
 
 
+        //Работа с Code
+        //!!!#MF5:Зацикленные методы
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             Figure firgureToSelect = Figure.Circle;
             Code.SelectedFigure = firgureToSelect;
@@ -101,16 +102,12 @@ namespace OOP_Paint {
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
 
         }
-
-
-        //Работа с Code
-        //!!!#MF5:Зацикленные методы
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
 
 
         }
-        private void Code_SelectedFigure_Changed(Object sender, EventArgs e) {
-            List<BuildingMethod> fbm = ReturnPossibleBuildingVariants(Code.SelectedFigure);
+        private void Code_SelectedFigure_Changed(Figure _value, EventArgs e) {
+            List<BuildingMethod> pbv = ReturnPossibleBuildingVariants(_value);
 
 
         }
