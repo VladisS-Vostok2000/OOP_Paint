@@ -16,44 +16,27 @@ using System.Windows.Forms.VisualStyles;
 //#Projekt: Добавить перегрузку построения
 namespace OOP_Paint {
     public sealed class MainCode {
-        public enum Figure {
-            None = 0,
-            Circle,
-            Rectangle,
-        }
-
 
 
         public event EventHandler SelectedFigureChanged;
         public event EventHandler SelectedBuildingVariantChanged;
 
-        private MyFigureBuildingsVariants selectedBuildingVariant;
-        public MyFigureBuildingsVariants SelectedBuildingVariant {
+        private MyFigure.BuildingMethod selectedBuildingMethodIndex;
+        public MyFigure.BuildingMethod SelectedBuildingMethod {
             set {
-                if (selectedBuildingVariant != value) {
-                    SelectedBuildingVariant = value;
+                if (selectedBuildingMethodIndex != value) {
+                    SelectedBuildingMethod = value;
                     SelectedBuildingVariantChanged?.Invoke(value, EventArgs.Empty);
                     //BuildingVariantChanged?.Invoke(CurrBuildingVariant, new PropertyChangedEventArgs("CurrBuildingVariant"));
 
                 }
             }
-            get => selectedBuildingVariant;
+            get => selectedBuildingMethodIndex;
         }
-        private Figure selectedFigure = Figure.None;
-        //???CloseContstructor не обнулят текущюю фигуру, тем не менее, использовать
-        //фигуру без определения варианта построения невозможно.
-        //Тогда в коде должен быть реализован автоматически обновляемый лист
-        //с доступными вариантами фигур, но выбрана архитектура, когда его нет,
-        //т.к. это громоздко. Тогда нужно либо обнулять фигуру, но тогда свойство или зациклится,
-        //или не среагирует на изменение value, либо создавать ивенты и как-то вязать это с GUI.
-        //Либо же всегда в метод передавать, какую фигуру строим. Но если у нас фигура поменяется в процессе?
-        //Кстати, в таком случае можно закрыть конструктор.
-        //Создавать ивент глупо, т.к. зачем коду нужно менять выбранную фигуру в процессе? Это
-        //должен делать GUI. Отменять её внезапно.
-        //fixed: CloseConstructor больше не обнуляет текущий вариант построения
-        //!!!Устанавливается текущий вариант построения, однако GUI этого не видит, возможны расхождения.
-        //При выборе фигуры должен быть задан вариант построения по умолчанию, и он отнюдь не первый.
-        //Отсюда нужно уведомлять GUI, какой вариант был задан. Отсюда двусторонняя привязка.
+        //???Не совсем понятно назначение этого перечисления. Единственный плюс - не нужно возиться
+        //с объектом. Из минусов: каждый раз его нужно конвертировать в этот самый объект. Пустой.
+        //
+        private Figure selectedFigure;
         public Figure SelectedFigure {
             set {
                 if (selectedFigure != value) {
@@ -62,10 +45,10 @@ namespace OOP_Paint {
                     selectedFigure = value;
 
                     if (FingPossibleBuildingVariants(value).Count != 0) {
-                        SelectedBuildingVariant = FindPossibleBuildingVariants()[0];
+                        SelectedBuildingMethod = FindPossibleBuildingVariants()[0];
                     }
                     else {
-                        SelectedBuildingVariant = new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.None);
+                        SelectedBuildingMethod = new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.None);
                     }
 
                 }
@@ -80,9 +63,9 @@ namespace OOP_Paint {
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 
-        private static readonly Pen supportPen = new Pen(Color.Red) { Width = 1, DashStyle = DashStyle.Dash };
+        private static readonly Pen supportPen = new Pen(Color.Blue) { Width = 1, DashStyle = DashStyle.Dash };
         private static readonly Pen supportPen2 = new Pen(Color.Black, 2);
-        private static readonly Pen normalPen = new Pen(Color.Black);
+        private static readonly Pen figurePen = new Pen(Color.Black);
 
 
 
@@ -92,6 +75,7 @@ namespace OOP_Paint {
         //для понимания, клик это или движение, что в свою очередь
         //ведёт упаковку в object, т.к. это класс.
         //upd: Повезло, класс один. Но всё равно один метод вмещает 2 из-за switsch ("if (e.Button == MouseButtons.Left)".)
+        //???Что насчёт AddPoint(enum Strong/Soft)
         public ConstructorOperationResult ThreatMouseEvent(MouseEventArgs e) {
             ConstructorOperationResult out_result;
             //???По-хорошему buildingVariant должен быть перечислением, ибо если
@@ -101,45 +85,53 @@ namespace OOP_Paint {
             ///currBuildingVariant -> Выбор варианта построения фигуры
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             ///MouseButtons -> Выбор, движение мыши (изменение вспомогательных фигур) или клик, переход к следующей стадии построения.
+            switch (SelectedFigure) {
+                case Figure.None:
+                    out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                    break;
+                case Figure.Circle:
+                    switch (SelectedBuildingMethod) {
+                        case MyFigure.BuildingMethod.CircleInRectangleByTwoDots:
+                            switch (currConstructorStage) {
+                                case 0:
+                                    if (e.Button == MouseButtons.Left && e.Clicks == 1) {
+                                        supportFigures.Add(new MyRectangle(e.X, e.Y, e.X, e.Y, supportPen));
+                                        supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen));
+                                        pointsList.Add(e.Location);
+                                        currConstructorStage++;
+                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                        break;
+                                    }
+                                    else return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                case 1:
+                                    if (e.Button == MouseButtons.Left && e.Clicks == 1) {
+                                        if (pointsList[0].X == e.X || pointsList[0].Y == e.Y) {
+                                            out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                            break;
+                                        }
 
-            switch (SelectedBuildingVariant.Methodd) {
-                case MyFigureBuildingsVariants.Method.CircleInRectangleByTwoDots:
-                    switch (currConstructorStage) {
-                        case 0:
-                            if (e.Button == MouseButtons.Left && e.Clicks == 1) {
-                                supportFigures.Add(new MyRectangle(e.X, e.Y, e.X, e.Y, supportPen));
-                                supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen));
-                                pointsList.Add(e.Location);
-                                currConstructorStage++;
-                                out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
-                                break;
+                                        Figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, figurePen));
+                                        CloseConstructor();
+                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                        break;
+                                    }
+                                    else {
+                                        supportFigures[supportFigures.Count - 1] = new MyRectangle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, supportPen);
+                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                        break;
+                                    }
+                                default:
+                                    throw new Exception();
                             }
-                            else return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
-                        case 1:
-                            if (e.Button == MouseButtons.Left && e.Clicks == 1) {
-                                if (pointsList[0].X == e.X || pointsList[0].Y == e.Y) {
-                                    out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
-                                    break;
-                                }
-
-                                Figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, normalPen));
-                                CloseConstructor();
-                                out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
-                                break;
-                            }
-                            else {
-                                supportFigures[supportFigures.Count - 1] = new MyRectangle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, supportPen);
-                                out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
-                                break;
-                            }
-                        default:
-                            throw new Exception();
+                            break;
+                        case MyFigure.BuildingMethod.CircleDotRadius:
+                            throw new NotImplementedException();
+                        default: throw new Exception("Неверный вариант построения выбранной фигуры.");
                     }
                     break;
-                case MyFigureBuildingsVariants.Method.CircleDotRadius:
-                    throw new NotImplementedException();
-                default: throw new Exception("Не может быть выбрана фигура без варианта построения.");
+                default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
             }
+
             return out_result;
         }
 
@@ -162,35 +154,6 @@ namespace OOP_Paint {
             }
         }
         //#MC20: неверное расположение FingPossibleBuildingVariants: должен быть в классе
-        public List<MyFigureBuildingsVariants> FingPossibleBuildingVariants(Figure _figure) {
-            var out_list = new List<MyFigureBuildingsVariants>();
-            switch (_figure) {
-                case Figure.Circle:
-                    out_list.Add(new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.CircleDotRadius));
-                    out_list.Add(new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.CircleInRectangleByTwoDots));
-                    break;
-                default: throw new Exception();
-            }
-            return out_list;
-        }
-        /// <summary>
-        /// Возвращает список доступных вариантов строительства фигур
-        /// текущей выбранной фигуры.
-        /// </summary>
-        /// <returns>Список MainCode.BuildingVariants </returns>
-        public List<MyFigureBuildingsVariants> FindPossibleBuildingVariants() {
-            Figure figure = selectedFigure;
-            var out_list = new List<MyFigureBuildingsVariants>();
-            switch (figure) {
-                case Figure.None: return out_list;
-                case Figure.Circle:
-                    out_list.Add(new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.CircleInRectangleByTwoDots));
-                    out_list.Add(new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.CircleDotRadius));
-                    break;
-                default: throw new NotImplementedException();
-            }
-            return out_list;
-        }
 
     }
 }

@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyCircle : MyFigure {
-        new public enum BuildingMethod {
-
-        }
-
-
         public Int32 Radius { protected set; get; }
         public Point Center { protected set; get; }
-        protected MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base() {
+
+
+
+        static MyCircle() {
             Name = "Круг";
+        }
+        public MyCircle() : base() { }
+        protected MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base() {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
             Width = Math.Abs(p1.X - p2.X);
             Height = Math.Abs(p1.Y - p2.Y);
@@ -31,13 +32,14 @@ namespace OOP_Paint {
             Pen = new Pen(_color, 2);
         }
 
-        //#3: не относительно первой точки, а относительно левой верхней
+
+
         /// <summary>
         /// Обрубает координатный прямоугольник до квадрата относительно первой точки
         /// </summary>
         /// <param name="_p1"></param>
         /// <param name="_p2"></param>
-        private (Point, Point) CutCoordinatesRectangleToSquare(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
+        protected (Point, Point) CutCoordinatesRectangleToSquare(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             var p1 = new Point(_x1, _y1);
             var p2 = new Point(_x2, _y2);
 
@@ -51,7 +53,6 @@ namespace OOP_Paint {
             }
             return (p1, p2);
         }
-
 
         public override void Draw(Graphics _screen) {
             _screen.DrawEllipse(Pen, X, Y, Width, Height);

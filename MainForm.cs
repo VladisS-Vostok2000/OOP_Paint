@@ -29,19 +29,14 @@ namespace OOP_Paint {
 
 
 
-        private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
-            MainFormLstbxFigures.Items.Clear();
-            foreach (var figure in sender as BindingList<MyFigure>) {
-                MainFormLstbxFigures.Items.Add(figure.Name + $": ({figure.X},{figure.Y})");
-            }
-
-        }
         private void MainForm_Load(Object sender, EventArgs e) {
 
         }
         private void MainForm_Shown(Object sender, EventArgs e) {
 
         }
+
+
 
 
         private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
@@ -78,6 +73,17 @@ namespace OOP_Paint {
             }
 
         }
+        private void MainFormTmr_Tick(Object sender, EventArgs e) {
+            Code.DrawFigures(screen);
+        }
+
+        private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
+            MainFormLstbxFigures.Items.Clear();
+            foreach (var figure in sender as BindingList<MyFigure>) {
+                MainFormLstbxFigures.Items.Add(figure.ToString() + $": ({figure.X},{figure.Y})");
+            }
+
+        }
 
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
@@ -85,7 +91,7 @@ namespace OOP_Paint {
             Code.SelectedFigure = MainCode.Figure.Circle;
             MainFormCmbbxBuildingVariants.Items.Clear();
             List<MyFigureBuildingsVariants> constructionMethods = Code.FindPossibleBuildingVariants();
-            var listNames = new List<string>();
+            var listNames = new List<String>();
             foreach (var cm in constructionMethods) {
                 listNames.Add(cm.Name);
             }
@@ -93,10 +99,6 @@ namespace OOP_Paint {
 
         }
 
-
-        private void MainFormTmr_Tick(Object sender, EventArgs e) {
-            Code.DrawFigures(screen);
-        }
 
         //Работа с Code
         //!!!#MF5:Зацикленные методы

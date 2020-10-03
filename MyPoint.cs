@@ -11,6 +11,11 @@ namespace OOP_Paint {
         public Color Color { private set; get; }
         
 
+
+        static MyPoint() {
+            Name = "Точка";
+        }
+        public MyPoint() : base() { }
         protected MyPoint(Int32 _x, Int32 _y) {
             Name = "Точка";
             X = _x;
@@ -21,6 +26,7 @@ namespace OOP_Paint {
         public MyPoint(Int32 _x, Int32 _y, Color _color) : this(_x, _y) {
             Color = _color;
         }
+
 
 
         public override void Draw(Graphics _screen) {
