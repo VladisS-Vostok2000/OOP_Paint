@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static OOP_Paint.FiguresEnum;
-//Project#34: удаление Name
 namespace OOP_Paint {
     public abstract class MyFigure : IDisposable {
         public Int32 X { set; get; }
@@ -53,7 +52,7 @@ namespace OOP_Paint {
 
         public void Dispose() { }
 
-
+        //MyFigure#23: переработка ReturnPossibleBBuildingVariants
         //???Несколько вариантов реализации: сторонний статический класс-расширение,
         //со switch-логикой вообще всех фигур, или переопределеляемый метод объекта,
         //или статический метод в MyFigure.
