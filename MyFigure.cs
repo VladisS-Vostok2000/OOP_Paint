@@ -7,27 +7,10 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static OOP_Paint.FiguresEnum;
 //Project#34: удаление Name
 namespace OOP_Paint {
     public abstract class MyFigure : IDisposable {
-        public enum BuildingMethod {
-            [Description("Нет")]
-            None,
-            [Description("Точка")]
-            Point,
-            [Description("Прямой угол, точка")]
-            CircleInRectangleByTwoDots,
-            [Description("Центр, радиус")]
-            CircleDotRadius,
-
-        }
-
-        //???Enum в отдельном классе + подключить через using
-        //???Name уникально идентифицирует класс, но по-прежнему может быть изменён,
-        //однако не может быть определён как readonly поле, так как наследуется.
-        //Так как строка, можно скрывать поле и в каждом классе создавать новое,
-        //однако при его изменении здесь последствия могут быть неожиданными.
-        public static String Name { protected set; get; }
         public Int32 X { set; get; }
         public Int32 Y { set; get; }
         public Int32 Width { set; get; }
@@ -66,12 +49,8 @@ namespace OOP_Paint {
             Int32 lowY = _y1 > _y2 ? _y2 : _y1;
             return new Point(lowX, lowY);
         }
-        //???Поле Name уникально для класса и одинаково для всех объектов, поэтому оно статические
-        //Однако Name хочется получать как из класса, так и из объекта.
-        //переопределить ToString()
-        public  override String ToString() {
-            return Name;
-        }
+
+
         public void Dispose() { }
 
 
@@ -85,7 +64,11 @@ namespace OOP_Paint {
         //!!!//???Есть идея вообще сделать перечисление Figures здесь, тогда со всем разбираться не
         //придётся и конвертеры не нужны, и имена фигур без проблем получить можно.
         public List<BuildingMethod> ReturnPossibleBuildingVariants() {
-            return ReturnPossibleBuildingVariants(Name);
+            var out_list = new List<BuildingMethod>();
+            switch(this.GetType()) {
+
+            }
+
         }
         public static List<BuildingMethod> ReturnPossibleBuildingVariants(String _name) {
             var out_list = new List<BuildingMethod>() { BuildingMethod.None };
