@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace OOP_Paint {
     public static class FiguresEnum {
-        public enum Figures {
+        public enum Figure {
             None,
             Circle,
 
@@ -25,6 +25,25 @@ namespace OOP_Paint {
             [Description("Центр, радиус")]
             CircleDotRadius,
 
+        }
+
+
+
+        //!!!//???Дублирует FindPossibleBuildingVariants в MyFigure, ОЧЕНЬ ПЛОХО!!!
+        //Используется, так как есть перечисление в MainCode.
+        //Избавиться от метода в классе нельзя, так как мне нужны объекты в списке,
+        //классы для сравнения объектов. Выходит, перечисление лишнее?
+        public static List<BuildingMethod> ReturnPossibleBuildingVariants(Figure _figure) {
+            var out_list = new List<BuildingMethod>() { BuildingMethod.None };
+            switch(_figure) {
+                case Figure.Circle:
+                    out_list.Add(BuildingMethod.CircleDotRadius);
+                    out_list.Add(BuildingMethod.CircleInRectangleByTwoDots);
+                    break;
+                default: throw new Exception("Неизвестная фигура.");
+            }
+
+            return out_list;
         }
     }
 }

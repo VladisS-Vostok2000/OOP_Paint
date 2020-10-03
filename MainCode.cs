@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using static OOP_Paint.FiguresEnum;
 
 //#Projekt: Добавить перегрузку построения
 namespace OOP_Paint {
@@ -21,8 +22,8 @@ namespace OOP_Paint {
         public event EventHandler SelectedFigureChanged;
         public event EventHandler SelectedBuildingVariantChanged;
 
-        private MyFigure.BuildingMethod selectedBuildingMethodIndex;
-        public MyFigure.BuildingMethod SelectedBuildingMethod {
+        private BuildingMethod selectedBuildingMethodIndex;
+        public BuildingMethod SelectedBuildingMethod {
             set {
                 if (selectedBuildingMethodIndex != value) {
                     SelectedBuildingMethod = value;
@@ -34,8 +35,8 @@ namespace OOP_Paint {
             get => selectedBuildingMethodIndex;
         }
         //???Не совсем понятно назначение этого перечисления. Единственный плюс - не нужно возиться
-        //с объектом. Из минусов: каждый раз его нужно конвертировать в этот самый объект. Пустой.
-        //
+        //с объектом. Из минусов: каждый раз при использовании методов
+        //его нужно конвертировать в этот самый объект. Пустой.
         private Figure selectedFigure;
         public Figure SelectedFigure {
             set {
@@ -44,12 +45,7 @@ namespace OOP_Paint {
                     SelectedFigureChanged?.Invoke(value, EventArgs.Empty);
                     selectedFigure = value;
 
-                    if (FingPossibleBuildingVariants(value).Count != 0) {
-                        SelectedBuildingMethod = FindPossibleBuildingVariants()[0];
-                    }
-                    else {
-                        SelectedBuildingMethod = new MyFigureBuildingsVariants(MyFigureBuildingsVariants.Method.None);
-                    }
+                    SelectedBuildingMethod = ReturnPossibleBuildingVariants(SelectedFigure)[0];
 
                 }
             }
@@ -57,8 +53,8 @@ namespace OOP_Paint {
         }
         private Int32 currConstructorStage = 0;
 
-        //???Лист реализует Binding-логику, которая необходима для реализации событий в GUI,
-        //однако он становится публичным и все его фигуры доступны для редактирования снаружи.
+        //???Лист реализует Binding-логику, которая необходима для привязки и реализации событий в GUI,
+        //однако он становится публичным и все его элементы доступны для редактирования снаружи.
         public readonly BindingList<MyFigure> Figures = new BindingList<MyFigure>();
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
@@ -91,7 +87,7 @@ namespace OOP_Paint {
                     break;
                 case Figure.Circle:
                     switch (SelectedBuildingMethod) {
-                        case MyFigure.BuildingMethod.CircleInRectangleByTwoDots:
+                        case BuildingMethod.CircleInRectangleByTwoDots:
                             switch (currConstructorStage) {
                                 case 0:
                                     if (e.Button == MouseButtons.Left && e.Clicks == 1) {
@@ -124,7 +120,7 @@ namespace OOP_Paint {
                                     throw new Exception();
                             }
                             break;
-                        case MyFigure.BuildingMethod.CircleDotRadius:
+                        case BuildingMethod.CircleDotRadius:
                             throw new NotImplementedException();
                         default: throw new Exception("Неверный вариант построения выбранной фигуры.");
                     }

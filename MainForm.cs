@@ -11,6 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using static OOP_Paint.FiguresEnum;
+
 
 namespace OOP_Paint {
     public sealed partial class MainForm : Form {
@@ -35,7 +37,6 @@ namespace OOP_Paint {
         private void MainForm_Shown(Object sender, EventArgs e) {
 
         }
-
 
 
 
@@ -87,15 +88,17 @@ namespace OOP_Paint {
 
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
+            Figure firgureToSelect = Figure.Circle;
+            Code.SelectedFigure = firgureToSelect;
+            //Это всё в событие нужно запихнуть. А вообще его не должно быть, код сам вернёт, что нужно
+            //MainFormCmbbxBuildingVariants.Items.Clear();
+            //List<BuildingMethod> bm = ReturnPossibleBuildingVariants();
+            //var listNames = new List<String>();
+            //foreach (var cm in bm) {
+            //    listNames.Add(cm.Name);
+            //}
+            //MainFormCmbbxBuildingVariants.SelectedIndex = 0;
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
-            Code.SelectedFigure = MainCode.Figure.Circle;
-            MainFormCmbbxBuildingVariants.Items.Clear();
-            List<MyFigureBuildingsVariants> constructionMethods = Code.FindPossibleBuildingVariants();
-            var listNames = new List<String>();
-            foreach (var cm in constructionMethods) {
-                listNames.Add(cm.Name);
-            }
-            MainFormCmbbxBuildingVariants.SelectedIndex = 0;
 
         }
 
@@ -107,7 +110,7 @@ namespace OOP_Paint {
 
         }
         private void Code_SelectedFigure_Changed(Object sender, EventArgs e) {
-            List<MyFigureBuildingsVariants> fbm = Code.FindPossibleBuildingVariants(sender as MainCode.Figure);
+            List<BuildingMethod> fbm = ReturnPossibleBuildingVariants(Code.SelectedFigure);
 
 
         }

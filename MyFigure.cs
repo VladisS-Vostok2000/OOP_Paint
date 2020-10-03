@@ -62,25 +62,24 @@ namespace OOP_Paint {
         //Статический метод подходит из-за универсальности.
         //!!!//???Есть идея вообще сделать перечисление Figures здесь, тогда со всем разбираться не
         //придётся и конвертеры не нужны, и имена фигур без проблем получить можно.
-        public List<BuildingMethod> ReturnPossibleBuildingVariants() {
-            var out_list = new List<BuildingMethod>();
-            switch(this.GetType()) {
+        #region код
+        //public List<BuildingMethod> ReturnPossibleBuildingVariants() {
+        //    return ReturnPossibleBuildingVariants(this.GetType());
+        //}
+        //public static List<BuildingMethod> ReturnPossibleBuildingVariants(Type _type) {
+        //    var out_list = new List<BuildingMethod>() { BuildingMethod.None };
+        //    //Держу в курсе switch принимает только константы
+        //    if (_type == typeof(MyCircle)) {
+        //        out_list.Add(BuildingMethod.CircleDotRadius);
+        //        out_list.Add(BuildingMethod.CircleInRectangleByTwoDots);
+        //    }
+        //    else {
+        //        throw new Exception("Неизвестная фигура.");
+        //    }
 
-            }
-
-        }
-        public static List<BuildingMethod> ReturnPossibleBuildingVariants(String _name) {
-            var out_list = new List<BuildingMethod>() { BuildingMethod.None };
-            switch (_name) {
-                case "Круг":
-                    out_list.Add(BuildingMethod.CircleDotRadius);
-                    out_list.Add(BuildingMethod.CircleInRectangleByTwoDots);
-                    break;
-                default: break;
-            }
-
-            return out_list;
-        }
+        //    return out_list;
+        //}
+        #endregion
 
 
         public abstract void Draw(Graphics _screen);

@@ -12,12 +12,8 @@ namespace OOP_Paint {
         
 
 
-        static MyPoint() {
-            Name = "Точка";
-        }
         public MyPoint() : base() { }
         protected MyPoint(Int32 _x, Int32 _y) {
-            Name = "Точка";
             X = _x;
             Y = _y;
             Width = 0;
