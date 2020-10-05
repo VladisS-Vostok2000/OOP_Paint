@@ -88,8 +88,7 @@ namespace OOP_Paint {
 
 
         //Работа с Code
-        //!!!#MF5:Зацикленные методы
-        //MainForm#5: реализовать Hard-Binding логику Code с Form
+        //!!!MainForm#5: реализовать Hard-Binding логику Code с Form
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             Figure firgureToSelect = Figure.Circle;
             Code.SelectedFigure = firgureToSelect;
