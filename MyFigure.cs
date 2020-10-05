@@ -52,7 +52,8 @@ namespace OOP_Paint {
 
         public void Dispose() { }
 
-        //MyFigure#23: переработка ReturnPossibleBBuildingVariants
+        #region //MyFigure.ReturnPossibleBBuildingVariants
+        //!!!MyFigure#23: переработка ReturnPossibleBuildingVariants - fixed
         //???Несколько вариантов реализации: сторонний статический класс-расширение,
         //со switch-логикой вообще всех фигур, или переопределеляемый метод объекта,
         //или статический метод в MyFigure.
@@ -62,6 +63,7 @@ namespace OOP_Paint {
         //Статический метод подходит из-за универсальности.
         //!!!//???Есть идея вообще сделать перечисление Figures здесь, тогда со всем разбираться не
         //придётся и конвертеры не нужны, и имена фигур без проблем получить можно.
+        //По совету перечисление вынесено в отдельный класс, и метод соответственно.
         #region код
         //public List<BuildingMethod> ReturnPossibleBuildingVariants() {
         //    return ReturnPossibleBuildingVariants(this.GetType());
@@ -79,6 +81,7 @@ namespace OOP_Paint {
 
         //    return out_list;
         //}
+        #endregion
         #endregion
 
 

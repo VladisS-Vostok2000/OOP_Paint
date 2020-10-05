@@ -72,6 +72,7 @@ namespace OOP_Paint {
         //ведёт упаковку в object, т.к. это класс.
         //upd: Повезло, класс один. Но всё равно один метод вмещает 2 из-за switsch ("if (e.Button == MouseButtons.Left)".)
         //???Что насчёт AddPoint(enum Strong/Soft)
+        //!!!MainCode#83: разбить ThreatMouseEvent на AddPoint(enum Strong/Soft)
         public ConstructorOperationResult ThreatMouseEvent(MouseEventArgs e) {
             ConstructorOperationResult out_result;
             //???По-хорошему buildingVariant должен быть перечислением, ибо если

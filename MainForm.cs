@@ -73,6 +73,7 @@ namespace OOP_Paint {
             }
 
         }
+        //!!!MainForm#46: Поменять таймер на MouseMowe
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
             Code.DrawFigures(screen);
         }
