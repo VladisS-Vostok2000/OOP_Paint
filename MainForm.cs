@@ -100,20 +100,25 @@ namespace OOP_Paint {
             //    listNames.Add(cm.Name);
             //}
             //MainFormCmbbxBuildingVariants.SelectedIndex = 0;
+
+            //Это, наверное, всё же лучше запихуть в Code в этой реализации, т.к.
+            //сообщение одно для всех платформ. Однако для разных людей это не так.
+            //Вопрос отложен.
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
 
         }
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
 
-
         }
+        
         private void Code_SelectedFigure_Changed(Figure _value, EventArgs e) {
-            List<BuildingMethod> pbv = ReturnPossibleBuildingVariants(_value);
+            //Нужно обновить лист в соответствии с выбранной фигурой.
+            List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(_value);
+            MainFormCmbbxBuildingVariants.Items.Clear();
 
 
         }
-        private void Code_BuildingVariantChanged(Object sender, EventArgs e) {
-
+        private void Code_SelectedBuildingMethod_Changed(Object sender, EventArgs e) {
 
         }
 

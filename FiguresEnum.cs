@@ -15,6 +15,7 @@ namespace OOP_Paint {
             Circle,
 
         }
+        //!!!FiguresEnum#7: реализовать конвертер в имя.
         public enum BuildingMethod {
             [Description("Нет")]
             None,

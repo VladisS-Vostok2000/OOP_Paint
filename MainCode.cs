@@ -22,6 +22,20 @@ namespace OOP_Paint {
         public event FigureHandler SelectedFigureChanged;
         public event EventHandler SelectedBuildingVariantChanged;
 
+        private Figure selectedFigure;
+        public Figure SelectedFigure {
+            set {
+                if (selectedFigure != value) {
+                    CloseConstructor();
+                    SelectedFigureChanged?.Invoke(value, EventArgs.Empty);
+                    selectedFigure = value;
+
+                    SelectedBuildingMethod = ReturnPossibleBuildingVariants(SelectedFigure)[0];
+
+                }
+            }
+            get => selectedFigure;
+        }
         private BuildingMethod selectedBuildingMethod;
         public BuildingMethod SelectedBuildingMethod {
             set {
@@ -37,20 +51,6 @@ namespace OOP_Paint {
         //???Не совсем понятно назначение этого перечисления. Единственный плюс - не нужно возиться
         //с объектом. Из минусов: каждый раз при использовании методов
         //его нужно конвертировать в этот самый объект. Пустой. [Источник? Нет мест, где бы создавался такой объект]
-        private Figure selectedFigure;
-        public Figure SelectedFigure {
-            set {
-                if (selectedFigure != value) {
-                    CloseConstructor();
-                    SelectedFigureChanged?.Invoke(value, EventArgs.Empty);
-                    selectedFigure = value;
-
-                    SelectedBuildingMethod = ReturnPossibleBuildingVariants(SelectedFigure)[0];
-
-                }
-            }
-            get => selectedFigure;
-        }
         private Int32 currConstructorStage = 0;
 
         //???Лист реализует Binding-логику, которая необходима для привязки и реализации событий в GUI,
