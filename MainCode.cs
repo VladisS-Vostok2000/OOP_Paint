@@ -14,7 +14,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
-//#Projekt: Добавить перегрузку построения
+//#Projekt84: Добавить перегрузку построения фигуры
 namespace OOP_Paint {
     public sealed class MainCode {
 
@@ -150,7 +150,6 @@ namespace OOP_Paint {
                 figure.Draw(_screen);
             }
         }
-        //#MC20: неверное расположение FingPossibleBuildingVariants: должен быть в классе
 
     }
 }

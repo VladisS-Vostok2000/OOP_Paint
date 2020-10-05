@@ -29,11 +29,6 @@ namespace OOP_Paint {
 
 
 
-        //!!!//???Дублирует FindPossibleBuildingVariants в MyFigure, ОЧЕНЬ ПЛОХО!!!
-        //Используется, так как есть перечисление в MainCode.
-        //Избавиться от метода в классе нельзя, так как мне нужны объекты в списке,
-        //классы для сравнения объектов. Выходит, перечисление лишнее?
-        //#MC20: fixed
         public static List<BuildingMethod> ReturnPossibleBuildingVariants(Figure _figure) {
             var out_list = new List<BuildingMethod>();
             switch(_figure) {
