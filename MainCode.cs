@@ -121,7 +121,7 @@ namespace OOP_Paint {
                                     throw new Exception();
                             }
                             break;
-                        case BuildingMethod.CircleCenterRadius:
+                        case BuildingMethod.CircleDotRadius:
                             throw new NotImplementedException();
                         default: throw new Exception("Фигура задана, но не задан вариант построения.");
                     }
