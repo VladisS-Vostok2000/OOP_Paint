@@ -15,19 +15,31 @@ namespace OOP_Paint {
             Circle,
 
         }
-        //!!!FiguresEnum#7: реализовать конвертер в имя.
+
+        //???Если у меня неизбежно фигуры и методы отделены, зачем дифференцировать 
+        //методы построения по фигурам?
         public enum BuildingMethod {
-            [Description("Нет")]
+            //[Description("Нет")]
             None,
-            [Description("Точка")]
+            //[Description("Точка")]
             Point,
-            [Description("Прямой угол, точка")]
+            //[Description("Прямой угол, точка")]
             CircleInRectangleByTwoDots,
-            [Description("Центр, радиус")]
-            CircleDotRadius,
+            //[Description("Центр, радиус")]
+            CircleCenterRadius,
 
         }
 
+
+        //!!!FiguresEnum#7: реализовать конвертер в имя.
+        public static string ToString(BuildingMethod _bm) {
+            switch(_bm) {
+                case BuildingMethod.None: return "";
+                case BuildingMethod.CircleCenterRadius: return "Центр, радиус.";
+                case BuildingMethod.CircleInRectangleByTwoDots: return "Ограничивающий прямоугольник";
+                default: throw new Exception("Неизвестная фигура");
+            }
+        }
 
 
         public static List<BuildingMethod> ReturnPossibleBuildingVariants(Figure _figure) {
@@ -38,7 +50,7 @@ namespace OOP_Paint {
                     break;
                 case Figure.Circle:
                     out_list.Add(BuildingMethod.CircleInRectangleByTwoDots);
-                    out_list.Add(BuildingMethod.CircleDotRadius);
+                    out_list.Add(BuildingMethod.CircleCenterRadius);
                     break;
                 default: throw new Exception("Неизвестная фигура.");
             }
