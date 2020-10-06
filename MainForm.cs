@@ -19,6 +19,9 @@ namespace OOP_Paint {
         private readonly Graphics screen;
         private readonly MainCode Code = new MainCode();
         private static Int32 test = 0;
+        //???Жесть... А можно попроще как-то??
+        //Вроде DisplayMember работает и без DataSourse. Тогда лист не нужен?
+        //private BindingList<ComboboxBuildingMethod> currPossibleBuildingMethods;
 
 
 
@@ -26,10 +29,27 @@ namespace OOP_Paint {
             InitializeComponent();
             screen = MainFromPctrbxScreen.CreateGraphics();
             Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
+            Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
+
+            //currPossibleBuildingMethods = new BindingList<ComboboxBuildingMethod>();
+            //currPossibleBuildingMethods.ListChanged += CurrPossibleBuildingMethods_ListChanged;
+            //MainFormCmbbxBuildingVariants.DataSource = currPossibleBuildingMethods;
+            //???Это странно работает: мы не указываем конкретный класс, а Name может быть переопределён в дочернем
+            //классе, но это не мешает почему-то комбобоксу брать свойство из objekt.
+            MainFormCmbbxBuildingVariants.DisplayMember = "Name";
+            MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
 
         }
 
+        //private void CurrPossibleBuildingMethods_ListChanged(Object sender, ListChangedEventArgs e) {
+        //    if (currPossibleBuildingMethods.Count == 0) {
+        //        return;
+        //    }
 
+        //    foreach (var cbm in currPossibleBuildingMethods) {
+
+        //    }
+        //}
 
         private void MainForm_Load(Object sender, EventArgs e) {
 
@@ -92,14 +112,6 @@ namespace OOP_Paint {
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             Figure firgureToSelect = Figure.Circle;
             Code.SelectedFigure = firgureToSelect;
-            //Это всё в событие нужно запихнуть. А вообще его не должно быть, код сам вернёт, что нужно
-            //MainFormCmbbxBuildingVariants.Items.Clear();
-            //List<BuildingMethod> bm = ReturnPossibleBuildingVariants();
-            //var listNames = new List<String>();
-            //foreach (var cm in bm) {
-            //    listNames.Add(cm.Name);
-            //}
-            //MainFormCmbbxBuildingVariants.SelectedIndex = 0;
 
             //Это, наверное, всё же лучше запихуть в Code в этой реализации, т.к.
             //сообщение одно для всех платформ. Однако для разных людей это не так.
@@ -108,17 +120,26 @@ namespace OOP_Paint {
 
         }
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
+            Code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
 
         }
-        
+
         private void Code_SelectedFigure_Changed(Figure _value, EventArgs e) {
-            //Нужно обновить лист в соответствии с выбранной фигурой.
             List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(_value);
-            MainFormCmbbxBuildingVariants.Items.Clear();
-
+            var cbm = new ComboboxBuildingMethod[pbm.Count];
+            for (int i = 0; i < pbm.Count; i++) {
+                cbm[i] = new ComboboxBuildingMethod(pbm[i]);
+            }
+            MainFormCmbbxBuildingVariants.Items.AddRange(cbm);
 
         }
-        private void Code_SelectedBuildingMethod_Changed(Object sender, EventArgs e) {
+        private void Code_SelectedBuildingMethod_Changed(BuildingMethod _value, EventArgs e) {
+            for (int i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
+                if ((MainFormCmbbxBuildingVariants.Items[i] as ComboboxBuildingMethod).BuildingMethod == _value) {
+                    MainFormCmbbxBuildingVariants.SelectedIndex = i;
+                    break;
+                }
+            }
 
         }
 

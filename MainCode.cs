@@ -17,10 +17,10 @@ using static OOP_Paint.FiguresEnum;
 //#Projekt84: Добавить перегрузку построения фигуры
 namespace OOP_Paint {
     public sealed class MainCode {
-
+        public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
         public delegate void FigureHandler(Figure figure, EventArgs e);
         public event FigureHandler SelectedFigureChanged;
-        public event EventHandler SelectedBuildingVariantChanged;
+        public event BuildingMethodHandler SelectedBuildingVariantChanged;
 
         private Figure selectedFigure;
         public Figure SelectedFigure {
@@ -42,7 +42,6 @@ namespace OOP_Paint {
                 if (selectedBuildingMethod != value) {
                     selectedBuildingMethod = value;
                     SelectedBuildingVariantChanged?.Invoke(value, EventArgs.Empty);
-                    //BuildingVariantChanged?.Invoke(CurrBuildingVariant, new PropertyChangedEventArgs("CurrBuildingVariant"));
 
                 }
             }
@@ -122,7 +121,9 @@ namespace OOP_Paint {
                             }
                             break;
                         case BuildingMethod.CircleCenterRadius:
-                            throw new NotImplementedException();
+                            out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                            //throw new NotImplementedException();
+                            break;
                         default: throw new Exception("Фигура задана, но не задан вариант построения.");
                     }
                     break;

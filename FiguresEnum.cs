@@ -31,14 +31,15 @@ namespace OOP_Paint {
         }
 
 
-        //!!!FiguresEnum#7: реализовать конвертер в имя.
-        public static string ToString(BuildingMethod _bm) {
-            switch(_bm) {
+
+        public static string GetDescription(this BuildingMethod _bm) {
+            switch (_bm) {
                 case BuildingMethod.None: return "";
                 case BuildingMethod.CircleCenterRadius: return "Центр, радиус.";
                 case BuildingMethod.CircleInRectangleByTwoDots: return "Ограничивающий прямоугольник";
                 default: throw new Exception("Неизвестная фигура");
             }
+
         }
 
 
