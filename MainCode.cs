@@ -92,6 +92,7 @@ namespace OOP_Paint {
                                 case 0:
                                     if (e.Button == MouseButtons.Left && e.Clicks == 1) {
                                         supportFigures.Add(new MyRectangle(e.X, e.Y, e.X, e.Y, supportPen));
+                                        //!!!MainCode#43: MyCircle как вспомогательная фигура не прорисовывается
                                         supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen));
                                         pointsList.Add(e.Location);
                                         currConstructorStage++;
@@ -121,6 +122,14 @@ namespace OOP_Paint {
                             }
                             break;
                         case BuildingMethod.CircleCenterRadius:
+                            switch (currConstructorStage) {
+                                case 0:
+                                    if (e.Button == MouseButtons.Left && e.Clicks == 1) {
+                                        supportFigures.Add(new Point())
+                                    }
+                                    break;
+
+                            }
                             out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                             //throw new NotImplementedException();
                             break;

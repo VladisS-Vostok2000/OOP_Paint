@@ -18,9 +18,6 @@ using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public sealed class ComboboxBuildingMethod {
         public readonly BuildingMethod BuildingMethod;
-        //Пидарас!
-        //Пи-до-ра-си-на!
-        //DataSourse работает исключительно с публичными полями. Вроде можно заменить.
         public string Name { get; }
 
 

@@ -19,13 +19,9 @@ namespace OOP_Paint {
         //???Если у меня неизбежно фигуры и методы отделены, зачем дифференцировать 
         //методы построения по фигурам?
         public enum BuildingMethod {
-            //[Description("Нет")]
             None,
-            //[Description("Точка")]
             Point,
-            //[Description("Прямой угол, точка")]
             CircleInRectangleByTwoDots,
-            //[Description("Центр, радиус")]
             CircleCenterRadius,
 
         }

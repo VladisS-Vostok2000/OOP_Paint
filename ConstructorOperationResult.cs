@@ -8,9 +8,14 @@ namespace OOP_Paint {
             Canselled,
             Continious,
             Finished,
+
         }
+
         public readonly OperationStatus Result;
         public readonly String OperationMessage;
+
+
+
         public ConstructorOperationResult(OperationStatus _result, String _message) {
             Result = _result;
             OperationMessage = _message;

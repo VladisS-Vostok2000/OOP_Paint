@@ -133,7 +133,7 @@
             this.MainFormCmbbxBuildingVariants.FormattingEnabled = true;
             this.MainFormCmbbxBuildingVariants.Location = new System.Drawing.Point(13, 340);
             this.MainFormCmbbxBuildingVariants.Name = "MainFormCmbbxBuildingVariants";
-            this.MainFormCmbbxBuildingVariants.Size = new System.Drawing.Size(342, 21);
+            this.MainFormCmbbxBuildingVariants.Size = new System.Drawing.Size(150, 21);
             this.MainFormCmbbxBuildingVariants.TabIndex = 12;
             this.MainFormCmbbxBuildingVariants.SelectedIndexChanged += new System.EventHandler(this.MainFormCmbbxBuildingVariants_SelectedIndexChanged);
             // 
