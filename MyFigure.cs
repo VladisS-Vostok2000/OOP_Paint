@@ -1,21 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
-    public abstract class MyFigure {
-        public Int32 X { protected set; get; }
-        public Int32 Y { protected set; get; }
-        public Int32 Width { protected set; get; }
-        public Int32 Height { protected set; get; }
-        public Pen Pen { protected set; get; } = new Pen(Color.Black, 2);
+    public abstract class MyFigure : IDisposable {
+        public Int32 X { set; get; }
+        public Int32 Y { set; get; }
+        public Int32 Width { set; get; }
+        public Int32 Height { set; get; }
+        public Pen Pen { set; get; } = new Pen(Color.Black, 2);
+
+
 
         protected MyFigure() {
-        
+
         }
         protected MyFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             Point leftCorner = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
@@ -46,26 +50,42 @@ namespace OOP_Paint {
         }
 
 
-        /// <summary>
-        /// Переопределяет координаты верхнего левого угла
-        /// </summary>
-        /// <param name="_newX"></param>
-        /// <param name="_newY"></param>
-        public void Move(Int32 _newX, Int32 _newY) {
-            X = _newX;
-            Y = _newY;
-        }
-        /// <summary>
-        /// Переопределяет размер ограничивающего прямоугольника
-        /// </summary>
-        /// <param name="_newWidth"></param>
-        /// <param name="_newHeight"></param>
-        public void Resize(Int32 _newWidth, Int32 _newHeight) {
-            Width = _newWidth;
-            Height = _newHeight;
-        }
+        public void Dispose() { }
 
-        public virtual void Draw(Graphics _screen) { }
+        #region //MyFigure.ReturnPossibleBBuildingVariants
+        //!!!MyFigure#23: переработка ReturnPossibleBuildingVariants - fixed
+        //???Несколько вариантов реализации: сторонний статический класс-расширение,
+        //со switch-логикой вообще всех фигур, или переопределеляемый метод объекта,
+        //или статический метод в MyFigure.
+        //Второй вариант двумя способами: полем и методом. Статическим или виртуальным.
+        //Он же жёстко требует объекта или повторного (или наследуемого?) статического метода.
+        //Сторонний статический класс выглядит вырожденно, но зато имеет всё вместе.
+        //Статический метод подходит из-за универсальности.
+        //!!!//???Есть идея вообще сделать перечисление Figures здесь, тогда со всем разбираться не
+        //придётся и конвертеры не нужны, и имена фигур без проблем получить можно.
+        //По совету перечисление вынесено в отдельный класс, и метод соответственно.
+        #region код
+        //public List<BuildingMethod> ReturnPossibleBuildingVariants() {
+        //    return ReturnPossibleBuildingVariants(this.GetType());
+        //}
+        //public static List<BuildingMethod> ReturnPossibleBuildingVariants(Type _type) {
+        //    var out_list = new List<BuildingMethod>() { BuildingMethod.None };
+        //    //Держу в курсе switch принимает только константы
+        //    if (_type == typeof(MyCircle)) {
+        //        out_list.Add(BuildingMethod.CircleDotRadius);
+        //        out_list.Add(BuildingMethod.CircleInRectangleByTwoDots);
+        //    }
+        //    else {
+        //        throw new Exception("Неизвестная фигура.");
+        //    }
+
+        //    return out_list;
+        //}
+        #endregion
+        #endregion
+
+
+        public abstract void Draw(Graphics _screen);
 
     }
 }

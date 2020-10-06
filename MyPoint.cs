@@ -9,6 +9,10 @@ using System.Threading.Tasks;
 namespace OOP_Paint {
     public class MyPoint : MyFigure {
         public Color Color { private set; get; }
+        
+
+
+        public MyPoint() : base() { }
         protected MyPoint(Int32 _x, Int32 _y) {
             X = _x;
             Y = _y;
@@ -20,8 +24,10 @@ namespace OOP_Paint {
         }
 
 
+
         public override void Draw(Graphics _screen) {
             _screen.DrawEllipse(new Pen(Color, 2), X, Y, 2, 2);
         }
+
     }
 }

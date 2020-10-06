@@ -25,28 +25,18 @@
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.MainFromPctrbxScreen = new System.Windows.Forms.PictureBox();
-            this.MainFormCmbbxFigureChoose = new System.Windows.Forms.ComboBox();
-            this.MainFormLblFigureChoose = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
-            this.button1 = new System.Windows.Forms.Button();
-            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.MainFormLstbxFigures = new System.Windows.Forms.ListBox();
             this.MainFormTmr = new System.Windows.Forms.Timer(this.components);
+            this.MainFormSttsstp = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormSttsstpLblMouseX = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormSttsstpLblMouseY = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormSttsstpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormBttnCircle = new System.Windows.Forms.Button();
+            this.MainFormCmbbxBuildingVariants = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
+            this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainFromPctrbxScreen
@@ -57,174 +47,114 @@
             this.MainFromPctrbxScreen.Size = new System.Drawing.Size(496, 290);
             this.MainFromPctrbxScreen.TabIndex = 0;
             this.MainFromPctrbxScreen.TabStop = false;
-            this.MainFromPctrbxScreen.Click += new System.EventHandler(this.MainFromPctrbxScreen_Click);
+            this.MainFromPctrbxScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainFormPctrbxScreen_MouseMove);
+            this.MainFromPctrbxScreen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainFromPctrbxScreen_MouseUp);
             // 
-            // MainFormCmbbxFigureChoose
+            // MainFormLstbxFigures
             // 
-            this.MainFormCmbbxFigureChoose.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.MainFormCmbbxFigureChoose.FormattingEnabled = true;
-            this.MainFormCmbbxFigureChoose.Items.AddRange(new object[] {
-            "Круг",
-            "Прямоугольник"});
-            this.MainFormCmbbxFigureChoose.Location = new System.Drawing.Point(12, 322);
-            this.MainFormCmbbxFigureChoose.Name = "MainFormCmbbxFigureChoose";
-            this.MainFormCmbbxFigureChoose.Size = new System.Drawing.Size(150, 21);
-            this.MainFormCmbbxFigureChoose.TabIndex = 0;
-            this.MainFormCmbbxFigureChoose.SelectionChangeCommitted += new System.EventHandler(this.MainFormCmbbxFigureChoose_SelectionChangeCommitted);
-            // 
-            // MainFormLblFigureChoose
-            // 
-            this.MainFormLblFigureChoose.AutoSize = true;
-            this.MainFormLblFigureChoose.Location = new System.Drawing.Point(12, 306);
-            this.MainFormLblFigureChoose.Name = "MainFormLblFigureChoose";
-            this.MainFormLblFigureChoose.Size = new System.Drawing.Size(81, 13);
-            this.MainFormLblFigureChoose.TabIndex = 2;
-            this.MainFormLblFigureChoose.Text = "Выбор фигуры";
-            // 
-            // numericUpDown1
-            // 
-            this.numericUpDown1.Location = new System.Drawing.Point(9, 32);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(40, 20);
-            this.numericUpDown1.TabIndex = 3;
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(14, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "X";
-            // 
-            // numericUpDown2
-            // 
-            this.numericUpDown2.Location = new System.Drawing.Point(55, 32);
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(40, 20);
-            this.numericUpDown2.TabIndex = 3;
-            this.numericUpDown2.ValueChanged += new System.EventHandler(this.numericUpDown2_ValueChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(52, 16);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(14, 13);
-            this.label2.TabIndex = 4;
-            this.label2.Text = "Y";
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.numericUpDown1);
-            this.groupBox1.Controls.Add(this.numericUpDown2);
-            this.groupBox1.Location = new System.Drawing.Point(168, 309);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(124, 64);
-            this.groupBox1.TabIndex = 5;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Первый угол";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.numericUpDown3);
-            this.groupBox2.Controls.Add(this.numericUpDown4);
-            this.groupBox2.Location = new System.Drawing.Point(298, 309);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(129, 64);
-            this.groupBox2.TabIndex = 5;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Второй угол";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 16);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(14, 13);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "X";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(52, 16);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(14, 13);
-            this.label4.TabIndex = 4;
-            this.label4.Text = "Y";
-            // 
-            // numericUpDown3
-            // 
-            this.numericUpDown3.Location = new System.Drawing.Point(9, 32);
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(40, 20);
-            this.numericUpDown3.TabIndex = 3;
-            this.numericUpDown3.ValueChanged += new System.EventHandler(this.numericUpDown3_ValueChanged);
-            this.numericUpDown3.Enter += new System.EventHandler(this.numericUpDown3_Enter);
-            // 
-            // numericUpDown4
-            // 
-            this.numericUpDown4.Location = new System.Drawing.Point(55, 32);
-            this.numericUpDown4.Name = "numericUpDown4";
-            this.numericUpDown4.Size = new System.Drawing.Size(40, 20);
-            this.numericUpDown4.TabIndex = 3;
-            this.numericUpDown4.ValueChanged += new System.EventHandler(this.numericUpDown4_ValueChanged);
-            this.numericUpDown4.Enter += new System.EventHandler(this.numericUpDown4_Enter);
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(433, 315);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 6;
-            this.button1.Text = "Добавить";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // listBox1
-            // 
-            this.listBox1.FormattingEnabled = true;
-            this.listBox1.Location = new System.Drawing.Point(516, 13);
-            this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(272, 290);
-            this.listBox1.TabIndex = 7;
+            this.MainFormLstbxFigures.FormattingEnabled = true;
+            this.MainFormLstbxFigures.Location = new System.Drawing.Point(516, 13);
+            this.MainFormLstbxFigures.Name = "MainFormLstbxFigures";
+            this.MainFormLstbxFigures.Size = new System.Drawing.Size(272, 290);
+            this.MainFormLstbxFigures.TabIndex = 7;
             // 
             // MainFormTmr
             // 
-            this.MainFormTmr.Enabled = true;
             this.MainFormTmr.Interval = 20;
             this.MainFormTmr.Tick += new System.EventHandler(this.MainFormTmr_Tick);
+            // 
+            // MainFormSttsstp
+            // 
+            this.MainFormSttsstp.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1,
+            this.MainFormSttsstpLblMouseX,
+            this.toolStripStatusLabel3,
+            this.MainFormSttsstpLblMouseY,
+            this.MainFormSttsstpLblHint});
+            this.MainFormSttsstp.Location = new System.Drawing.Point(0, 428);
+            this.MainFormSttsstp.Name = "MainFormSttsstp";
+            this.MainFormSttsstp.Size = new System.Drawing.Size(800, 22);
+            this.MainFormSttsstp.TabIndex = 10;
+            this.MainFormSttsstp.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(17, 17);
+            this.toolStripStatusLabel1.Text = "X:";
+            // 
+            // MainFormSttsstpLblMouseX
+            // 
+            this.MainFormSttsstpLblMouseX.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.MainFormSttsstpLblMouseX.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MainFormSttsstpLblMouseX.Name = "MainFormSttsstpLblMouseX";
+            this.MainFormSttsstpLblMouseX.Size = new System.Drawing.Size(29, 17);
+            this.MainFormSttsstpLblMouseX.Text = "   ";
+            // 
+            // toolStripStatusLabel3
+            // 
+            this.toolStripStatusLabel3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(17, 17);
+            this.toolStripStatusLabel3.Text = "Y:";
+            // 
+            // MainFormSttsstpLblMouseY
+            // 
+            this.MainFormSttsstpLblMouseY.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.MainFormSttsstpLblMouseY.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MainFormSttsstpLblMouseY.Name = "MainFormSttsstpLblMouseY";
+            this.MainFormSttsstpLblMouseY.Size = new System.Drawing.Size(29, 17);
+            this.MainFormSttsstpLblMouseY.Text = "   ";
+            // 
+            // MainFormSttsstpLblHint
+            // 
+            this.MainFormSttsstpLblHint.AutoSize = false;
+            this.MainFormSttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.MainFormSttsstpLblHint.Name = "MainFormSttsstpLblHint";
+            this.MainFormSttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
+            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(693, 17);
+            this.MainFormSttsstpLblHint.Spring = true;
+            this.MainFormSttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // MainFormBttnCircle
+            // 
+            this.MainFormBttnCircle.Location = new System.Drawing.Point(13, 310);
+            this.MainFormBttnCircle.Name = "MainFormBttnCircle";
+            this.MainFormBttnCircle.Size = new System.Drawing.Size(75, 23);
+            this.MainFormBttnCircle.TabIndex = 11;
+            this.MainFormBttnCircle.Text = "Круг";
+            this.MainFormBttnCircle.UseVisualStyleBackColor = true;
+            this.MainFormBttnCircle.Click += new System.EventHandler(this.MainFormBttnCircle_Click);
+            // 
+            // MainFormCmbbxBuildingVariants
+            // 
+            this.MainFormCmbbxBuildingVariants.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.MainFormCmbbxBuildingVariants.FormattingEnabled = true;
+            this.MainFormCmbbxBuildingVariants.Location = new System.Drawing.Point(13, 340);
+            this.MainFormCmbbxBuildingVariants.Name = "MainFormCmbbxBuildingVariants";
+            this.MainFormCmbbxBuildingVariants.Size = new System.Drawing.Size(342, 21);
+            this.MainFormCmbbxBuildingVariants.TabIndex = 12;
+            this.MainFormCmbbxBuildingVariants.SelectedIndexChanged += new System.EventHandler(this.MainFormCmbbxBuildingVariants_SelectedIndexChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.listBox1);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.MainFormLblFigureChoose);
-            this.Controls.Add(this.MainFormCmbbxFigureChoose);
+            this.Controls.Add(this.MainFormCmbbxBuildingVariants);
+            this.Controls.Add(this.MainFormBttnCircle);
+            this.Controls.Add(this.MainFormSttsstp);
+            this.Controls.Add(this.MainFormLstbxFigures);
             this.Controls.Add(this.MainFromPctrbxScreen);
+            this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Name = "MainForm";
-            this.Text = "Form1";
-            this.Load += new System.EventHandler(this.Form1_Load);
-            this.Shown += new System.EventHandler(this.Form1_Shown);
+            this.Text = "MainForm";
+            this.Load += new System.EventHandler(this.MainForm_Load);
+            this.Shown += new System.EventHandler(this.MainForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
+            this.MainFormSttsstp.ResumeLayout(false);
+            this.MainFormSttsstp.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -233,21 +163,16 @@
         #endregion
 
         private System.Windows.Forms.PictureBox MainFromPctrbxScreen;
-        private System.Windows.Forms.ComboBox MainFormCmbbxFigureChoose;
-        private System.Windows.Forms.Label MainFormLblFigureChoose;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.NumericUpDown numericUpDown3;
-        private System.Windows.Forms.NumericUpDown numericUpDown4;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.ListBox MainFormLstbxFigures;
         private System.Windows.Forms.Timer MainFormTmr;
+        private System.Windows.Forms.StatusStrip MainFormSttsstp;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
+        private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseX;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
+        private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseY;
+        private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblHint;
+        private System.Windows.Forms.Button MainFormBttnCircle;
+        private System.Windows.Forms.ComboBox MainFormCmbbxBuildingVariants;
     }
 }
 

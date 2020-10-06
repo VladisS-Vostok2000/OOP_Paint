@@ -6,250 +6,141 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
+using static OOP_Paint.FiguresEnum;
+
 
 namespace OOP_Paint {
-    public partial class MainForm : Form {
-        enum Figure {
-            Circle = 1,
-            Rectangle,
-        }
-        private Figure currSelectedFigure;
-        private Figure CurrSelectedFigure {
-            set {
-                if (currSelectedFigure != value) {
-                    SelectedFigureChanged(this, new EventArgs());
-                    currSelectedFigure = value;
-                }
-            }
-            get => currSelectedFigure;
-        }
-        private event EventHandler SelectedFigureChanged;
-        //private Int32 currFigureConstructorLevel;
-        //private List<Control> figureConstructor;
-        //private const Int32 constructorMargin = 3;
-        //private Int32 currClick;
-        private MyFigure currSupportFigure;
-        private Int32 currConstructorStage;
+    public sealed partial class MainForm : Form {
         private readonly Graphics screen;
-        private readonly List<MyFigure> figuresToDrawList;
+        private readonly MainCode Code = new MainCode();
+        private static Int32 test = 0;
+        //???Жесть... А можно попроще как-то??
+        //Вроде DisplayMember работает и без DataSourse. Тогда лист не нужен?
+        //private BindingList<ComboboxBuildingMethod> currPossibleBuildingMethods;
+
 
 
         public MainForm() {
             InitializeComponent();
-            figuresToDrawList = new List<MyFigure>();
             screen = MainFromPctrbxScreen.CreateGraphics();
-            SelectedFigureChanged += MainForm_SelectedFigureChanged;
-            currConstructorStage = 0;
-            //figureConstructor = new List<Control>();
-        }
-        private void Form1_Load(Object sender, EventArgs e) {
-            #region Пробую создание конструктора
-            //test_Circle = new List<Control>();
-            //var lbl = new Label() {
-            //    Text = "Вариант построения",
-            //    TabStop = true,
-            //    Location = new Point(MainFormCmbbxFigureChoose.Location.X +
-            //    MainFormCmbbxFigureChoose.Width +
-            //    MainFormCmbbxFigureChoose.Margin.Right,
-            //    MainFormLblFigureChoose.Location.Y)
-            //};
-            //var cmbbx = new ComboBox() {
-            //    TabIndex = 1,
-            //    Location = new Point(lbl.Location.X, lbl.Location.Y + lbl.Height + lbl.Margin.Bottom)
-            //};
-            //cmbbx.Items.AddRange(new String[] { "Ограниченная прямоугольником", "Описывающая прямоугольник"});
-            //test_Circle.Add(lbl);
-            //test_Circle.Add(cmbbx);
+            Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
+            Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
 
-            ////Попытка #2
-            //FiguresToDrawList = new List<Figure>();
-            #endregion
-        }
-        private void Form1_Shown(Object sender, EventArgs e) {
+            //currPossibleBuildingMethods = new BindingList<ComboboxBuildingMethod>();
+            //currPossibleBuildingMethods.ListChanged += CurrPossibleBuildingMethods_ListChanged;
+            //MainFormCmbbxBuildingVariants.DataSource = currPossibleBuildingMethods;
+            //???Это странно работает: мы не указываем конкретный класс, а Name может быть переопределён в дочернем
+            //классе, но это не мешает почему-то комбобоксу брать свойство из objekt.
+            MainFormCmbbxBuildingVariants.DisplayMember = "Name";
+            MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
+
         }
 
-
-        private void MainForm_SelectedFigureChanged(Object sender, EventArgs e) {
-            currConstructorStage = 1;
-            currSupportFigure = new MyPoint((Int32)numericUpDown1.Value, (Int32)numericUpDown2.Value, Color.Red);
-
-            #region Попытка #1
-            //foreach (Control cntcl in figureConstructor) {
-            //    cntcl.Dispose();
-            //}
-            ////???Нужно его очищать?
-            //figureConstructor.Clear();
-
-            //currFigureConstructorLevel = 1;
-
-
-
-            //switch (CurrFigure) {
-            //    case Figure.Circle:
-            //        //(1, 150, "Выбор построения", "Ограниченный областью", "Описывающая прямоугольник", "Три точки");
-
-            //        //???А как насчёт динамического добавления полей? Тогда не придётся ебаться с координатными
-            //        //константами. А придётся ебаться с уникальными ивентами... Или же они вычисляются
-            //        //в redraw event?..
-            //        //var lbl = new Label() {
-            //        //    Name = "MainFormLbl1BuildingVariant",
-            //        //    TabStop = true,
-            //        //    Location = new Point(),
-            //        //};
-            //        //figureConstructor.Add(lbl);
-
-            //        //var cmbbx = new ComboBox() {
-            //        //    Name = "MainFormCmbbx1BuildingVariant",
-            //        //    TabIndex = 1,
-            //        //    Width = 150,
-            //        //    DropDownStyle = ComboBoxStyle.DropDownList,
-            //        //    X = ,
-            //        //    Y = ,
-            //        //};
-            //        //string[] m = { "Ограниченный прямоугольником", "Описанный вокруг прямоугольника", "Три точки" };
-            //        //cmbbx.Items.AddRange(m);
-            //        //figureConstructor.Add(cmbbx);
-            //        //(figureConstructor[figureConstructor.Count] as ComboBox).SelectedIndexChanged += MainForm_FigureConstructorCombobox_SelectedIndexChanged;
-
-            //        //var 
-
-
-
-
-            //        break;
-            //    case Figure.Rectangle:
-            //        break;
-            //}
-            #endregion
-        }
-        private void MainFormCmbbxFigureChoose_SelectionChangeCommitted(Object sender, EventArgs e) {
-            switch ((sender as ComboBox).SelectedItem) {
-                case "Круг":
-                    CurrSelectedFigure = Figure.Circle;
-                    break;
-                case "Прямоугольник":
-                    CurrSelectedFigure = Figure.Rectangle;
-                    break;
-                default: throw new Exception();
-            }
-        }
-        //!!! MainForm#1: оформить разрозненные точечные контролы в динамические
-        private void numericUpDown1_ValueChanged(Object sender, EventArgs e) {
-            #region #20: попытка обойти событие 
-            ChangeCurrentSupportFifureProperties();
-            #endregion
-        }
-        private void numericUpDown2_ValueChanged(Object sender, EventArgs e) {
-            #region #20: попытка обойти событие 
-            ChangeCurrentSupportFifureProperties();
-            #endregion
-        }
-        private void numericUpDown3_ValueChanged(Object sender, EventArgs e) {
-            #region #20: попытка обойти событие 
-            ChangeCurrentSupportFifureProperties();
-            #endregion
-        }
-        private void numericUpDown4_ValueChanged(Object sender, EventArgs e) {
-            #region #20: попытка обойти событие 
-            ChangeCurrentSupportFifureProperties();
-            #endregion
-        }
-        private void numericUpDown3_Enter(Object sender, EventArgs e) {
-            if (currConstructorStage < 2) {
-                currConstructorStage = 2;
-            }
-        }
-        private void numericUpDown4_Enter(Object sender, EventArgs e) {
-            if (currConstructorStage < 2) {
-                currConstructorStage = 2;
-            }
-        }
-        private void ChangeCurrentSupportFifureProperties() {
-            switch (currConstructorStage) {
-                //???Динамеическое изменение получится здесь подключить?
-                //Если не просто создавать объект, а сразу рисовать?
-                //??? Создание нового объекта *чрезвычайно* неэффективно,
-                //но наши свойства закрытые, в то время как создание через 4 
-                //координаты уже реализовано в конструкторе. Зачем поля закрыты?
-                case 1:
-                    currSupportFigure = new MyPoint((int)numericUpDown1.Value, (int)numericUpDown2.Value, Color.Red);
-                    break;
-                case 2:
-                    currSupportFigure = new MyRectangle(
-                        (int)numericUpDown1.Value,
-                        (int)numericUpDown2.Value,
-                        (int)numericUpDown3.Value,
-                        (int)numericUpDown4.Value,
-                        Color.Red
-                      );
-                    currSupportFigure.Pen.DashStyle = DashStyle.Dash;
-                    currSupportFigure.Pen.Width = 1;
-                    break;
-                default: throw new Exception();
-            }
-        }
-
-
-
-
-        private void MainFormTmr_Tick(Object sender, EventArgs e) {
-            screen.Clear(Color.FromArgb(30, 30, 30));
-            foreach (var figure in figuresToDrawList) {
-                figure.Draw(screen);
-            }
-            currSupportFigure?.Draw(screen);
-        }
-
-
-
-        #region Пробую создание конструктора
-        //private Point FindConstructorControlLocation(Int32 _constructorLevel) {
-        //    Control currControl = MainFormCmbbxFigureChoose;
-        //    for (Int32 i = figureConstructor.Count - 1; i > 0; i--) {
-        //        if (figureConstructor[i].TabIndex > _constructorLevel - 2) {
-        //            break;
-        //        }
-
-        //        if (currControl.Location.X + currControl.Width > figureConstructor[i].Location.X + figureConstructor[i].Width) {
-        //            currControl = figureConstructor[i];
-        //        }
+        //private void CurrPossibleBuildingMethods_ListChanged(Object sender, ListChangedEventArgs e) {
+        //    if (currPossibleBuildingMethods.Count == 0) {
+        //        return;
         //    }
 
-        //    return new Point(
-        //        currControl.Location.X +
-        //        currControl.Width +
-        //        currControl.Margin.Right,
-        //        MainFormLblFigureChoose.Location.Y);
-        //}
-        //private ComboBox CreateNewContstructorCombobox(Int32 _tabIndex, Int32 _width, String _labelText, params String[] _textVariants) {
-        //    Point location = FindConstructorControlLocation(_tabIndex);
+        //    foreach (var cbm in currPossibleBuildingMethods) {
 
-        //    var cmbbx = new ComboBox() {
-        //        TabIndex = _tabIndex,
-        //        Width = _width,
-        //        Location = location,
-        //    };
-        //    cmbbx.Items.AddRange(_textVariants);
-        //    return cmbbx;
+        //    }
         //}
-        #endregion
-        private void MainFromPctrbxScreen_Click(Object sender, EventArgs e) {
-            #region Попытка #1
-            //currClick++;
-            //switch(currClick) {
-            //    case 1:
-            //        figuresToDrawList.Add(new MyPoint((Int32)numericUpDown1.Value, (Int32)numericUpDown2.Value, Color.Red));
-            //        break;
-            //    case 2:
-            //        //FiguresToDrawList.Remove(new MyRectangle)
-            //        break;
-            //    default: throw new Exception();
-            //}
-            #endregion
+
+        private void MainForm_Load(Object sender, EventArgs e) {
+
+        }
+        private void MainForm_Shown(Object sender, EventArgs e) {
+
+        }
+
+
+        private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
+            Point mouseLocation = e.Location;
+            MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
+            MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
+            test++;
+            if (test == 1000) {
+                MessageBox.Show(e.Clicks.ToString());
+            }
+            ConstructorOperationResult constructorResult = Code.ThreatMouseEvent(e);
+        }
+        private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
+            if (e.X > (sender as PictureBox).Width || e.X < 0 ||
+                e.Y > (sender as PictureBox).Height || e.Y < 0) {
+                return;
+            }
+
+            ConstructorOperationResult constructorResult = Code.ThreatMouseEvent(e);
+            if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Continious) {
+                MainFormTmr.Enabled = true;
+                MainFormSttsstpLblHint.Text = constructorResult.OperationMessage;
+            }
+            else
+            if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Canselled) {
+                MainFormTmr.Enabled = false;
+                MainFormSttsstpLblHint.Text = "Отменено";
+            }
+            else
+            if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Finished) {
+                MainFormTmr.Enabled = false;
+                Code.DrawFigures(screen);
+                MainFormSttsstpLblHint.Text = "Успешно.";
+            }
+
+        }
+        //!!!MainForm#46: Поменять таймер на MouseMowe
+        private void MainFormTmr_Tick(Object sender, EventArgs e) {
+            Code.DrawFigures(screen);
+        }
+
+        private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
+            MainFormLstbxFigures.Items.Clear();
+            foreach (var figure in sender as BindingList<MyFigure>) {
+                MainFormLstbxFigures.Items.Add(figure.ToString() + $": ({figure.X},{figure.Y})");
+            }
+
+        }
+
+
+        //Работа с Code
+        //!!!MainForm#5: реализовать Hard-Binding логику Code с Form
+        private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
+            Figure firgureToSelect = Figure.Circle;
+            Code.SelectedFigure = firgureToSelect;
+
+            //Это, наверное, всё же лучше запихуть в Code в этой реализации, т.к.
+            //сообщение одно для всех платформ. Однако для разных людей это не так.
+            //Вопрос отложен.
+            MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
+
+        }
+        private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
+            Code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
+
+        }
+
+        private void Code_SelectedFigure_Changed(Figure _value, EventArgs e) {
+            List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(_value);
+            var cbm = new ComboboxBuildingMethod[pbm.Count];
+            for (int i = 0; i < pbm.Count; i++) {
+                cbm[i] = new ComboboxBuildingMethod(pbm[i]);
+            }
+            MainFormCmbbxBuildingVariants.Items.AddRange(cbm);
+
+        }
+        private void Code_SelectedBuildingMethod_Changed(BuildingMethod _value, EventArgs e) {
+            for (int i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
+                if ((MainFormCmbbxBuildingVariants.Items[i] as ComboboxBuildingMethod).BuildingMethod == _value) {
+                    MainFormCmbbxBuildingVariants.SelectedIndex = i;
+                    break;
+                }
+            }
+
         }
 
     }
