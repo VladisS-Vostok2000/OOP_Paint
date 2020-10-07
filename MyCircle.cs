@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,21 +13,31 @@ namespace OOP_Paint {
 
 
 
-        public MyCircle() : base() { }
-        protected MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base() {
+        //#MyFigure#18: исправить конструкторы в связи с парадигмой
+        public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : base(_pen) {
+            //???Не очень как-то смотрится, но я не могу объявить новый this из-за ручки, которую
+            //нет смысла тут писать ещё раз. Либо ещё раз переопределить X и Y можно, но...?
+            //Это то же самое дублирование кода, если что-то изменится. Дублирование конструктора
+            //методом куда безопаснее смотрится.
+            InitializeFigure(_x1, _y1, _x2, _y2);
+
+        }
+        public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : base(_color) {
+            //???Не очень как-то смотрится, но я не могу объявить новый this из-за ручки, которую
+            //нет смысла тут писать ещё раз. Либо ещё раз переопределить X и Y можно, но...?
+            //Это то же самое дублирование кода, если что-то изменится. Дублирование конструктора
+            //методом куда безопаснее смотрится.
+            InitializeFigure(_x1, _y1, _x2, _y2);
+
+        }
+        public void InitializeFigure(int _x1, int _y1, int _x2, int _y2) {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
-            Width = Math.Abs(p1.X - p2.X);
-            Height = Math.Abs(p1.Y - p2.Y);
-            Radius = Width / 2;
-            Point leftCorner = FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
-            X = leftCorner.X;
-            Y = leftCorner.Y;
-        }
-        public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : this(_x1, _y1, _x2, _y2) {
-            Pen = _pen;
-        }
-        public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : this(_x1, _x2, _y1, _y2) {
-            Pen = new Pen(_color, 2);
+            Radius = Math.Abs(_x1 - _x2) / 2;
+            Center = new Point(
+                (X + Math.Abs(_x1 - _x2)) / 2,
+                (Y + Math.Abs(_y1 - _y2)) / 2
+            );
+
         }
 
 
@@ -34,8 +45,6 @@ namespace OOP_Paint {
         /// <summary>
         /// Обрубает координатный прямоугольник до квадрата относительно первой точки
         /// </summary>
-        /// <param name="_p1"></param>
-        /// <param name="_p2"></param>
         protected (Point, Point) CutCoordinatesRectangleToSquare(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             var p1 = new Point(_x1, _y1);
             var p2 = new Point(_x2, _y2);
@@ -51,8 +60,10 @@ namespace OOP_Paint {
             return (p1, p2);
         }
 
+
         public override void Draw(Graphics _screen) {
-            _screen.DrawEllipse(Pen, X, Y, Width, Height);
+            _screen.DrawEllipse(Pen, X, Y, X + Radius * 2, Y + Radius * 2);
+
         }
 
     }

@@ -90,6 +90,7 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleInRectangleByTwoDots:
                             switch (currConstructorStage) {
                                 case 0:
+                                    //Кликнули ЛКМ
                                     if (e.Button == MouseButtons.Left && e.Clicks == 1) {
                                         supportFigures.Add(new MyRectangle(e.X, e.Y, e.X, e.Y, supportPen));
                                         //!!!MainCode#43: MyCircle как вспомогательная фигура не прорисовывается
@@ -101,6 +102,7 @@ namespace OOP_Paint {
                                     }
                                     else return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                 case 1:
+                                    //Кликнули ЛКМ
                                     if (e.Button == MouseButtons.Left && e.Clicks == 1) {
                                         if (pointsList[0].X == e.X || pointsList[0].Y == e.Y) {
                                             out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
@@ -113,7 +115,8 @@ namespace OOP_Paint {
                                         break;
                                     }
                                     else {
-                                        supportFigures[supportFigures.Count - 1] = new MyRectangle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, supportPen);
+                                        //supportFigures[supportFigures.Count - 1] = new MyRectangle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, supportPen);
+                                        supportFigures[0].Resize(e.X, e.Y);                                            
                                         out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                         break;
                                     }
@@ -125,7 +128,7 @@ namespace OOP_Paint {
                             switch (currConstructorStage) {
                                 case 0:
                                     if (e.Button == MouseButtons.Left && e.Clicks == 1) {
-                                        supportFigures.Add(new Point())
+                                        //supportFigures.Add(new Point())
                                     }
                                     break;
 

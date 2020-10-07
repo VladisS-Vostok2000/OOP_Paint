@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -12,8 +13,6 @@ namespace OOP_Paint {
     public abstract class MyFigure : IDisposable {
         public Int32 X { set; get; }
         public Int32 Y { set; get; }
-        public Int32 Width { set; get; }
-        public Int32 Height { set; get; }
         public Pen Pen { set; get; } = new Pen(Color.Black, 2);
 
 
@@ -21,18 +20,36 @@ namespace OOP_Paint {
         protected MyFigure() {
 
         }
+        protected MyFigure(Pen _pen) {
+            Pen = _pen;
+
+        }
+        protected MyFigure(Color _color) {
+            Pen = new Pen(_color, 1);
+
+        }
+        /// <summary>
+        /// Устанавливает верхний левый угол прямоугольника, заданного двумя точками.
+        /// </summary>
         protected MyFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             Point leftCorner = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
             X = leftCorner.X;
             Y = leftCorner.Y;
-            Width = Math.Abs(_x1 - _x2);
-            Height = Math.Abs(_y1 - _y2);
+
         }
+        /// <summary>
+        /// Устанавливает верхний левый угол прямоугольника, заданного двумя точками, и цвет фигуры.
+        /// </summary>
         protected MyFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : this(_x1, _y1, _x2, _y2) {
             Pen = new Pen(_color, 2);
+
         }
+        /// <summary>
+        /// Устанавливает верхний левый угол прямоугольника, заданного двумя точками, ширину и цвет фигуры.
+        /// </summary>
         protected MyFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : this(_x1, _y1, _x2, _y2) {
             Pen = _pen;
+
         }
 
 
