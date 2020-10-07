@@ -36,8 +36,7 @@ namespace OOP_Paint {
 
 
         public void Resize(int _x, int _y) {
-            Width = Math.Abs(X - _x);
-            Height = Math.Abs(Y - _y);
+            InitializeFigure(X, Y, _x, _y);
 
         }
 

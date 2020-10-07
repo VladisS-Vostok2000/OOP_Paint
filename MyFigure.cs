@@ -17,6 +17,7 @@ namespace OOP_Paint {
 
 
 
+        //!!!MyFigure#75: перестройка конструкторов
         protected MyFigure() {
 
         }
