@@ -32,10 +32,10 @@ namespace OOP_Paint {
         //MyCircle#98: некорректная инициализация
         public void InitializeFigure(int _x1, int _y1, int _x2, int _y2) {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
-            Radius = Math.Abs(_x1 - _x2) / 2;
+            Radius = Math.Abs(p1.X - p2.X) / 2;
             Center = new Point(
-                (X + Math.Abs(_x1 - _x2)) / 2,
-                (Y + Math.Abs(_y1 - _y2)) / 2
+                (X + Math.Abs(p1.X - p2.X)) / 2,
+                (Y + Math.Abs(p1.Y - p2.Y) / 2)
             );
 
         }
