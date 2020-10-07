@@ -13,7 +13,6 @@ namespace OOP_Paint {
     public abstract class MyFigure : IDisposable {
         public Int32 X { set; get; }
         public Int32 Y { set; get; }
-        //MyFigure#36: создание поля Location
         public Point Location {
             set {
                 if (value.X != X && value.Y != Y) {
@@ -75,6 +74,36 @@ namespace OOP_Paint {
 
 
         public abstract void Draw(Graphics _screen);
+
+
+        //???Может переместить их куда-то? Неочевидные методы.
+        /// <summary>
+        /// Возвращает левый верхний угол прямоугольника по координатам двух точек
+        /// </summary>
+        /// <param name="_p1">Первая точка</param>
+        /// <param name="_p2">Вторая точка</param>
+        protected Point FindLeftUpCornerCoord(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
+            Int32 lowX = _x1 > _x2 ? _x2 : _x1;
+            Int32 lowY = _y1 > _y2 ? _y2 : _y1;
+            return new Point(lowX, lowY);
+        }
+        /// <summary>
+        /// Обрубает координатный прямоугольник до квадрата относительно первой точки
+        /// </summary>
+        protected (Point, Point) CutCoordinatesRectangleToSquare(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
+            var p1 = new Point(_x1, _y1);
+            var p2 = new Point(_x2, _y2);
+
+            Int32 a = Math.Abs(p2.X - p1.X);
+            Int32 b = Math.Abs(p2.Y - p1.Y);
+            if (Math.Abs(a) > Math.Abs(b)) {
+                p2.X = _x1 > _x2 ? p1.X - b : p1.X + b;
+            }
+            else {
+                p2.Y = _y1 > _y2 ? p1.Y - a : p1.Y + a;
+            }
+            return (p1, p2);
+        }
 
     }
 }

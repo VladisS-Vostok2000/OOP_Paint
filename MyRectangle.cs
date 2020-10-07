@@ -13,21 +13,19 @@ namespace OOP_Paint {
 
 
 
-        //public MyRectangle() : base() { }
-        //protected MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base(_x1, _y1, _x2, _y2) {
-        //}
-        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : base(_x1, _y1, _x2, _y2, _pen) {
+        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : base(_pen) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
-        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : base(_x1, _y1, _x2, _y2, _color) {
+        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : base(_color) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
         //!!!MyRectangle#74: некорректная иницализация фигуры
         public void InitializeFigure(int _x1, int _y1, int _x2, int _y2) {
+            Location = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
             Width = Math.Abs(_x1 - _x2);
             Height = Math.Abs(_y1 - _y2);
 
