@@ -93,7 +93,6 @@ namespace OOP_Paint {
                                     //Кликнули ЛКМ
                                     if (e.Button == MouseButtons.Left && e.Clicks == 1) {
                                         supportFigures.Add(new MyRectangle(e.X, e.Y, e.X, e.Y, supportPen));
-                                        //!!!
                                         supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen));
                                         pointsList.Add(e.Location);
                                         currConstructorStage++;
