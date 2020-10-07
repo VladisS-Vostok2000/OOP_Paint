@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyCircle : MyFigure {
-        public Int32 Radius { protected set; get; }
-        public Point Center { protected set; get; }
+        public Int32 Radius { set; get; }
+        public Point Center { set; get; }
 
 
 
-        //#MyFigure#18: исправить конструкторы в связи с парадигмой
         public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : base(_pen) {
             //???Не очень как-то смотрится, но я не могу объявить новый this из-за ручки, которую
             //нет смысла тут писать ещё раз. Либо ещё раз переопределить X и Y можно, но...?
@@ -30,6 +29,7 @@ namespace OOP_Paint {
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
+        //MyCircle#98: некорректная инициализация
         public void InitializeFigure(int _x1, int _y1, int _x2, int _y2) {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
             Radius = Math.Abs(_x1 - _x2) / 2;
@@ -66,5 +66,10 @@ namespace OOP_Paint {
 
         }
 
+
+        public void Resize(int _x1, int _y1) {
+            InitializeFigure(X, Y, _x1, _y1);
+
+        }
     }
 }

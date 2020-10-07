@@ -116,7 +116,8 @@ namespace OOP_Paint {
                                     }
                                     else {
                                         //supportFigures[supportFigures.Count - 1] = new MyRectangle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, supportPen);
-                                        supportFigures[0].Resize(e.X, e.Y);                                            
+                                        (supportFigures[0] as MyRectangle).Resize(e.X, e.Y);
+                                        (supportFigures[1] as MyCircle).Resize(e.X, e.Y);
                                         out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                         break;
                                     }

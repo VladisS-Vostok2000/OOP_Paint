@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyRectangle : MyFigure {
-        public int Width { private set; get; }
-        public int Height { private set; get; }
+        public int Width { set; get; }
+        public int Height { set; get; }
 
 
 
@@ -37,6 +37,7 @@ namespace OOP_Paint {
         public void Resize(int _x, int _y) {
             Width = Math.Abs(X - _x);
             Height = Math.Abs(Y - _y);
+
         }
 
 
