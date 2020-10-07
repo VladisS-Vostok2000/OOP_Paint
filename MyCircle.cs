@@ -25,20 +25,22 @@ namespace OOP_Paint {
         }
         //MyCircle#98: некорректная инициализация
         public void InitializeFigure(int _x1, int _y1, int _x2, int _y2) {
+
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
-            Point location = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
-            Location = location;
-            Radius = Math.Abs(p1.X - p2.X) / 2;
-            Center = new Point(
-                (X + Math.Abs(p1.X - p2.X)) / 2,
-                (Y + Math.Abs(p1.Y - p2.Y) / 2)
-            );
+            {
+                Location = FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
+                Radius = Math.Abs(p1.X - p2.X) / 2;
+                Center = new Point(
+                    (X + Math.Abs(p1.X - p2.X)) / 2,
+                    (Y + Math.Abs(p1.Y - p2.Y)) / 2
+                );
+            }
 
         }
 
 
-        public void Resize(int _x1, int _y1) {
-            InitializeFigure(X, Y, _x1, _y1);
+        public void Resize(int _x1, int _y1, int _x2, int _y2) {
+            InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
 

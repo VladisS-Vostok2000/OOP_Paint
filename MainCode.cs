@@ -93,7 +93,7 @@ namespace OOP_Paint {
                                     //Кликнули ЛКМ
                                     if (e.Button == MouseButtons.Left && e.Clicks == 1) {
                                         supportFigures.Add(new MyRectangle(e.X, e.Y, e.X, e.Y, supportPen));
-                                        supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen));
+                                        supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen2));
                                         pointsList.Add(e.Location);
                                         currConstructorStage++;
                                         out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
@@ -115,8 +115,8 @@ namespace OOP_Paint {
                                     }
                                     else {
                                         //supportFigures[supportFigures.Count - 1] = new MyRectangle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, supportPen);
-                                        (supportFigures[0] as MyRectangle).Resize(e.X, e.Y);
-                                        (supportFigures[1] as MyCircle).Resize(e.X, e.Y);
+                                        (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, e.X, e.Y);
+                                        (supportFigures[1] as MyCircle).Resize(pointsList[0].X, pointsList[0].Y, e.X, e.Y);
                                         out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                         break;
                                     }

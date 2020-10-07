@@ -38,7 +38,6 @@ namespace OOP_Paint {
             //классе, но это не мешает почему-то комбобоксу брать свойство из objekt.
             MainFormCmbbxBuildingVariants.DisplayMember = "Name";
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
-
         }
 
         //private void CurrPossibleBuildingMethods_ListChanged(Object sender, ListChangedEventArgs e) {
@@ -125,6 +124,7 @@ namespace OOP_Paint {
 
         private void Code_SelectedFigure_Changed(Figure _value, EventArgs e) {
             List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(_value);
+            MainFormCmbbxBuildingVariants.Items.Clear();
             var cbm = new ComboboxBuildingMethod[pbm.Count];
             for (int i = 0; i < pbm.Count; i++) {
                 cbm[i] = new ComboboxBuildingMethod(pbm[i]);
