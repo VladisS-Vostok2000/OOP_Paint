@@ -11,10 +11,21 @@ using System.Windows.Forms;
 using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public abstract class MyFigure : IDisposable {
-        //MyFigure#36: создание поля Location
         public Int32 X { set; get; }
         public Int32 Y { set; get; }
-        public Point Location { set; get; }
+        //MyFigure#36: создание поля Location
+        public Point Location {
+            set {
+                if (value.X != X && value.Y != Y) {
+                    X = value.X;
+                    Y = value.Y;
+
+                }
+            } 
+            get {
+                return new Point(X, Y);
+            }
+        }
         public Pen Pen { set; get; } = new Pen(Color.Black, 2);
 
 
