@@ -14,13 +14,15 @@ namespace OOP_Paint {
 
 
         //public MyRectangle() : base() { }
-        protected MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base(_x1, _y1, _x2, _y2) {
-        }
-        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : this(_x1, _y1, _x2, _y2) {
+        //protected MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) : base(_x1, _y1, _x2, _y2) {
+        //}
+        public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : base(_x1, _y1, _x2, _y2, _pen) {
+            //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
         public MyRectangle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : base(_x1, _y1, _x2, _y2, _color) {
+            //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }

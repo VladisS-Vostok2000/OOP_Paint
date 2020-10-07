@@ -24,8 +24,7 @@ namespace OOP_Paint {
             Pen = _pen;
 
         }
-        protected MyFigure(Color _color) {
-            Pen = new Pen(_color, 1);
+        protected MyFigure(Color _color) : this(new Pen(_color, 1)) {
 
         }
         /// <summary>
@@ -41,13 +40,15 @@ namespace OOP_Paint {
         /// Устанавливает верхний левый угол прямоугольника, заданного двумя точками, и цвет фигуры.
         /// </summary>
         protected MyFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : this(_x1, _y1, _x2, _y2) {
-            Pen = new Pen(_color, 2);
+            //???Повторяющийся код, ожидалось this(_color), однако оператор this уже занят.
+            Pen = new Pen(_color, 1);
 
         }
         /// <summary>
         /// Устанавливает верхний левый угол прямоугольника, заданного двумя точками, ширину и цвет фигуры.
         /// </summary>
         protected MyFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : this(_x1, _y1, _x2, _y2) {
+            //???Повторяющийся код, ожидалось this(_pen), однако оператор this уже занят.
             Pen = _pen;
 
         }
@@ -55,11 +56,10 @@ namespace OOP_Paint {
 
 
         /// <summary>
-        /// Находит левый верхний угол прямоугольника по координатам двух точек
+        /// Возвращает левый верхний угол прямоугольника по координатам двух точек
         /// </summary>
         /// <param name="_p1">Первая точка</param>
         /// <param name="_p2">Вторая точка</param>
-        /// <returns></returns>
         protected Point FindLeftUpCornerCoord(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             Int32 lowX = _x1 > _x2 ? _x2 : _x1;
             Int32 lowY = _y1 > _y2 ? _y2 : _y1;
@@ -100,7 +100,6 @@ namespace OOP_Paint {
         //}
         #endregion
         #endregion
-
 
         public abstract void Draw(Graphics _screen);
 

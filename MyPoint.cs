@@ -12,15 +12,13 @@ namespace OOP_Paint {
         
 
 
-        public MyPoint() : base() { }
-        protected MyPoint(Int32 _x, Int32 _y) {
-            X = _x;
-            Y = _y;
-            Width = 0;
-            Height = 0;
-        }
-        public MyPoint(Int32 _x, Int32 _y, Color _color) : this(_x, _y) {
-            Color = _color;
+        //public MyPoint() : base() { }
+        //protected MyPoint(Int32 _x, Int32 _y) {
+        //    X = _x;
+        //    Y = _y;
+        //}
+        public MyPoint(Int32 _x, Int32 _y, Color _color) : base(_x, _y, _x, _y, _color) {
+
         }
 
 
