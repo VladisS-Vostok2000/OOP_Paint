@@ -14,24 +14,19 @@ namespace OOP_Paint {
 
 
         public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Pen _pen) : base(_pen) {
-            //???Не очень как-то смотрится, но я не могу объявить новый this из-за ручки, которую
-            //нет смысла тут писать ещё раз. Либо ещё раз переопределить X и Y можно, но...?
-            //Это то же самое дублирование кода, если что-то изменится. Дублирование конструктора
-            //методом куда безопаснее смотрится.
+            //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
         public MyCircle(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2, Color _color) : base(_color) {
-            //???Не очень как-то смотрится, но я не могу объявить новый this из-за ручки, которую
-            //нет смысла тут писать ещё раз. Либо ещё раз переопределить X и Y можно, но...?
-            //Это то же самое дублирование кода, если что-то изменится. Дублирование конструктора
-            //методом куда безопаснее смотрится.
+            //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
         //MyCircle#98: некорректная инициализация
         public void InitializeFigure(int _x1, int _y1, int _x2, int _y2) {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
+            Location = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
             Radius = Math.Abs(p1.X - p2.X) / 2;
             Center = new Point(
                 (X + Math.Abs(p1.X - p2.X)) / 2,
@@ -59,6 +54,21 @@ namespace OOP_Paint {
             }
             return (p1, p2);
         }
+        /// <summary>
+        /// Возвращает левый верхний угол прямоугольника по координатам двух точек
+        /// </summary>
+        /// <param name="_p1">Первая точка</param>
+        /// <param name="_p2">Вторая точка</param>
+        protected Point FindLeftUpCornerCoord(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
+            Int32 lowX = _x1 > _x2 ? _x2 : _x1;
+            Int32 lowY = _y1 > _y2 ? _y2 : _y1;
+            return new Point(lowX, lowY);
+        }
+
+        public void Resize(int _x1, int _y1) {
+            InitializeFigure(X, Y, _x1, _y1);
+
+        }
 
 
         public override void Draw(Graphics _screen) {
@@ -66,10 +76,5 @@ namespace OOP_Paint {
 
         }
 
-
-        public void Resize(int _x1, int _y1) {
-            InitializeFigure(X, Y, _x1, _y1);
-
-        }
     }
 }
