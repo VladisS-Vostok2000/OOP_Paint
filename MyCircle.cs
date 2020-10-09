@@ -23,7 +23,6 @@ namespace OOP_Paint {
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
-        //MyCircle#98: некорректная инициализация
         public void InitializeFigure(int _x1, int _y1, int _x2, int _y2) {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
             {
@@ -34,8 +33,9 @@ namespace OOP_Paint {
                 X + Radius,
                 Y + Radius
             );
-            int a = 1;
+
         }
+
 
 
         public void Resize(int _x1, int _y1, int _x2, int _y2) {

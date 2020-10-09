@@ -14,7 +14,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
-//#Projekt84: Добавить перегрузку построения фигуры
+//!!!#Projekt84: Добавить перегрузку построения фигуры
 namespace OOP_Paint {
     public sealed class MainCode {
         public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
@@ -47,19 +47,16 @@ namespace OOP_Paint {
             }
             get => selectedBuildingMethod;
         }
-        //???Не совсем понятно назначение этого перечисления. Единственный плюс - не нужно возиться
-        //с объектом. Из минусов: каждый раз при использовании методов
-        //его нужно конвертировать в этот самый объект. Пустой. [Источник? Нет мест, где бы создавался такой объект]
         private Int32 currConstructorStage = 0;
-
-        //???Лист реализует Binding-логику, которая необходима для привязки и реализации событий в GUI,
+        //!!!MainCode#54: пересоздать FiguresList благодаря ивентам
+        //Лист реализует Binding-логику, которая необходима для привязки и реализации событий в GUI,
         //однако он становится публичным и все его элементы доступны для редактирования снаружи.
         public readonly BindingList<MyFigure> Figures = new BindingList<MyFigure>();
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 
         private static readonly Pen supportPen = new Pen(Color.Blue) { Width = 1, DashStyle = DashStyle.Dash };
-        private static readonly Pen supportPen2 = new Pen(Color.Black, 2);
+        private static readonly Pen supportPen2 = new Pen(Color.Red, 1);
         private static readonly Pen figurePen = new Pen(Color.Black);
 
 
