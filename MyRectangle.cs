@@ -23,7 +23,6 @@ namespace OOP_Paint {
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
-        //MyRectangle#74: некорректная иницализация фигуры
         public void InitializeFigure(int _x1, int _y1, int _x2, int _y2) {
             Location = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
             Width = Math.Abs(_x1 - _x2);

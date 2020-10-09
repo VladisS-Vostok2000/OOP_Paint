@@ -107,7 +107,6 @@ namespace OOP_Paint {
                                             out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                             break;
                                         }
-
                                         Figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, e.X, e.Y, figurePen));
                                         CloseConstructor();
                                         out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");

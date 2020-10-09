@@ -18,7 +18,6 @@ namespace OOP_Paint {
     public sealed partial class MainForm : Form {
         private readonly Graphics screen;
         private readonly MainCode Code = new MainCode();
-        private static Int32 test = 0;
         //???Жесть... А можно попроще как-то??
         //Вроде DisplayMember работает и без DataSourse. Тогда лист не нужен?
         //private BindingList<ComboboxBuildingMethod> currPossibleBuildingMethods;
@@ -62,10 +61,7 @@ namespace OOP_Paint {
             Point mouseLocation = e.Location;
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
-            test++;
-            if (test == 1000) {
-                MessageBox.Show(e.Clicks.ToString());
-            }
+
             ConstructorOperationResult constructorResult = Code.ThreatMouseEvent(e);
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
