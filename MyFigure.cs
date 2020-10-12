@@ -50,10 +50,10 @@ namespace OOP_Paint {
         public abstract void Draw(Graphics _screen);
 
 
-        //MyFigure#82: создание GetDescription для фигур [объектов]
         public string GetDescription() {
             return FiguresEnum.GetDescription(this);
         }
+
 
         //???Может переместить их куда-то? Неочевидные методы.
         /// <summary>
@@ -61,7 +61,7 @@ namespace OOP_Paint {
         /// </summary>
         /// <param name="_p1">Первая точка</param>
         /// <param name="_p2">Вторая точка</param>
-        protected Point FindLeftUpCornerCoord(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
+        protected static Point FindLeftUpCornerCoord(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             Int32 lowX = _x1 > _x2 ? _x2 : _x1;
             Int32 lowY = _y1 > _y2 ? _y2 : _y1;
             return new Point(lowX, lowY);
@@ -69,7 +69,7 @@ namespace OOP_Paint {
         /// <summary>
         /// Обрубает координатный прямоугольник до квадрата относительно первой точки
         /// </summary>
-        protected (Point, Point) CutCoordinatesRectangleToSquare(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
+        protected static (Point, Point) CutCoordinatesRectangleToSquare(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             var p1 = new Point(_x1, _y1);
             var p2 = new Point(_x2, _y2);
 
