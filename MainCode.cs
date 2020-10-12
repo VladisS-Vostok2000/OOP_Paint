@@ -14,16 +14,16 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
-//!!!#Projekt84: Добавить перегрузку построения фигуры
+//Projekt#84: добавить перегрузку построения фигуры
 namespace OOP_Paint {
     public sealed class MainCode {
         public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
         public delegate void FigureHandler(Figure figure, EventArgs e);
+
         #region API
         public event FigureHandler SelectedFigureChanged;
         public event BuildingMethodHandler SelectedBuildingVariantChanged;
         public event ListChangedEventHandler FiguresListChanged;
-        //Figures.ListChanged;
         #endregion
 
         private Figure selectedFigure;
@@ -52,9 +52,7 @@ namespace OOP_Paint {
             get => selectedBuildingMethod;
         }
         private Int32 currConstructorStage = 0;
-        //!!!MainCode#54: пересоздать FiguresList благодаря ивентам
-        //Лист реализует Binding-логику, которая необходима для привязки и реализации событий в GUI,
-        //однако он становится публичным и все его элементы доступны для редактирования снаружи.
+
         private readonly BindingList<MyFigure> Figures = new BindingList<MyFigure>();
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
@@ -65,8 +63,11 @@ namespace OOP_Paint {
 
 
 
-        //???Странная защита листа: он один фиг передаётся как sender, а использование
+        //???Лист реализует Binding-логику, которая необходима для привязки и реализации событий в GUI,
+        //однако он становится публичным и все его элементы доступны для редактирования снаружи.
+        //Странная защита листа: он один фиг передаётся как sender, а использование
         //события ради события выглядит нелепо. Стоит сделать list public?
+        //Но зато API красивее смотрится.
         public MainCode() {
             Figures.ListChanged += Figures_ListChanged;
         }
@@ -85,7 +86,7 @@ namespace OOP_Paint {
         //ведёт упаковку в object, т.к. это класс.
         //upd: Повезло, класс один. Но всё равно один метод вмещает 2 из-за switsch ("if (e.Button == MouseButtons.Left)".)
         //???Что насчёт AddPoint(enum Strong/Soft)
-        //!!!MainCode#83: разбить ThreatMouseEvent на AddPoint(enum Strong/Soft)
+        //MainCode#83: разбить ThreatMouseEvent на AddPoint(enum Strong/Soft)
         public ConstructorOperationResult ThreatMouseEvent(MouseEventArgs e) {
             ConstructorOperationResult out_result;
             //???По-хорошему buildingVariant должен быть перечислением, ибо если
