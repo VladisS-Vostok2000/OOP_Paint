@@ -50,6 +50,11 @@ namespace OOP_Paint {
         public abstract void Draw(Graphics _screen);
 
 
+        //MyFigure#82: создание GetDescription для фигур [объектов]
+        public string GetDescription() {
+            return FiguresEnum.GetDescription(this);
+        }
+
         //???Может переместить их куда-то? Неочевидные методы.
         /// <summary>
         /// Возвращает левый верхний угол прямоугольника по координатам двух точек
@@ -80,7 +85,6 @@ namespace OOP_Paint {
         }
 
 
-        //MyFigure#82: создание GetDescription для фигур
 
 
     }

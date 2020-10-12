@@ -45,7 +45,14 @@ namespace OOP_Paint {
             }
 
         }
-
+        public static String GetDescription(MyFigure _myFigure) {
+            //???Всё-таки мне пригодился конвертер. Смотрится не очень. Стоит ли внедрить
+            //FiguresEnum в MyFigure?
+            if (_myFigure is MyCircle) {
+                return Figure.Circle.GetDescription();
+            }
+            else throw new Exception("Фигура не реализована.");
+        }
         public static List<BuildingMethod> ReturnPossibleBuildingVariants(Figure _figure) {
             var out_list = new List<BuildingMethod>();
             switch(_figure) {

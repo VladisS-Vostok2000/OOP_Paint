@@ -14,7 +14,7 @@ using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
 namespace OOP_Paint {
-    public struct ListBoxFigure {
+    public sealed class ListBoxFigure {
         public readonly string Name;
         public readonly int Id;
         

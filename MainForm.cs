@@ -135,16 +135,42 @@ namespace OOP_Paint {
 
         }
         private void Code_FiguresListChanged(Object sender, ListChangedEventArgs e) {
+            int currListSelectedItem = (MainFormLstbxFigures.SelectedItem as ListBoxFigure).Id;
+            int currListSelectedIndex = MainFormLstbxFigures.SelectedIndex;
+
             MainFormLstbxFigures.Items.Clear();
             var toListboxList = new List<ListBoxFigure>();
             var figuresList = sender as BindingList<MyFigure>;
 
             for (int i = 0; i < figuresList.Count; i++) {
-                toListboxList.Add(figuresList[i]); 
+                toListboxList.Add(
+                    new ListBoxFigure(figuresList[i])); 
             }
-            //foreach (var figure in list) {
-            //    tempList.Add(list)
-            //}
+
+            MainFormLstbxFigures.Items.AddRange(toListboxList.ToArray());
+
+            int listBoxItemToSelectIndex = -1;
+            for (int i = 0; i < MainFormLstbxFigures.Items.Count; i++) {
+                if ((MainFormLstbxFigures.Items[i] as ListBoxFigure).Id == currListSelectedItem) {
+                    listBoxItemToSelectIndex = i;
+                    break;
+                }
+            }
+
+            //Тут короче присвоить нужно индекс ниже, т.к. элемент был удалён, но при нуле
+            //вылетит -1.
+            if (listBoxItemToSelectIndex == -1) {
+                listBoxItemToSelectIndex = currListSelectedIndex--;
+                if (listBoxItemToSelectIndex == -1) {
+                    MainFormLstbxFigures.SelectedIndex = 0;
+                }
+                else {
+                    MainFormLstbxFigures.SelectedIndex = listBoxItemToSelectIndex;
+                }
+            }
+            else {
+                MainFormLstbxFigures.SelectedIndex = listBoxItemToSelectIndex;
+            }
 
         }
         #endregion
