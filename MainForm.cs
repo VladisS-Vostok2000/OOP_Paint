@@ -18,9 +18,6 @@ namespace OOP_Paint {
     public sealed partial class MainForm : Form {
         private readonly Graphics screen;
         private readonly MainCode Code = new MainCode();
-        //???Жесть... А можно попроще как-то??
-        //Вроде DisplayMember работает и без DataSourse. Тогда лист не нужен?
-        //private BindingList<ComboboxBuildingMethod> currPossibleBuildingMethods;
 
 
 
@@ -29,15 +26,14 @@ namespace OOP_Paint {
             screen = MainFromPctrbxScreen.CreateGraphics();
             Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
             Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
-
-            //currPossibleBuildingMethods = new BindingList<ComboboxBuildingMethod>();
-            //currPossibleBuildingMethods.ListChanged += CurrPossibleBuildingMethods_ListChanged;
-            //MainFormCmbbxBuildingVariants.DataSource = currPossibleBuildingMethods;
+            Code.FiguresListChanged += Code_FiguresListChanged;
             //???Это странно работает: мы не указываем конкретный класс, а Name может быть переопределён в дочернем
             //классе, но это не мешает почему-то комбобоксу брать свойство из objekt.
             MainFormCmbbxBuildingVariants.DisplayMember = "Name";
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
         }
+
+
 
         //private void CurrPossibleBuildingMethods_ListChanged(Object sender, ListChangedEventArgs e) {
         //    if (currPossibleBuildingMethods.Count == 0) {
@@ -48,7 +44,6 @@ namespace OOP_Paint {
 
         //    }
         //}
-
         private void MainForm_Load(Object sender, EventArgs e) {
 
         }
@@ -118,18 +113,20 @@ namespace OOP_Paint {
 
         }
 
+
+        #region API
         private void Code_SelectedFigure_Changed(Figure _value, EventArgs e) {
             List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(_value);
             MainFormCmbbxBuildingVariants.Items.Clear();
             var cbm = new ComboboxBuildingMethod[pbm.Count];
-            for (int i = 0; i < pbm.Count; i++) {
+            for (Int32 i = 0; i < pbm.Count; i++) {
                 cbm[i] = new ComboboxBuildingMethod(pbm[i]);
             }
             MainFormCmbbxBuildingVariants.Items.AddRange(cbm);
 
         }
         private void Code_SelectedBuildingMethod_Changed(BuildingMethod _value, EventArgs e) {
-            for (int i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
+            for (Int32 i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
                 if ((MainFormCmbbxBuildingVariants.Items[i] as ComboboxBuildingMethod).BuildingMethod == _value) {
                     MainFormCmbbxBuildingVariants.SelectedIndex = i;
                     break;
@@ -137,6 +134,20 @@ namespace OOP_Paint {
             }
 
         }
+        private void Code_FiguresListChanged(Object sender, ListChangedEventArgs e) {
+            MainFormLstbxFigures.Items.Clear();
+            var toListboxList = new List<ListBoxFigure>();
+            var figuresList = sender as BindingList<MyFigure>;
+
+            for (int i = 0; i < figuresList.Count; i++) {
+                toListboxList.Add(figuresList[i].ToFigure()); 
+            }
+            //foreach (var figure in list) {
+            //    tempList.Add(list)
+            //}
+
+        }
+        #endregion
 
     }
 }

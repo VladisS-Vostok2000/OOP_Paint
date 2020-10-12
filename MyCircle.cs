@@ -23,7 +23,7 @@ namespace OOP_Paint {
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
-        public void InitializeFigure(int _x1, int _y1, int _x2, int _y2) {
+        public void InitializeFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
             {
                 Location = FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
@@ -38,7 +38,7 @@ namespace OOP_Paint {
 
 
 
-        public void Resize(int _x1, int _y1, int _x2, int _y2) {
+        public void Resize(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }

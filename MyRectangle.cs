@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyRectangle : MyFigure {
-        public int Width { set; get; }
-        public int Height { set; get; }
+        public Int32 Width { set; get; }
+        public Int32 Height { set; get; }
 
 
 
@@ -23,7 +23,7 @@ namespace OOP_Paint {
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
-        public void InitializeFigure(int _x1, int _y1, int _x2, int _y2) {
+        public void InitializeFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             Location = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
             Width = Math.Abs(_x1 - _x2);
             Height = Math.Abs(_y1 - _y2);
@@ -31,7 +31,7 @@ namespace OOP_Paint {
         }
 
 
-        public void Resize(int _x1, int _y1, int _x2, int _y2) {
+        public void Resize(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }

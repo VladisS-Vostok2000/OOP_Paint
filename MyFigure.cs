@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public abstract class MyFigure : IDisposable {
+        //MyFigure#80: создание id
         public Int32 X { set; get; }
         public Int32 Y { set; get; }
         public Point Location {

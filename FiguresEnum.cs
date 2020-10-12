@@ -28,7 +28,7 @@ namespace OOP_Paint {
 
 
 
-        public static string GetDescription(this BuildingMethod _bm) {
+        public static String GetDescription(this BuildingMethod _bm) {
             switch (_bm) {
                 case BuildingMethod.None: return "";
                 case BuildingMethod.CircleCenterRadius: return "Центр, радиус.";
@@ -37,7 +37,14 @@ namespace OOP_Paint {
             }
 
         }
+        public static String GetDescription(this Figure _figure) {
+            switch (_figure) {
+                case Figure.None: return "";
+                case Figure.Circle: return "Окружность";
+                default: throw new Exception("Неизвестная фигура");
+            }
 
+        }
 
         public static List<BuildingMethod> ReturnPossibleBuildingVariants(Figure _figure) {
             var out_list = new List<BuildingMethod>();

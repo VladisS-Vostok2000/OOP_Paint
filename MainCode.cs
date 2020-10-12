@@ -19,8 +19,12 @@ namespace OOP_Paint {
     public sealed class MainCode {
         public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
         public delegate void FigureHandler(Figure figure, EventArgs e);
+        #region API
         public event FigureHandler SelectedFigureChanged;
         public event BuildingMethodHandler SelectedBuildingVariantChanged;
+        public event ListChangedEventHandler FiguresListChanged;
+        //Figures.ListChanged;
+        #endregion
 
         private Figure selectedFigure;
         public Figure SelectedFigure {
@@ -51,7 +55,7 @@ namespace OOP_Paint {
         //!!!MainCode#54: пересоздать FiguresList благодаря ивентам
         //Лист реализует Binding-логику, которая необходима для привязки и реализации событий в GUI,
         //однако он становится публичным и все его элементы доступны для редактирования снаружи.
-        public readonly BindingList<MyFigure> Figures = new BindingList<MyFigure>();
+        private readonly BindingList<MyFigure> Figures = new BindingList<MyFigure>();
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 

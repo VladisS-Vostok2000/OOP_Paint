@@ -18,7 +18,7 @@ using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public sealed class ComboboxBuildingMethod {
         public readonly BuildingMethod BuildingMethod;
-        public string Name { get; }
+        public String Name { get; }
 
 
 
