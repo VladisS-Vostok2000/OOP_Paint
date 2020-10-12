@@ -12,8 +12,8 @@ using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public abstract class MyFigure : IDisposable {
         //MyFigure#80: создание id
-        public static int FiguresCount = 0;
-        public int Id = 0;
+        public static Int32 FiguresCount = 0;
+        public Int32 Id = 0;
         public Int32 X { set; get; }
         public Int32 Y { set; get; }
         public Point Location {
@@ -50,7 +50,7 @@ namespace OOP_Paint {
         public abstract void Draw(Graphics _screen);
 
 
-        public string GetDescription() {
+        public String GetDescription() {
             return FiguresEnum.GetDescription(this);
         }
 

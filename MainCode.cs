@@ -65,6 +65,19 @@ namespace OOP_Paint {
 
 
 
+        //???Странная защита листа: он один фиг передаётся как sender, а использование
+        //события ради события выглядит нелепо. Стоит сделать list public?
+        public MainCode() {
+            Figures.ListChanged += Figures_ListChanged;
+        }
+
+
+
+        private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
+            FiguresListChanged?.Invoke(sender, e);
+        }
+
+
         //???По-хорошему нужен отдельный метод для прорисовки
         //и обработки клика мыши, однако дублировать switsch 
         //очень плохо, тем более такой длинный. Тогда нужен MouseEvent

@@ -31,6 +31,9 @@ namespace OOP_Paint {
             //классе, но это не мешает почему-то комбобоксу брать свойство из objekt.
             MainFormCmbbxBuildingVariants.DisplayMember = "Name";
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
+            MainFormLstbxFigures.DisplayMember = "Name";
+            MainFormLstbxFigures.ValueMember = "Id";
+
         }
 
 
@@ -135,41 +138,34 @@ namespace OOP_Paint {
 
         }
         private void Code_FiguresListChanged(Object sender, ListChangedEventArgs e) {
-            int currListSelectedItem = (MainFormLstbxFigures.SelectedItem as ListBoxFigure).Id;
-            int currListSelectedIndex = MainFormLstbxFigures.SelectedIndex;
+            Int32 currListSelectedIndex = MainFormLstbxFigures.SelectedIndex;
+            Boolean wasSmnSelected = currListSelectedIndex != -1;
+            Int32 currListSelectedItemId = -1;
+            if (wasSmnSelected) {
+                currListSelectedItemId = (MainFormLstbxFigures.SelectedItem as ListBoxFigure).Id;
+            }
 
             MainFormLstbxFigures.Items.Clear();
             var toListboxList = new List<ListBoxFigure>();
             var figuresList = sender as BindingList<MyFigure>;
-
-            for (int i = 0; i < figuresList.Count; i++) {
+            for (Int32 i = 0; i < figuresList.Count; i++) {
                 toListboxList.Add(
-                    new ListBoxFigure(figuresList[i])); 
+                    new ListBoxFigure(figuresList[i]));
             }
-
             MainFormLstbxFigures.Items.AddRange(toListboxList.ToArray());
 
-            int listBoxItemToSelectIndex = -1;
-            for (int i = 0; i < MainFormLstbxFigures.Items.Count; i++) {
-                if ((MainFormLstbxFigures.Items[i] as ListBoxFigure).Id == currListSelectedItem) {
-                    listBoxItemToSelectIndex = i;
-                    break;
+            if (wasSmnSelected) {
+                Int32 listBoxItemToSelectIndex = -1;
+                for (Int32 i = 0; i < MainFormLstbxFigures.Items.Count; i++) {
+                    if ((MainFormLstbxFigures.Items[i] as ListBoxFigure).Id == currListSelectedItemId) {
+                        listBoxItemToSelectIndex = i;
+                        break;
+                    }
                 }
-            }
 
-            //Тут короче присвоить нужно индекс ниже, т.к. элемент был удалён, но при нуле
-            //вылетит -1.
-            if (listBoxItemToSelectIndex == -1) {
-                listBoxItemToSelectIndex = currListSelectedIndex--;
-                if (listBoxItemToSelectIndex == -1) {
-                    MainFormLstbxFigures.SelectedIndex = 0;
-                }
-                else {
+                if (listBoxItemToSelectIndex != -1) { //Выделенный элемент не был удалён
                     MainFormLstbxFigures.SelectedIndex = listBoxItemToSelectIndex;
                 }
-            }
-            else {
-                MainFormLstbxFigures.SelectedIndex = listBoxItemToSelectIndex;
             }
 
         }
