@@ -140,7 +140,7 @@ namespace OOP_Paint {
             var figuresList = sender as BindingList<MyFigure>;
 
             for (int i = 0; i < figuresList.Count; i++) {
-                toListboxList.Add(figuresList[i].ToFigure()); 
+                toListboxList.Add(figuresList[i]); 
             }
             //foreach (var figure in list) {
             //    tempList.Add(list)

@@ -12,6 +12,8 @@ using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public abstract class MyFigure : IDisposable {
         //MyFigure#80: создание id
+        public static int FiguresCount = 0;
+        public int Id = 0;
         public Int32 X { set; get; }
         public Int32 Y { set; get; }
         public Point Location {
@@ -31,6 +33,8 @@ namespace OOP_Paint {
 
         protected MyFigure(Pen _pen) {
             Pen = _pen;
+            FiguresCount++;
+            Id = FiguresCount;
 
         }
         protected MyFigure(Color _color) : this(new Pen(_color, 1)) {
@@ -39,6 +43,7 @@ namespace OOP_Paint {
 
 
 
+        //MyFigure#81: реализовать удаление фигуры и присваивание ID.
         public void Dispose() { }
 
 
@@ -73,6 +78,10 @@ namespace OOP_Paint {
             }
             return (p1, p2);
         }
+
+
+        //MyFigure#82: создание GetDescription для фигур
+
 
     }
 }

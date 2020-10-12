@@ -16,13 +16,13 @@ using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public struct ListBoxFigure {
         public readonly string Name;
-        public readonly Figure Figure;
+        public readonly int Id;
         
 
 
-        public ListBoxFigure(Figure _figure) {
-            Figure = _figure;
-            Name = _figure.GetDescription();
+        public ListBoxFigure(MyFigure _object) {
+            Id = _object.Id;
+            Name = _object.GetDescription();
 
         }
 
