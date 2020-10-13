@@ -144,20 +144,34 @@ namespace OOP_Paint {
                                 case 0:
                                     //Кликнули ЛКМ
                                     if (e.Button == MouseButtons.Left && e.Clicks == 1) {
-                                        supportFigures.Add(new MyRectangle(e.X, e.Y, e.X, e.Y, supportPen));
-                                        supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen2));
+                                        supportFigures.Add(new MyCut(supportPen, e.Location, e.Location));
+                                        supportFigures.Add(new MyCircle(supportPen2, e.Location, 0));
                                         pointsList.Add(e.Location);
                                         currConstructorStage++;
-                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
                                         break;
                                     }
+                                    else return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                case 1:
+                                    //Кликнули ЛКМ
+                                    if (e.Button == MouseButtons.Left && e.Clicks == 1) {
+                                        if (pointsList[0].X == e.X && pointsList[0].Y == e.Y) {
+                                            return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                        }
+                                        Figures.Add(new MyCircle(figurePen, pointsList[0], MyFigure.FindLength(e.Location, pointsList[0])));
+                                        CloseConstructor();
+                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                    }
+                                    else {
+                                        (supportFigures[0] as MyCut).Resize(pointsList[0], e.Location);
+                                        (supportFigures[1] as MyCircle).Resize(pointsList[0], MyFigure.FindLength(e.Location, pointsList[0]));
+                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    }
                                     break;
-
+                                default: throw new Exception();
                             }
-                            out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
-                            //throw new NotImplementedException();
                             break;
-                        default: throw new Exception("Фигура задана, но не задан вариант построения.");
+                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
                     }
                     break;
                 default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");

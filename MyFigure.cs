@@ -14,8 +14,10 @@ namespace OOP_Paint {
         //MyFigure#80: создание id
         public static Int32 FiguresCount = 0;
         public Int32 Id = 0;
-        public Int32 X { set; get; }
-        public Int32 Y { set; get; }
+        protected Int32 x;
+        public virtual Int32 X { set; get; }
+        protected Int32 y;
+        public virtual Int32 Y { set; get; }
         public Point Location {
             set {
                 if (value.X != X || value.Y != Y) {
@@ -61,7 +63,7 @@ namespace OOP_Paint {
         /// </summary>
         /// <param name="_p1">Первая точка</param>
         /// <param name="_p2">Вторая точка</param>
-        protected static Point FindLeftUpCornerCoord(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
+        public static Point FindLeftUpCornerCoord(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             Int32 lowX = _x1 > _x2 ? _x2 : _x1;
             Int32 lowY = _y1 > _y2 ? _y2 : _y1;
             return new Point(lowX, lowY);
@@ -69,7 +71,7 @@ namespace OOP_Paint {
         /// <summary>
         /// Обрубает координатный прямоугольник до квадрата относительно первой точки
         /// </summary>
-        protected static (Point, Point) CutCoordinatesRectangleToSquare(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
+        public static (Point, Point) CutCoordinatesRectangleToSquare(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             var p1 = new Point(_x1, _y1);
             var p2 = new Point(_x2, _y2);
 
@@ -83,6 +85,11 @@ namespace OOP_Paint {
             }
             return (p1, p2);
         }
-
+        /// <summary>
+        /// Находил целочисленную длину между двумя точками
+        /// </summary>
+        public static Int32 FindLength(Point _p1, Point _p2) {
+            return (Int32)Math.Truncate(Math.Sqrt(Math.Pow(_p1.X - _p2.X, 2) + Math.Pow(_p1.Y - _p2.Y, 2)));
+        }
     }
 }
