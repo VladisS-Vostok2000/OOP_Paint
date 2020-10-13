@@ -84,8 +84,5 @@ namespace OOP_Paint {
             return (p1, p2);
         }
 
-
-
-
     }
 }
