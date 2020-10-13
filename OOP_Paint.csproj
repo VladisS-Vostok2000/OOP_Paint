@@ -51,6 +51,7 @@
     <Compile Include="FiguresEnum.cs" />
     <Compile Include="ListBoxFigure.cs" />
     <Compile Include="MainCode.cs" />
+    <Compile Include="MyCut.cs" />
     <Compile Include="MyFigure.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

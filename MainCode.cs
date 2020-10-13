@@ -86,7 +86,8 @@ namespace OOP_Paint {
         //ведёт упаковку в object, т.к. это класс.
         //upd: Повезло, класс один. Но всё равно один метод вмещает 2 из-за switsch ("if (e.Button == MouseButtons.Left)".)
         //???Что насчёт AddPoint(enum Strong/Soft)
-        //MainCode#83: разбить ThreatMouseEvent на AddPoint(enum Strong/Soft)
+        //Но тут вопрос: а куда currConstrStage девать?
+        //!!!MainCode#83: разбить ThreatMouseEvent на AddPoint(enum Strong/Soft)
         public ConstructorOperationResult ThreatMouseEvent(MouseEventArgs e) {
             ConstructorOperationResult out_result;
             //???По-хорошему buildingVariant должен быть перечислением, ибо если
@@ -141,8 +142,14 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleCenterRadius:
                             switch (currConstructorStage) {
                                 case 0:
+                                    //Кликнули ЛКМ
                                     if (e.Button == MouseButtons.Left && e.Clicks == 1) {
-                                        //supportFigures.Add(new Point())
+                                        supportFigures.Add(new MyRectangle(e.X, e.Y, e.X, e.Y, supportPen));
+                                        supportFigures.Add(new MyCircle(e.X, e.Y, e.X, e.Y, supportPen2));
+                                        pointsList.Add(e.Location);
+                                        currConstructorStage++;
+                                        out_result = new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                        break;
                                     }
                                     break;
 
