@@ -15,6 +15,7 @@ using static OOP_Paint.FiguresEnum;
 
 
 namespace OOP_Paint {
+    //
     public sealed partial class MainForm : Form {
         private readonly Graphics screen;
         private readonly MainCode Code = new MainCode();
@@ -60,7 +61,7 @@ namespace OOP_Paint {
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
 
-            ConstructorOperationResult constructorResult = Code.ThreatMouseEvent(e);
+            Code.AddSoftPoint(e.Location);
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
             if (e.X > (sender as PictureBox).Width || e.X < 0 ||
@@ -68,7 +69,7 @@ namespace OOP_Paint {
                 return;
             }
 
-            ConstructorOperationResult constructorResult = Code.ThreatMouseEvent(e);
+            ConstructorOperationResult constructorResult = Code.SetPoint(e.Location);
             if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Continious) {
                 MainFormTmr.Enabled = true;
                 MainFormSttsstpLblHint.Text = constructorResult.OperationMessage;
@@ -84,7 +85,6 @@ namespace OOP_Paint {
                 Code.DrawFigures(screen);
                 MainFormSttsstpLblHint.Text = "Успешно.";
             }
-
         }
         //!!!MainForm#46: Поменять таймер на MouseMowe
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
