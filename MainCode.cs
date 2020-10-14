@@ -14,9 +14,13 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
-//Projekt#84: добавить перегрузку построения фигуры
+//!!!Projekt#14: смена фигуры во время рисования вызывает непредвиденную ошибку.
 namespace OOP_Paint {
     public sealed class MainCode {
+        public enum PointMode {
+            Soft,
+            Set,
+        }
         public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
         public delegate void FigureHandler(Figure figure, EventArgs e);
 
@@ -88,6 +92,7 @@ namespace OOP_Paint {
         //???Что насчёт AddPoint(enum Strong/Soft)
         //Но тут вопрос: а куда currConstrStage девать?
         //!!!MainCode#83: разбить ThreatMouseEvent на AddPoint(enum Strong/Soft)
+        //!!!MainCode#84: сделать static многие из методов
         public ConstructorOperationResult ThreatMouseEvent(MouseEventArgs e) {
             ConstructorOperationResult out_result;
             //???По-хорошему buildingVariant должен быть перечислением, ибо если
