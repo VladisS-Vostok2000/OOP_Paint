@@ -71,7 +71,6 @@ namespace OOP_Paint {
                 MainFormSttsstpLblHint.Text = "Успешно.";
             }
         }
-        //!!!MainForm#46: Поменять таймер на MouseMowe
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
             Code.DrawFigures(screen);
         }
@@ -159,3 +158,5 @@ namespace OOP_Paint {
 
     }
 }
+//MainForm#46: Поменять таймер на MouseMowe
+//[Closed]: неактуально, пока используется Graphics.Clear()
