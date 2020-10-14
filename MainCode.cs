@@ -100,7 +100,7 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleInRectangleByTwoDots:
                             switch (currConstructorStage) {
                                 case 1:
-                                    //!!!Тут проверка какая-то должна быть, что ли...
+                                    //???Тут проверка какая-то должна быть, что ли...
                                     (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
                                     (supportFigures[1] as MyCircle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");

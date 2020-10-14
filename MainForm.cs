@@ -27,8 +27,6 @@ namespace OOP_Paint {
             Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
             Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
             Code.FiguresListChanged += Code_FiguresListChanged;
-            //???Это странно работает: мы не указываем конкретный класс, а Name может быть переопределён в дочернем
-            //классе, но это не мешает почему-то комбобоксу брать свойство из objekt.
             MainFormCmbbxBuildingVariants.DisplayMember = "Name";
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
             MainFormLstbxFigures.DisplayMember = "Name";
@@ -81,11 +79,9 @@ namespace OOP_Paint {
             foreach (var figure in sender as BindingList<MyFigure>) {
                 MainFormLstbxFigures.Items.Add(figure.ToString() + $": ({figure.X},{figure.Y})");
             }
-
         }
 
 
-        //Работа с Code
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             Figure firgureToSelect = Figure.Circle;
             Code.SelectedFigure = firgureToSelect;
@@ -98,7 +94,6 @@ namespace OOP_Paint {
         }
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
             Code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
-
         }
 
 

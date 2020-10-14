@@ -12,9 +12,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
-//???Если я один фиг использую класс вместо перечисления с ToString, может, просто перечисление в структуру обернуть??
-//Но это не логично, так как BuildingMethod ограниченное число всегда!!
-//MSDN пишет, что классы-перечисления это норма. Ну штош...
 namespace OOP_Paint {
     public sealed class ComboboxBuildingMethod {
         public readonly BuildingMethod BuildingMethod;
