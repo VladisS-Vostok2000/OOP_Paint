@@ -17,6 +17,7 @@ using static OOP_Paint.FiguresEnum;
 //!!!Projekt#14: смена фигуры во время рисования вызывает непредвиденную ошибку.
 namespace OOP_Paint {
     public sealed class MainCode {
+        //MyProjekt#20: реализовать прямоугольник и две перегрузки
         public enum PointMode {
             Soft,
             Set,
