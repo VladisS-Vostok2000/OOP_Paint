@@ -92,8 +92,6 @@ namespace OOP_Paint {
         //???Что насчёт AddPoint(enum Strong/Soft)
         //Но тут вопрос: а куда currConstrStage девать?
         //MainCode#83: разбить ThreatMouseEvent на AddPoint(enum Strong/Soft)
-        //MainCode#84: сделать static многие из методов
-        //[Closed]: нет причин для этого, метод примет слишком много параметров. Класс по определению подходит здесь.
         public ConstructorOperationResult ThreatMouseEvent(MouseEventArgs e) {
             ConstructorOperationResult out_result;
             //???По-хорошему buildingVariant должен быть перечислением, ибо если
@@ -185,7 +183,94 @@ namespace OOP_Paint {
 
             return out_result;
         }
-        
+        //MainCode#45: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
+        public ConstructorOperationResult AddSoftPoint(Point _point) {
+            if (currConstructorStage == 0) {
+                return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+            }
+
+            ///currSelectedFigure -> Выбор фигуры построения
+            ///currBuildingVariant -> Выбор варианта построения фигуры
+            ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
+            switch (SelectedFigure) {
+                case Figure.None:
+                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                case Figure.Circle:
+                    switch (SelectedBuildingMethod) {
+                        case BuildingMethod.CircleInRectangleByTwoDots:
+                            switch (currConstructorStage) {
+                                case 1:
+                                    //!!!Тут проверка какая-то должна быть, что ли...
+                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
+                                    (supportFigures[1] as MyCircle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                default:
+                                    throw new Exception();
+                            }
+                        case BuildingMethod.CircleCenterRadius:
+                            switch (currConstructorStage) {
+                                case 1:
+                                    (supportFigures[0] as MyCut).P2 = _point;
+                                    (supportFigures[1] as MyCircle).Radius = MyFigure.FindLength(_point, pointsList[0]);
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                default: throw new Exception();
+                            }
+                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
+                    }
+                default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
+            }
+        }
+        public ConstructorOperationResult SetPoint(Point _point) {
+            ///currSelectedFigure -> Выбор фигуры построения
+            ///currBuildingVariant -> Выбор варианта построения фигуры
+            ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
+            switch (SelectedFigure) {
+                case Figure.None:
+                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                case Figure.Circle:
+                    switch (SelectedBuildingMethod) {
+                        case BuildingMethod.CircleInRectangleByTwoDots:
+                            switch (currConstructorStage) {
+                                case 0:
+                                    supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, supportPen));
+                                    supportFigures.Add(new MyCircle(_point.X, _point.Y, _point.X, _point.Y, supportPen2));
+                                    pointsList.Add(_point);
+                                    currConstructorStage++;
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                case 1:
+                                    if (pointsList[0].X == _point.X || pointsList[0].Y == _point.Y) {
+                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    }
+
+                                    Figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
+                                    CloseConstructor();
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                default:
+                                    throw new Exception();
+                            }
+                        case BuildingMethod.CircleCenterRadius:
+                            switch (currConstructorStage) {
+                                case 0:
+                                    supportFigures.Add(new MyCut(supportPen, _point, _point));
+                                    supportFigures.Add(new MyCircle(supportPen2, _point, 0));
+                                    pointsList.Add(_point);
+                                    currConstructorStage++;
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
+                                case 1:
+                                    if (pointsList[0] == _point) {
+                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    }
+                                    Figures.Add(new MyCircle(figurePen, pointsList[0], MyFigure.FindLength(_point, pointsList[0])));
+                                    CloseConstructor();
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                default: throw new Exception();
+                            }
+                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
+                    }
+                default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
+            }
+        }
+
 
 
         private void CloseConstructor() {
@@ -208,3 +293,5 @@ namespace OOP_Paint {
 
     }
 }
+//MainCode#84: сделать static многие из методов
+//[Closed]: нет причин для этого, метод примет слишком много параметров. Класс по определению подходит здесь.

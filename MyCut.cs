@@ -17,7 +17,7 @@ using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     class MyCut : MyFigure{
         private Point p1;
-        protected Point P1 { 
+        public Point P1 { 
             set {
                 if (value != p1) {
                     p1 = value;
@@ -30,7 +30,7 @@ namespace OOP_Paint {
             }
         }
         private Point p2;
-        protected Point P2 {
+        public Point P2 {
             set {
                 if (value != p2) {
                     p2 = value;
@@ -68,6 +68,9 @@ namespace OOP_Paint {
 
         public void Resize(Point _p1, Point _p2) {
             InitializeFigure(_p1, _p2);
+        }
+        public void Resize(int _x1, int _y1, int _x2, int _y2) {
+            InitializeFigure(new Point(_x1, _y1), new Point(_x2, _y2));
         }
 
     }
