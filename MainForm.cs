@@ -15,7 +15,6 @@ using static OOP_Paint.FiguresEnum;
 
 
 namespace OOP_Paint {
-    //
     public sealed partial class MainForm : Form {
         private readonly Graphics screen;
         private readonly MainCode Code = new MainCode();
@@ -36,24 +35,10 @@ namespace OOP_Paint {
             MainFormLstbxFigures.ValueMember = "Id";
 
         }
-
-
-
-        //private void CurrPossibleBuildingMethods_ListChanged(Object sender, ListChangedEventArgs e) {
-        //    if (currPossibleBuildingMethods.Count == 0) {
-        //        return;
-        //    }
-
-        //    foreach (var cbm in currPossibleBuildingMethods) {
-
-        //    }
-        //}
         private void MainForm_Load(Object sender, EventArgs e) {
 
         }
-        private void MainForm_Shown(Object sender, EventArgs e) {
 
-        }
 
 
         private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
@@ -90,6 +75,7 @@ namespace OOP_Paint {
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
             Code.DrawFigures(screen);
         }
+
 
         private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
             MainFormLstbxFigures.Items.Clear();
