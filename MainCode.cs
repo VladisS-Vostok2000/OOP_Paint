@@ -83,15 +83,8 @@ namespace OOP_Paint {
         }
 
 
-        //???По-хорошему нужен отдельный метод для прорисовки
-        //и обработки клика мыши, однако дублировать switsch 
-        //очень плохо, тем более такой длинный. Тогда нужен MouseEvent
-        //для понимания, клик это или движение, что в свою очередь
-        //ведёт упаковку в object, т.к. это класс.
-        //upd: Повезло, класс один. Но всё равно один метод вмещает 2 из-за switsch ("if (e.Button == MouseButtons.Left)".)
-        //???Что насчёт AddPoint(enum Strong/Soft)
-        //Но тут вопрос: а куда currConstrStage девать?
-        //MainCode#83: разбить ThreatMouseEvent на AddPoint(enum Strong/Soft)
+
+        //MainForm#85: подключить ThreatMouseEvent на AddPoint(enum Strong/Soft)
         public ConstructorOperationResult ThreatMouseEvent(MouseEventArgs e) {
             ConstructorOperationResult out_result;
             //???По-хорошему buildingVariant должен быть перечислением, ибо если
