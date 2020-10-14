@@ -93,6 +93,7 @@ namespace OOP_Paint {
         //Но тут вопрос: а куда currConstrStage девать?
         //MainCode#83: разбить ThreatMouseEvent на AddPoint(enum Strong/Soft)
         //MainCode#84: сделать static многие из методов
+        //[Closed]: нет причин для этого, метод примет слишком много параметров. Класс по определению подходит здесь.
         public ConstructorOperationResult ThreatMouseEvent(MouseEventArgs e) {
             ConstructorOperationResult out_result;
             //???По-хорошему buildingVariant должен быть перечислением, ибо если
@@ -184,6 +185,7 @@ namespace OOP_Paint {
 
             return out_result;
         }
+        
 
 
         private void CloseConstructor() {
