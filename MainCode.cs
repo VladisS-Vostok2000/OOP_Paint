@@ -17,7 +17,7 @@ using static OOP_Paint.FiguresEnum;
 //!!!Projekt#14: смена фигуры во время рисования вызывает непредвиденную ошибку.
 namespace OOP_Paint {
     public sealed class MainCode {
-        //MyProjekt#20: реализовать прямоугольник и две перегрузки
+        //
         public enum PointMode {
             Soft,
             Set,
@@ -83,7 +83,7 @@ namespace OOP_Paint {
             FiguresListChanged?.Invoke(sender, e);
         }
 
-    
+
         //MainCode#45: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
         public ConstructorOperationResult AddSoftPoint(Point _point) {
             if (currConstructorStage == 0) {
@@ -96,6 +96,17 @@ namespace OOP_Paint {
             switch (SelectedFigure) {
                 case Figure.None:
                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                case Figure.Rectangle:
+                    switch (SelectedBuildingMethod) {
+                        case BuildingMethod.RectangleTwoPoints:
+                            switch (currConstructorStage) {
+                                case 1:
+                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                default: throw new Exception();
+                            }
+                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
+                    }
                 case Figure.Circle:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.CircleInRectangleByTwoDots:
@@ -116,7 +127,7 @@ namespace OOP_Paint {
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                 default: throw new Exception();
                             }
-                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
+                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
                     }
                 default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
             }
@@ -165,6 +176,28 @@ namespace OOP_Paint {
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default: throw new Exception();
+                            }
+                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
+                    }
+                case Figure.Rectangle:
+                    switch(SelectedBuildingMethod) {
+                        case BuildingMethod.RectangleTwoPoints:
+                            switch(currConstructorStage) {
+                                case 0:
+                                    supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, supportPen));
+                                    pointsList.Add(_point);
+                                    currConstructorStage++;
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                case 1:
+                                    if (pointsList[0].X == _point.X || pointsList[0].Y == _point.Y) {
+                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    }
+
+                                    Figures.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
+                                    CloseConstructor();
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                default:
+                                    throw new Exception();
                             }
                         default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
                     }

@@ -92,6 +92,10 @@ namespace OOP_Paint {
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
 
         }
+        private void MainFormBttnRectangle_Click(Object sender, EventArgs e) {
+            Code.SelectedFigure = Figure.Rectangle;
+            MainFormSttsstpLblHint.Text = "Прямоугольник. Выберете первую точку";
+        }
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
             Code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
         }

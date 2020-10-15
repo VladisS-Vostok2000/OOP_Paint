@@ -35,6 +35,7 @@
             this.MainFormSttsstpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormBttnCircle = new System.Windows.Forms.Button();
             this.MainFormCmbbxBuildingVariants = new System.Windows.Forms.ComboBox();
+            this.MainFormBttnRectangle = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -137,12 +138,23 @@
             this.MainFormCmbbxBuildingVariants.TabIndex = 12;
             this.MainFormCmbbxBuildingVariants.SelectedIndexChanged += new System.EventHandler(this.MainFormCmbbxBuildingVariants_SelectedIndexChanged);
             // 
+            // MainFormBttnRectangle
+            // 
+            this.MainFormBttnRectangle.Location = new System.Drawing.Point(94, 311);
+            this.MainFormBttnRectangle.Name = "MainFormBttnRectangle";
+            this.MainFormBttnRectangle.Size = new System.Drawing.Size(106, 23);
+            this.MainFormBttnRectangle.TabIndex = 11;
+            this.MainFormBttnRectangle.Text = "Прямоугольник";
+            this.MainFormBttnRectangle.UseVisualStyleBackColor = true;
+            this.MainFormBttnRectangle.Click += new System.EventHandler(this.MainFormBttnRectangle_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.MainFormCmbbxBuildingVariants);
+            this.Controls.Add(this.MainFormBttnRectangle);
             this.Controls.Add(this.MainFormBttnCircle);
             this.Controls.Add(this.MainFormSttsstp);
             this.Controls.Add(this.MainFormLstbxFigures);
@@ -172,6 +184,7 @@
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblHint;
         private System.Windows.Forms.Button MainFormBttnCircle;
         private System.Windows.Forms.ComboBox MainFormCmbbxBuildingVariants;
+        private System.Windows.Forms.Button MainFormBttnRectangle;
     }
 }
 

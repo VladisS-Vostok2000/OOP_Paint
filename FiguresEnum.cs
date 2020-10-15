@@ -13,6 +13,7 @@ namespace OOP_Paint {
         public enum Figure {
             None,
             Circle,
+            Rectangle,
 
         }
 
@@ -23,6 +24,7 @@ namespace OOP_Paint {
             Point,
             CircleInRectangleByTwoDots,
             CircleCenterRadius,
+            RectangleTwoPoints,
 
         }
 
@@ -33,7 +35,8 @@ namespace OOP_Paint {
                 case BuildingMethod.None: return "";
                 case BuildingMethod.CircleCenterRadius: return "Центр, радиус.";
                 case BuildingMethod.CircleInRectangleByTwoDots: return "Ограничивающий прямоугольник";
-                default: throw new Exception("Неизвестная фигура");
+                case BuildingMethod.RectangleTwoPoints: return "Две точки";
+                default: throw new Exception($"Для метода построения {_bm} не реализовано описание.");
             }
 
         }
@@ -41,7 +44,8 @@ namespace OOP_Paint {
             switch (_figure) {
                 case Figure.None: return "";
                 case Figure.Circle: return "Окружность";
-                default: throw new Exception("Неизвестная фигура");
+                case Figure.Rectangle: return "Прямоугольник";
+                default: throw new Exception($"Для фигуры {_figure} не реализовано описание.");
             }
 
         }
@@ -51,7 +55,11 @@ namespace OOP_Paint {
             if (_myFigure is MyCircle) {
                 return Figure.Circle.GetDescription();
             }
-            else throw new Exception("Фигура не реализована.");
+            else
+            if (_myFigure is MyRectangle) {
+                return Figure.Rectangle.GetDescription();
+            }
+            else throw new Exception($"Для фигуры {_myFigure} не реализовано описание");
         }
         public static List<BuildingMethod> ReturnPossibleBuildingVariants(Figure _figure) {
             var out_list = new List<BuildingMethod>();
@@ -63,7 +71,10 @@ namespace OOP_Paint {
                     out_list.Add(BuildingMethod.CircleInRectangleByTwoDots);
                     out_list.Add(BuildingMethod.CircleCenterRadius);
                     break;
-                default: throw new Exception("Неизвестная фигура.");
+                case Figure.Rectangle:
+                    out_list.Add(BuildingMethod.RectangleTwoPoints);
+                    break;
+                default: throw new Exception($"Для фигуры {_figure} не реализованы варианты построения.");
             }
 
             return out_list;
