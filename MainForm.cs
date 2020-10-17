@@ -13,7 +13,10 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
-
+//!!!Projekt#14: смена фигуры во время рисования вызывает непредвиденную ошибку.
+//!!!Projekt#20: добавить магнитную привязку
+//!!!Projekt#30: добавить полярные линии
+//Projekt#40: добавить подсветку фигур
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
@@ -32,7 +35,6 @@ namespace OOP_Paint {
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
             MainFormLstbxFigures.DisplayMember = "Name";
             MainFormLstbxFigures.ValueMember = "Id";
-
         }
         private void MainForm_Load(Object sender, EventArgs e) {
 

@@ -14,11 +14,8 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
-//!!!Projekt#14: смена фигуры во время рисования вызывает непредвиденную ошибку.
 namespace OOP_Paint {
     public sealed class MainCode {
-        //!!!Projekt#30: добавить магнитную привязку
-        //!!!Projekt#40: добавить полярные линии
         public enum PointMode {
             Soft,
             Set,

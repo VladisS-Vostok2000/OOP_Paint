@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyCircle : MyFigure {
-        //MyCircle#01: инициализация через точку-радиус неверно
         protected Int32 radius;
         public Int32 Radius {
             set {
