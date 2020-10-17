@@ -77,7 +77,7 @@ namespace OOP_Paint {
             Code.DrawFigures(screen);
         }
 
-
+        //MainForm#01: реализовать визуализацию координат фигур в листе
         private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
             MainFormLstbxFigures.Items.Clear();
             foreach (var figure in sender as BindingList<MyFigure>) {
@@ -102,6 +102,9 @@ namespace OOP_Paint {
         }
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
             Code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
+        }
+        private void MainFormLstbxFigures_SelectedIndexChanged(Object sender, EventArgs e) {
+
         }
 
 

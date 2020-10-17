@@ -58,6 +58,7 @@
             this.MainFormLstbxFigures.Name = "MainFormLstbxFigures";
             this.MainFormLstbxFigures.Size = new System.Drawing.Size(272, 290);
             this.MainFormLstbxFigures.TabIndex = 7;
+            this.MainFormLstbxFigures.SelectedIndexChanged += new System.EventHandler(this.MainFormLstbxFigures_SelectedIndexChanged);
             // 
             // MainFormTmr
             // 
