@@ -15,13 +15,13 @@ using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public sealed class ComboboxBuildingMethod {
         public readonly BuildingMethod BuildingMethod;
-        public String Name { get; }
+        public String DisplayMember { get; }
 
 
 
         public ComboboxBuildingMethod(BuildingMethod _buildingMethod) {
             BuildingMethod = _buildingMethod;
-            Name = _buildingMethod.GetDescription();
+            DisplayMember = _buildingMethod.GetDescription();
         }
     }
 }

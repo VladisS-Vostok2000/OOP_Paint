@@ -53,10 +53,12 @@
             // 
             // MainFormLstbxFigures
             // 
+            this.MainFormLstbxFigures.Font = new System.Drawing.Font("Segoe Mono Boot", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainFormLstbxFigures.FormattingEnabled = true;
+            this.MainFormLstbxFigures.ItemHeight = 15;
             this.MainFormLstbxFigures.Location = new System.Drawing.Point(516, 13);
             this.MainFormLstbxFigures.Name = "MainFormLstbxFigures";
-            this.MainFormLstbxFigures.Size = new System.Drawing.Size(272, 290);
+            this.MainFormLstbxFigures.Size = new System.Drawing.Size(272, 289);
             this.MainFormLstbxFigures.TabIndex = 7;
             this.MainFormLstbxFigures.SelectedIndexChanged += new System.EventHandler(this.MainFormLstbxFigures_SelectedIndexChanged);
             // 
@@ -73,9 +75,9 @@
             this.toolStripStatusLabel3,
             this.MainFormSttsstpLblMouseY,
             this.MainFormSttsstpLblHint});
-            this.MainFormSttsstp.Location = new System.Drawing.Point(0, 428);
+            this.MainFormSttsstp.Location = new System.Drawing.Point(0, 425);
             this.MainFormSttsstp.Name = "MainFormSttsstp";
-            this.MainFormSttsstp.Size = new System.Drawing.Size(800, 22);
+            this.MainFormSttsstp.Size = new System.Drawing.Size(800, 25);
             this.MainFormSttsstp.TabIndex = 10;
             this.MainFormSttsstp.Text = "statusStrip1";
             // 

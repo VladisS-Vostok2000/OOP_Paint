@@ -15,14 +15,14 @@ using static OOP_Paint.FiguresEnum;
 
 namespace OOP_Paint {
     public sealed class ListBoxFigure {
-        public String Name { get; }
+        public String DisplayMember { get; }
         public Int32 Id { get; }
 
 
 
         public ListBoxFigure(MyFigure _object) {
             Id = _object.Id;
-            Name = _object.GetDescription();
+            DisplayMember = $"[{_object.X},{_object.Y}]".PadRight(10) + _object.GetDescription();
 
         }
 

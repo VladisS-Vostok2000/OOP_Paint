@@ -32,9 +32,9 @@ namespace OOP_Paint {
             Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
             Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
             Code.FiguresListChanged += Code_FiguresListChanged;
-            MainFormCmbbxBuildingVariants.DisplayMember = "Name";
+            MainFormCmbbxBuildingVariants.DisplayMember = "DisplayMember";
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
-            MainFormLstbxFigures.DisplayMember = "Name";
+            MainFormLstbxFigures.DisplayMember = "DisplayMember";
             MainFormLstbxFigures.ValueMember = "Id";
         }
         private void MainForm_Load(Object sender, EventArgs e) {
@@ -78,12 +78,12 @@ namespace OOP_Paint {
         }
 
         //MainForm#01: реализовать визуализацию координат фигур в листе
-        private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
-            MainFormLstbxFigures.Items.Clear();
-            foreach (var figure in sender as BindingList<MyFigure>) {
-                MainFormLstbxFigures.Items.Add(figure.ToString() + $": ({figure.X},{figure.Y})");
-            }
-        }
+        //private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
+        //    MainFormLstbxFigures.Items.Clear();
+        //    foreach (var figure in sender as BindingList<MyFigure>) {
+        //        MainFormLstbxFigures.Items.Add(figure.ToString() + $": ({figure.X},{figure.Y})");
+        //    }
+        //}
 
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
@@ -137,13 +137,13 @@ namespace OOP_Paint {
             }
 
             MainFormLstbxFigures.Items.Clear();
-            var toListboxList = new List<ListBoxFigure>();
+            var figuresToListboxList = new List<ListBoxFigure>();
             var figuresList = sender as BindingList<MyFigure>;
             for (Int32 i = 0; i < figuresList.Count; i++) {
-                toListboxList.Add(
+                figuresToListboxList.Add(
                     new ListBoxFigure(figuresList[i]));
             }
-            MainFormLstbxFigures.Items.AddRange(toListboxList.ToArray());
+            MainFormLstbxFigures.Items.AddRange(figuresToListboxList.ToArray());
 
             if (wasSmnSelected) {
                 Int32 listBoxItemToSelectIndex = -1;
