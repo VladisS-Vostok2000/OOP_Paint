@@ -170,10 +170,12 @@ namespace OOP_Paint {
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
                                 case 1:
-                                    if (pointsList[0] == _point) {
+                                    int radius = MyFigure.FindLength(_point, pointsList[0]);
+                                    if (radius == 0) {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
-                                    Figures.Add(new MyCircle(figurePen, pointsList[0], MyFigure.FindLength(_point, pointsList[0])));
+
+                                    Figures.Add(new MyCircle(figurePen, pointsList[0], radius));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default: throw new Exception();

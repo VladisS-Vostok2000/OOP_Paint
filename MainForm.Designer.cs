@@ -61,7 +61,7 @@
             // 
             // MainFormTmr
             // 
-            this.MainFormTmr.Interval = 20;
+            this.MainFormTmr.Interval = 50;
             this.MainFormTmr.Tick += new System.EventHandler(this.MainFormTmr_Tick);
             // 
             // MainFormSttsstp

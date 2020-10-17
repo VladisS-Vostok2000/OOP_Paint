@@ -13,10 +13,9 @@ namespace OOP_Paint {
         public Int32 Radius {
             set {
                 if (value != radius) {
+                    X += Radius - value;
+                    Y += Radius - value;
                     radius = value;
-                    //Тут что-то неверно. После изменения радиуса. Когда Х, У не меняются - всё работает.
-                    X = Center.X - value;
-                    Y = Center.Y - value;
                 }
             }
             get {
@@ -25,8 +24,8 @@ namespace OOP_Paint {
         }
         public Point Center {
             set {
-                X = value.X - Radius;
-                Y = value.Y - Radius;
+                X = Math.Abs(value.X - (X + Radius)) + X;
+                Y = Math.Abs(value.Y - (Y + Radius)) + Y;
             }
             get {
                 return new Point(X + Radius, Y + Radius);
@@ -60,8 +59,8 @@ namespace OOP_Paint {
         public void InitializeFigure(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             (Point p1, Point p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
             {
-                Location = FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
                 Radius = Math.Abs(p1.X - p2.X) / 2;
+                Location = FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
             }
         }
         protected void InitializeFigure(Point _center, Int32 _radius) {
