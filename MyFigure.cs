@@ -29,8 +29,8 @@ namespace OOP_Paint {
                 return new Point(X, Y);
             }
         }
-        public Pen Pen { set; get; } = new Pen(Color.Black, 2);
-        public Pen SelectedPen { set; get; } = new Pen(Color.White, 4);
+        public Pen Pen { set; get; } = new Pen(Color.Black, 1);
+        public Pen SelectedPen { set; get; } = new Pen(Color.White, 2);
         public Boolean IsSelected;
 
 

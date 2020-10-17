@@ -13,10 +13,14 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
-//!!!Projekt#14: смена фигуры во время рисования вызывает непредвиденную ошибку.
+//!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
 //!!!Projekt#20: добавить магнитную привязку
 //!!!Projekt#30: добавить полярные линии
-//Projekt#40: добавить подсветку фигур
+//!!!Projekt#42: добавить выделение фигур мышью, когда она рядом
+//!!!Projekt#43: добавить выделение фиугур, попавших в область выделения мыши.
+//!!!Projekt#41.1: добавить выделение остальных фигур
+//!!!Projekt#50: добавить масштаб
+//Projekt#60: добавить фигуру для прорисовки: отрезок
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
@@ -121,6 +125,7 @@ namespace OOP_Paint {
             MainFormCmbbxBuildingVariants.Items.AddRange(cbm);
 
         }
+        //!!!MainForm#42.1: выделение нескольких элементов некорректно работает
         private void Code_SelectedBuildingMethod_Changed(BuildingMethod _value, EventArgs e) {
             for (Int32 i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
                 if ((MainFormCmbbxBuildingVariants.Items[i] as ComboboxBuildingMethod).BuildingMethod == _value) {
