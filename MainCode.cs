@@ -17,7 +17,8 @@ using static OOP_Paint.FiguresEnum;
 //!!!Projekt#14: смена фигуры во время рисования вызывает непредвиденную ошибку.
 namespace OOP_Paint {
     public sealed class MainCode {
-        //
+        //!!!Projekt#30: добавить магнитную привязку
+        //!!!Projekt#40: добавить полярные линии
         public enum PointMode {
             Soft,
             Set,
@@ -62,8 +63,8 @@ namespace OOP_Paint {
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 
-        private static readonly Pen supportPen = new Pen(Color.Blue) { Width = 1, DashStyle = DashStyle.Dash };
-        private static readonly Pen supportPen2 = new Pen(Color.Red, 1);
+        private static readonly Pen supportPen = new Pen(Color.Gray) { Width = 1, DashStyle = DashStyle.Dash };
+        private static readonly Pen supportPen2 = new Pen(Color.White, 1);
         private static readonly Pen figurePen = new Pen(Color.Black);
 
 

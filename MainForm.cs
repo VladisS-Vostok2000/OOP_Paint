@@ -15,6 +15,7 @@ using static OOP_Paint.FiguresEnum;
 
 
 namespace OOP_Paint {
+    //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
         private readonly Graphics screen;
         private readonly MainCode Code = new MainCode();
