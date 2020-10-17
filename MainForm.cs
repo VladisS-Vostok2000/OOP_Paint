@@ -17,6 +17,7 @@ using static OOP_Paint.FiguresEnum;
 //!!!Projekt#20: добавить магнитную привязку
 //!!!Projekt#30: добавить полярные линии
 //Projekt#40: добавить подсветку фигур
+//MainForm#41: привязать выделение в листе к выделению фигуры
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {

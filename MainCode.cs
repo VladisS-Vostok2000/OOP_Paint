@@ -16,10 +16,6 @@ using static OOP_Paint.FiguresEnum;
 
 namespace OOP_Paint {
     public sealed class MainCode {
-        public enum PointMode {
-            Soft,
-            Set,
-        }
         public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
         public delegate void FigureHandler(Figure figure, EventArgs e);
 
@@ -82,7 +78,7 @@ namespace OOP_Paint {
         }
 
 
-        //MainCode#45: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
+        //!!!MainCode#45: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
         public ConstructorOperationResult AddSoftPoint(Point _point) {
             if (currConstructorStage == 0) {
                 return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -82,9 +83,17 @@ namespace OOP_Paint {
 
 
         public override void Draw(Graphics _screen) {
-            _screen.DrawEllipse(Pen, X, Y, Radius * 2, Radius * 2);
+            Pen drawPen;
+            if (IsSelected) {
+                drawPen = this.SelectedPen;
+            }
+            else {
+                drawPen = this.Pen;
+            }
+            _screen.DrawEllipse(drawPen, X, Y, Radius * 2, Radius * 2);
 
         }
 
     }
+
 }
