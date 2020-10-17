@@ -58,6 +58,7 @@
             this.MainFormLstbxFigures.ItemHeight = 15;
             this.MainFormLstbxFigures.Location = new System.Drawing.Point(516, 13);
             this.MainFormLstbxFigures.Name = "MainFormLstbxFigures";
+            this.MainFormLstbxFigures.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
             this.MainFormLstbxFigures.Size = new System.Drawing.Size(272, 289);
             this.MainFormLstbxFigures.TabIndex = 7;
             this.MainFormLstbxFigures.SelectedIndexChanged += new System.EventHandler(this.MainFormLstbxFigures_SelectedIndexChanged);

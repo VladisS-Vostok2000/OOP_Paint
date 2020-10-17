@@ -52,7 +52,7 @@ namespace OOP_Paint {
         }
         private Int32 currConstructorStage = 0;
 
-        private readonly BindingList<MyFigure> Figures = new BindingList<MyFigure>();
+        private readonly BindingList<MyFigure> figures = new BindingList<MyFigure>();
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 
@@ -68,7 +68,7 @@ namespace OOP_Paint {
         //события ради события выглядит нелепо. Стоит сделать list public?
         //Но зато API красивее смотрится.
         public MainCode() {
-            Figures.ListChanged += Figures_ListChanged;
+            figures.ListChanged += Figures_ListChanged;
         }
 
 
@@ -148,7 +148,7 @@ namespace OOP_Paint {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    Figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
+                                    figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default:
@@ -168,7 +168,7 @@ namespace OOP_Paint {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    Figures.Add(new MyCircle(figurePen, pointsList[0], radius));
+                                    figures.Add(new MyCircle(figurePen, pointsList[0], radius));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default: throw new Exception();
@@ -189,7 +189,7 @@ namespace OOP_Paint {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    Figures.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
+                                    figures.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default:
@@ -200,7 +200,26 @@ namespace OOP_Paint {
                 default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
             }
         }
-
+        //!!!MainCode#01: рассмотреть возомжность открыть лист Figures
+        public void SelectFigure(int _id) {
+            for (int i = 0; i < figures.Count; i++) {
+                if (figures[i].Id == _id) {
+                    figures[i].IsSelected = true;
+                    break;
+                }
+            }
+        }
+        public void UnselectFigure(int _id) {
+            for (int i = 0; i < figures.Count; i++) {
+                if (figures[i].Id == _id) {
+                    figures[i].IsSelected = false;
+                    break;
+                }
+            }
+        }
+        public int GetFiguresCount() {
+            return figures.Count;
+        }
 
 
         private void CloseConstructor() {
@@ -213,7 +232,7 @@ namespace OOP_Paint {
 
         public void DrawFigures(Graphics _screen) {
             _screen.Clear(Color.FromArgb(250, 64, 64, 64));
-            foreach (var figure in Figures) {
+            foreach (var figure in figures) {
                 figure.Draw(_screen);
             }
             foreach (var figure in supportFigures) {

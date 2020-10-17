@@ -77,14 +77,6 @@ namespace OOP_Paint {
             Code.DrawFigures(screen);
         }
 
-        //MainForm#01: реализовать визуализацию координат фигур в листе
-        //private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
-        //    MainFormLstbxFigures.Items.Clear();
-        //    foreach (var figure in sender as BindingList<MyFigure>) {
-        //        MainFormLstbxFigures.Items.Add(figure.ToString() + $": ({figure.X},{figure.Y})");
-        //    }
-        //}
-
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             Figure firgureToSelect = Figure.Circle;
@@ -104,7 +96,18 @@ namespace OOP_Paint {
             Code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
         }
         private void MainFormLstbxFigures_SelectedIndexChanged(Object sender, EventArgs e) {
+            //Мы не можем знать, снялось выделение или появилось, таким образом нужно снять выделения
+            //со всех фигур и задать их заново
+            int figuresCount = Code.GetFiguresCount();
+            for (int i = 0; i < figuresCount; i++) {
+                Code.UnselectFigure(((sender as ListBox).Items[0] as ListBoxFigure).Id);
+            }
 
+            foreach (int index in (sender as ListBox).SelectedIndices) {
+                Code.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
+            }
+
+            Code.DrawFigures(screen);
         }
 
 
@@ -128,6 +131,7 @@ namespace OOP_Paint {
             }
 
         }
+        //!!!MainForm#42: исправить в соответствии с возможностью выбрать несколько элементов
         private void Code_FiguresListChanged(Object sender, ListChangedEventArgs e) {
             Int32 currListSelectedIndex = MainFormLstbxFigures.SelectedIndex;
             Boolean wasSmnSelected = currListSelectedIndex != -1;
