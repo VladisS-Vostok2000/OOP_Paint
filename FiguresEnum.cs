@@ -12,6 +12,7 @@ namespace OOP_Paint {
     public static class FiguresEnum {
         public enum Figure {
             None,
+            Select,
             Cut,
             Circle,
             Rectangle,

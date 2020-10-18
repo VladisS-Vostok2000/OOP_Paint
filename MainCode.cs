@@ -59,6 +59,7 @@ namespace OOP_Paint {
         private static readonly Pen supportPen = new Pen(Color.Gray) { Width = 1, DashStyle = DashStyle.Dash };
         private static readonly Pen supportFigurePen = new Pen(Color.White, 1);
         private static readonly Pen figurePen = new Pen(Color.Black);
+        private static readonly Pen selectPen = new Pen(Color.Blue) { Width = 1, DashStyle = DashStyle.Dash };
 
 
 
@@ -144,6 +145,47 @@ namespace OOP_Paint {
             switch (SelectedFigure) {
                 case Figure.None:
                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                case Figure.Select:
+                    switch (SelectedBuildingMethod) {
+                        case BuildingMethod.None:
+                            switch (currConstructorStage) {
+                                case 0:
+                                    supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, selectPen) { });
+                                    pointsList.Add(_point);
+                                    currConstructorStage++;
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                case 1:
+                                    if (pointsList[0].X == _point.X || pointsList[0].Y == _point.Y) {
+                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    }
+
+                                    figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
+                                    CloseConstructor();
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                default:
+                                    throw new Exception();
+                            }
+                        case BuildingMethod.CircleCenterRadius:
+                            switch (currConstructorStage) {
+                                case 0:
+                                    supportFigures.Add(new MyCut(supportPen, _point, _point));
+                                    supportFigures.Add(new MyCircle(supportFigurePen, _point, 0));
+                                    pointsList.Add(_point);
+                                    currConstructorStage++;
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
+                                case 1:
+                                    int radius = MyFigure.FindLength(_point, pointsList[0]);
+                                    if (radius == 0) {
+                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    }
+
+                                    figures.Add(new MyCircle(figurePen, pointsList[0], radius));
+                                    CloseConstructor();
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                default: throw new Exception();
+                            }
+                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
+                    }
                 case Figure.Circle:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.CircleInRectangleByTwoDots:
@@ -187,9 +229,9 @@ namespace OOP_Paint {
                         default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
                     }
                 case Figure.Rectangle:
-                    switch(SelectedBuildingMethod) {
+                    switch (SelectedBuildingMethod) {
                         case BuildingMethod.RectangleTwoPoints:
-                            switch(currConstructorStage) {
+                            switch (currConstructorStage) {
                                 case 0:
                                     supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, supportPen));
                                     pointsList.Add(_point);
@@ -209,9 +251,9 @@ namespace OOP_Paint {
                         default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
                     }
                 case Figure.Cut:
-                    switch(SelectedBuildingMethod) {
+                    switch (SelectedBuildingMethod) {
                         case BuildingMethod.CutTwoPoints:
-                            switch(currConstructorStage) {
+                            switch (currConstructorStage) {
                                 case 0:
                                     pointsList.Add(_point);
                                     supportFigures.Add(new MyCut(supportFigurePen, pointsList[0], pointsList[0]));
