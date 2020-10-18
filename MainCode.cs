@@ -150,7 +150,7 @@ namespace OOP_Paint {
                         case BuildingMethod.None:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, selectPen) { });
+                                    supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, selectPen) { IsFill = true});
                                     pointsList.Add(_point);
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");

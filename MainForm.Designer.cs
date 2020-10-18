@@ -37,6 +37,7 @@
             this.MainFormCmbbxBuildingVariants = new System.Windows.Forms.ComboBox();
             this.MainFormBttnRectangle = new System.Windows.Forms.Button();
             this.MainFormBttnCut = new System.Windows.Forms.Button();
+            this.MainFormBttnSelect = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -163,12 +164,23 @@
             this.MainFormBttnCut.UseVisualStyleBackColor = true;
             this.MainFormBttnCut.Click += new System.EventHandler(this.MainFormBttnCut_Click);
             // 
+            // MainFormBttnSelect
+            // 
+            this.MainFormBttnSelect.Location = new System.Drawing.Point(318, 311);
+            this.MainFormBttnSelect.Name = "MainFormBttnSelect";
+            this.MainFormBttnSelect.Size = new System.Drawing.Size(106, 23);
+            this.MainFormBttnSelect.TabIndex = 11;
+            this.MainFormBttnSelect.Text = "Выделение";
+            this.MainFormBttnSelect.UseVisualStyleBackColor = true;
+            this.MainFormBttnSelect.Click += new System.EventHandler(this.MainFormBttnSelect_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.MainFormCmbbxBuildingVariants);
+            this.Controls.Add(this.MainFormBttnSelect);
             this.Controls.Add(this.MainFormBttnCut);
             this.Controls.Add(this.MainFormBttnRectangle);
             this.Controls.Add(this.MainFormBttnCircle);
@@ -202,6 +214,7 @@
         private System.Windows.Forms.ComboBox MainFormCmbbxBuildingVariants;
         private System.Windows.Forms.Button MainFormBttnRectangle;
         private System.Windows.Forms.Button MainFormBttnCut;
+        private System.Windows.Forms.Button MainFormBttnSelect;
     }
 }
 

@@ -97,6 +97,9 @@ namespace OOP_Paint {
             Code.SelectedFigure = Figure.Cut;
             MainFormSttsstpLblHint.Text = "Отрезок. Выберете первую точку";
         }
+        private void MainFormBttnSelect_Click(Object sender, EventArgs e) {
+            Code.SelectedFigure = Figure.Select;
+        }
 
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
             Code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
