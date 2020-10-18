@@ -36,6 +36,7 @@
             this.MainFormBttnCircle = new System.Windows.Forms.Button();
             this.MainFormCmbbxBuildingVariants = new System.Windows.Forms.ComboBox();
             this.MainFormBttnRectangle = new System.Windows.Forms.Button();
+            this.MainFormBttnCut = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -86,7 +87,7 @@
             // 
             this.toolStripStatusLabel1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(17, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(17, 20);
             this.toolStripStatusLabel1.Text = "X:";
             // 
             // MainFormSttsstpLblMouseX
@@ -94,14 +95,14 @@
             this.MainFormSttsstpLblMouseX.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MainFormSttsstpLblMouseX.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainFormSttsstpLblMouseX.Name = "MainFormSttsstpLblMouseX";
-            this.MainFormSttsstpLblMouseX.Size = new System.Drawing.Size(29, 17);
+            this.MainFormSttsstpLblMouseX.Size = new System.Drawing.Size(29, 20);
             this.MainFormSttsstpLblMouseX.Text = "   ";
             // 
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(17, 17);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(17, 20);
             this.toolStripStatusLabel3.Text = "Y:";
             // 
             // MainFormSttsstpLblMouseY
@@ -109,7 +110,7 @@
             this.MainFormSttsstpLblMouseY.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MainFormSttsstpLblMouseY.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainFormSttsstpLblMouseY.Name = "MainFormSttsstpLblMouseY";
-            this.MainFormSttsstpLblMouseY.Size = new System.Drawing.Size(29, 17);
+            this.MainFormSttsstpLblMouseY.Size = new System.Drawing.Size(29, 20);
             this.MainFormSttsstpLblMouseY.Text = "   ";
             // 
             // MainFormSttsstpLblHint
@@ -118,7 +119,7 @@
             this.MainFormSttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MainFormSttsstpLblHint.Name = "MainFormSttsstpLblHint";
             this.MainFormSttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(693, 17);
+            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(693, 20);
             this.MainFormSttsstpLblHint.Spring = true;
             this.MainFormSttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -152,12 +153,23 @@
             this.MainFormBttnRectangle.UseVisualStyleBackColor = true;
             this.MainFormBttnRectangle.Click += new System.EventHandler(this.MainFormBttnRectangle_Click);
             // 
+            // MainFormBttnCut
+            // 
+            this.MainFormBttnCut.Location = new System.Drawing.Point(206, 309);
+            this.MainFormBttnCut.Name = "MainFormBttnCut";
+            this.MainFormBttnCut.Size = new System.Drawing.Size(106, 23);
+            this.MainFormBttnCut.TabIndex = 11;
+            this.MainFormBttnCut.Text = "Отрезок";
+            this.MainFormBttnCut.UseVisualStyleBackColor = true;
+            this.MainFormBttnCut.Click += new System.EventHandler(this.MainFormBttnCut_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.MainFormCmbbxBuildingVariants);
+            this.Controls.Add(this.MainFormBttnCut);
             this.Controls.Add(this.MainFormBttnRectangle);
             this.Controls.Add(this.MainFormBttnCircle);
             this.Controls.Add(this.MainFormSttsstp);
@@ -189,6 +201,7 @@
         private System.Windows.Forms.Button MainFormBttnCircle;
         private System.Windows.Forms.ComboBox MainFormCmbbxBuildingVariants;
         private System.Windows.Forms.Button MainFormBttnRectangle;
+        private System.Windows.Forms.Button MainFormBttnCut;
     }
 }
 

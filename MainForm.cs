@@ -95,6 +95,11 @@ namespace OOP_Paint {
             Code.SelectedFigure = Figure.Rectangle;
             MainFormSttsstpLblHint.Text = "Прямоугольник. Выберете первую точку";
         }
+        private void MainFormBttnCut_Click(Object sender, EventArgs e) {
+            Code.SelectedFigure = Figure.Cut;
+            MainFormSttsstpLblHint.Text = "Отрезок. Выберете первую точку";
+        }
+
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
             Code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
         }

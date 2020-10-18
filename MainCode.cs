@@ -57,7 +57,7 @@ namespace OOP_Paint {
         private readonly List<Point> pointsList = new List<Point>();
 
         private static readonly Pen supportPen = new Pen(Color.Gray) { Width = 1, DashStyle = DashStyle.Dash };
-        private static readonly Pen supportPen2 = new Pen(Color.White, 1);
+        private static readonly Pen supportFigurePen = new Pen(Color.White, 1);
         private static readonly Pen figurePen = new Pen(Color.Black);
 
 
@@ -123,6 +123,17 @@ namespace OOP_Paint {
                             }
                         default: throw new Exception($"Фигура {SelectedFigure} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
                     }
+                case Figure.Cut:
+                    switch (SelectedBuildingMethod) {
+                        case BuildingMethod.CutTwoPoints:
+                            switch (currConstructorStage) {
+                                case 1:
+                                    (supportFigures[0] as MyCut).P2 = _point;
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                default: throw new Exception();
+                            }
+                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
+                    }
                 default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
             }
         }
@@ -139,7 +150,7 @@ namespace OOP_Paint {
                             switch (currConstructorStage) {
                                 case 0:
                                     supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, supportPen));
-                                    supportFigures.Add(new MyCircle(_point.X, _point.Y, _point.X, _point.Y, supportPen2));
+                                    supportFigures.Add(new MyCircle(_point.X, _point.Y, _point.X, _point.Y, supportFigurePen));
                                     pointsList.Add(_point);
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
@@ -158,7 +169,7 @@ namespace OOP_Paint {
                             switch (currConstructorStage) {
                                 case 0:
                                     supportFigures.Add(new MyCut(supportPen, _point, _point));
-                                    supportFigures.Add(new MyCircle(supportPen2, _point, 0));
+                                    supportFigures.Add(new MyCircle(supportFigurePen, _point, 0));
                                     pointsList.Add(_point);
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
@@ -194,6 +205,27 @@ namespace OOP_Paint {
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default:
                                     throw new Exception();
+                            }
+                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
+                    }
+                case Figure.Cut:
+                    switch(SelectedBuildingMethod) {
+                        case BuildingMethod.CutTwoPoints:
+                            switch(currConstructorStage) {
+                                case 0:
+                                    pointsList.Add(_point);
+                                    supportFigures.Add(new MyCut(supportFigurePen, pointsList[0], pointsList[0]));
+                                    currConstructorStage++;
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                case 1:
+                                    if (pointsList[0] == _point) {
+                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    }
+
+                                    figures.Add(new MyCut(figurePen, pointsList[0], _point));
+                                    CloseConstructor();
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                default: throw new Exception();
                             }
                         default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
                     }
