@@ -61,8 +61,8 @@ namespace OOP_Paint {
 
 
 
-        public override void Draw(Graphics _screen) {
-            _screen.DrawLine(Pen, P1, P2);
+        protected override void DrawFigure(Graphics _screen, Pen _pen) {
+            _screen.DrawLine(_pen, P1, P2);
         }
 
 

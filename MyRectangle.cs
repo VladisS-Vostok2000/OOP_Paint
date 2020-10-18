@@ -37,15 +37,14 @@ namespace OOP_Paint {
         }
 
 
-        public override void Draw(Graphics _screen) {
+        protected override void DrawFigure(Graphics _screen, Pen _pen) {
             if (Width != 0 && Height != 0) {
-                _screen.DrawRectangle(Pen, X, Y, Width, Height);
+                _screen.DrawRectangle(_pen, X, Y, Width, Height);
             }
             else
             if (Width != Height) {
-                _screen.DrawLine(Pen, X, Y, X + Width, Y + Height);
+                _screen.DrawLine(_pen, X, Y, X + Width, Y + Height);
             }
-
         }
 
     }

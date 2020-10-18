@@ -82,18 +82,9 @@ namespace OOP_Paint {
         }
 
 
-        public override void Draw(Graphics _screen) {
-            Pen drawPen;
-            if (IsSelected) {
-                drawPen = this.SelectedPen;
-            }
-            else {
-                drawPen = this.Pen;
-            }
-            _screen.DrawEllipse(drawPen, X, Y, Radius * 2, Radius * 2);
-
+        protected override void DrawFigure(Graphics _screen, Pen _pen) {
+            _screen.DrawEllipse(_pen, X, Y, Radius * 2, Radius * 2);
         }
 
     }
-
 }

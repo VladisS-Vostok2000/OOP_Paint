@@ -16,9 +16,8 @@ namespace OOP_Paint {
 
 
 
-        public override void Draw(Graphics _screen) {
-            _screen.DrawEllipse(Pen, X, Y, 2, 2);
-
+        protected override void DrawFigure(Graphics _screen, Pen _pen) {
+            _screen.DrawEllipse(_pen, X, Y, 2, 2);
         }
 
     }

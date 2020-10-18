@@ -51,7 +51,17 @@ namespace OOP_Paint {
         public void Dispose() { }
 
 
-        public abstract void Draw(Graphics _screen);
+        public virtual void Draw(Graphics _screen) {
+            Pen _pen;
+            if (IsSelected) {
+                _pen = SelectedPen;
+            }
+            else {
+                _pen = Pen;
+            }
+            DrawFigure(_screen, _pen);
+        }
+        protected abstract void DrawFigure(Graphics _screen, Pen _pen);
 
 
         public String GetDescription() {
