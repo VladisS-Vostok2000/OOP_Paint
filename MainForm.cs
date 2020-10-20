@@ -16,19 +16,21 @@ using static OOP_Paint.FiguresEnum;
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
 //!!!Projekt#20: добавить магнитную привязку
 //!!!Projekt#30: добавить полярные линии
-//!!!Projekt#42: добавить выделение фигур мышью, когда она рядом
-//Projekt#43: добавить выделение фиугур, попавших в область выделения мыши.
+//Projekt#42: добавить выделение фигур мышью, когда она рядом
 //!!!Projekt#50: добавить масштаб
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
         private readonly Graphics screen;
-        private readonly MainCode Code = new MainCode();
+        private readonly MainCode Code;
 
 
 
-        public MainForm() {
+        public MainForm(MainCode _code) {
+            Code = _code;
+
             InitializeComponent();
+            
             screen = MainFromPctrbxScreen.CreateGraphics();
             Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
             Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
@@ -39,12 +41,7 @@ namespace OOP_Paint {
             MainFormLstbxFigures.ValueMember = "Id";
         }
         private void MainForm_Load(Object sender, EventArgs e) {
-            Code.SelectedFigure = Figure.Cut;
-            Code.SetPoint(new Point(250, 250));
-            Code.SetPoint(new Point(400, 250));
-            Code.SelectedFigure = Figure.Select;
-            Code.SetPoint(new Point(10, 10));
-            Code.SetPoint(new Point(50, 50));
+
         }
 
 

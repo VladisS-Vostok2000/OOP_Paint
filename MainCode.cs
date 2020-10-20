@@ -78,7 +78,7 @@ namespace OOP_Paint {
         }
 
 
-        //!!!MainCode#45: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
+        //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
         //!!!Запретить выделение "линией"
         public ConstructorOperationResult AddSoftPoint(Point _point) {
             if (currConstructorStage == 0) {
@@ -294,6 +294,7 @@ namespace OOP_Paint {
         }
 
 
+        //!!!MainCode#45: добавить выделение прямоугольника и круга
         private List<MyFigure> FindFiguresTouchesRect(Point _p1, Point _p2) {
             var out_list = new List<MyFigure>();
 
