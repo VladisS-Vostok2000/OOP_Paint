@@ -39,11 +39,22 @@ namespace OOP_Paint {
             MainFormLstbxFigures.ValueMember = "Id";
         }
         private void MainForm_Load(Object sender, EventArgs e) {
-
+            Code.SelectedFigure = Figure.Cut;
+            Code.SetPoint(new Point(250, 250));
+            Code.SetPoint(new Point(400, 250));
+            Code.SelectedFigure = Figure.Select;
+            Code.SetPoint(new Point(10, 10));
+            Code.SetPoint(new Point(50, 50));
         }
 
 
 
+        private void MainFromPctrbxScreen_MouseDown(Object sender, MouseEventArgs e) {
+            if (Code.SelectedFigure == Figure.Select) {
+                MainFormTmr.Enabled = true;
+                Code.SetPoint(e.Location);
+            }
+        }
         private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
             Point mouseLocation = e.Location;
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
@@ -52,6 +63,7 @@ namespace OOP_Paint {
             Code.AddSoftPoint(e.Location);
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
+            //За пределами экрана
             if (e.X > (sender as PictureBox).Width || e.X < 0 ||
                 e.Y > (sender as PictureBox).Height || e.Y < 0) {
                 return;
@@ -107,12 +119,12 @@ namespace OOP_Paint {
         private void MainFormLstbxFigures_SelectedIndexChanged(Object sender, EventArgs e) {
             //Мы не можем знать, снялось выделение или появилось, таким образом нужно снять выделения
             //со всех фигур и задать их заново
-            int figuresCount = Code.GetFiguresCount();
-            for (int i = 0; i < figuresCount; i++) {
+            Int32 figuresCount = Code.GetFiguresCount();
+            for (Int32 i = 0; i < figuresCount; i++) {
                 Code.UnselectFigure(((sender as ListBox).Items[0] as ListBoxFigure).Id);
             }
 
-            foreach (int index in (sender as ListBox).SelectedIndices) {
+            foreach (Int32 index in (sender as ListBox).SelectedIndices) {
                 Code.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
             }
 
@@ -129,7 +141,6 @@ namespace OOP_Paint {
                 cbm[i] = new ComboboxBuildingMethod(pbm[i]);
             }
             MainFormCmbbxBuildingVariants.Items.AddRange(cbm);
-
         }
         //!!!MainForm#42.1: выделение нескольких элементов некорректно работает
         private void Code_SelectedBuildingMethod_Changed(BuildingMethod _value, EventArgs e) {

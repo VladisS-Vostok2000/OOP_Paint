@@ -69,7 +69,7 @@ namespace OOP_Paint {
         public void Resize(Point _p1, Point _p2) {
             InitializeFigure(_p1, _p2);
         }
-        public void Resize(int _x1, int _y1, int _x2, int _y2) {
+        public void Resize(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
             InitializeFigure(new Point(_x1, _y1), new Point(_x2, _y2));
         }
 

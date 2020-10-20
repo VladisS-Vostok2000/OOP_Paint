@@ -74,6 +74,9 @@ namespace OOP_Paint {
                 case Figure.None:
                     out_list.Add(BuildingMethod.None);
                     break;
+                case Figure.Select:
+                    out_list.Add(BuildingMethod.None);
+                    break;
                 case Figure.Circle:
                     out_list.Add(BuildingMethod.CircleInRectangleByTwoDots);
                     out_list.Add(BuildingMethod.CircleCenterRadius);

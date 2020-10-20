@@ -38,6 +38,7 @@
             this.MainFormBttnRectangle = new System.Windows.Forms.Button();
             this.MainFormBttnCut = new System.Windows.Forms.Button();
             this.MainFormBttnSelect = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -50,6 +51,7 @@
             this.MainFromPctrbxScreen.Size = new System.Drawing.Size(496, 290);
             this.MainFromPctrbxScreen.TabIndex = 0;
             this.MainFromPctrbxScreen.TabStop = false;
+            this.MainFromPctrbxScreen.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainFromPctrbxScreen_MouseDown);
             this.MainFromPctrbxScreen.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MainFormPctrbxScreen_MouseMove);
             this.MainFromPctrbxScreen.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MainFromPctrbxScreen_MouseUp);
             // 
@@ -174,11 +176,21 @@
             this.MainFormBttnSelect.UseVisualStyleBackColor = true;
             this.MainFormBttnSelect.Click += new System.EventHandler(this.MainFormBttnSelect_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(248, 372);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "Тест";
+            this.button1.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.MainFormCmbbxBuildingVariants);
             this.Controls.Add(this.MainFormBttnSelect);
             this.Controls.Add(this.MainFormBttnCut);
@@ -215,6 +227,7 @@
         private System.Windows.Forms.Button MainFormBttnRectangle;
         private System.Windows.Forms.Button MainFormBttnCut;
         private System.Windows.Forms.Button MainFormBttnSelect;
+        private System.Windows.Forms.Button button1;
     }
 }
 

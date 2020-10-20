@@ -34,7 +34,6 @@ namespace OOP_Paint {
                     selectedFigure = value;
 
                     SelectedBuildingMethod = ReturnPossibleBuildingVariants(SelectedFigure)[0];
-
                 }
             }
             get => selectedFigure;
@@ -59,7 +58,7 @@ namespace OOP_Paint {
         private static readonly Pen supportPen = new Pen(Color.Gray) { Width = 1, DashStyle = DashStyle.Dash };
         private static readonly Pen supportFigurePen = new Pen(Color.White, 1);
         private static readonly Pen figurePen = new Pen(Color.Black);
-        private static readonly Pen selectPen = new Pen(Color.Blue) { Width = 1, DashStyle = DashStyle.Dash };
+        private static readonly Pen selectPen = new Pen(Color.White) { Width = 1, DashStyle = DashStyle.Dash };
 
 
 
@@ -80,6 +79,7 @@ namespace OOP_Paint {
 
 
         //!!!MainCode#45: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
+        //!!!Запретить выделение "линией"
         public ConstructorOperationResult AddSoftPoint(Point _point) {
             if (currConstructorStage == 0) {
                 return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
@@ -91,6 +91,20 @@ namespace OOP_Paint {
             switch (SelectedFigure) {
                 case Figure.None:
                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                case Figure.Select:
+                    switch (SelectedBuildingMethod) {
+                        case BuildingMethod.None:
+                            switch (currConstructorStage) {
+                                case 1:
+                                    if (pointsList[0] == _point) {
+
+                                    }
+                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
+                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                default: throw new Exception();
+                            }
+                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
+                    }
                 case Figure.Rectangle:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.RectangleTwoPoints:
@@ -107,7 +121,6 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleInRectangleByTwoDots:
                             switch (currConstructorStage) {
                                 case 1:
-                                    //???Тут проверка какая-то должна быть, что ли...
                                     (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
                                     (supportFigures[1] as MyCircle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
@@ -150,39 +163,24 @@ namespace OOP_Paint {
                         case BuildingMethod.None:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, selectPen) { IsFill = true});
+                                    supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, selectPen) { IsFill = true, FillColor = Color.FromArgb(50, Color.Blue) });
                                     pointsList.Add(_point);
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                 case 1:
-                                    if (pointsList[0].X == _point.X || pointsList[0].Y == _point.Y) {
+                                    if (pointsList[0] == _point) {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
+                                    List<MyFigure> myFigures = FindFiguresTouchesRect(pointsList[0], _point);
+                                    foreach (var figure in myFigures) {
+                                        figure.IsSelected = true;
+                                    }
+
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default:
                                     throw new Exception();
-                            }
-                        case BuildingMethod.CircleCenterRadius:
-                            switch (currConstructorStage) {
-                                case 0:
-                                    supportFigures.Add(new MyCut(supportPen, _point, _point));
-                                    supportFigures.Add(new MyCircle(supportFigurePen, _point, 0));
-                                    pointsList.Add(_point);
-                                    currConstructorStage++;
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
-                                case 1:
-                                    int radius = MyFigure.FindLength(_point, pointsList[0]);
-                                    if (radius == 0) {
-                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
-                                    }
-
-                                    figures.Add(new MyCircle(figurePen, pointsList[0], radius));
-                                    CloseConstructor();
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
-                                default: throw new Exception();
                             }
                         default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
                     }
@@ -216,7 +214,7 @@ namespace OOP_Paint {
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
                                 case 1:
-                                    int radius = MyFigure.FindLength(_point, pointsList[0]);
+                                    Int32 radius = MyFigure.FindLength(_point, pointsList[0]);
                                     if (radius == 0) {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
@@ -274,25 +272,93 @@ namespace OOP_Paint {
                 default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
             }
         }
-        //!!!MainCode#01: рассмотреть возомжность открыть лист Figures
-        public void SelectFigure(int _id) {
-            for (int i = 0; i < figures.Count; i++) {
+        //!!!MainCode#01: рассмотреть возможность открыть лист Figures
+        public void SelectFigure(Int32 _id) {
+            for (Int32 i = 0; i < figures.Count; i++) {
                 if (figures[i].Id == _id) {
                     figures[i].IsSelected = true;
                     break;
                 }
             }
         }
-        public void UnselectFigure(int _id) {
-            for (int i = 0; i < figures.Count; i++) {
+        public void UnselectFigure(Int32 _id) {
+            for (Int32 i = 0; i < figures.Count; i++) {
                 if (figures[i].Id == _id) {
                     figures[i].IsSelected = false;
                     break;
                 }
             }
         }
-        public int GetFiguresCount() {
+        public Int32 GetFiguresCount() {
             return figures.Count;
+        }
+
+
+        private List<MyFigure> FindFiguresTouchesRect(Point _p1, Point _p2) {
+            var out_list = new List<MyFigure>();
+
+            //Все грани выделяющего прямоугольника
+            Point[,] selectRectLinePoints = {
+                { _p1, new Point(_p2.X, _p1.Y) },
+                { _p2, new Point(_p2.X, _p1.Y) },
+                { _p2, new Point(_p1.X, _p2.Y) },
+                { _p1, new Point(_p1.X, _p2.Y) }
+            };
+
+            foreach (var figure in figures) {
+                if (figure is MyCut) {
+                    var myCut = figure as MyCut;
+                    for (int i = 0; i < selectRectLinePoints.GetLength(0); i++) {
+                        bool isParallel = IsParallel(myCut.P1, myCut.P2, selectRectLinePoints[i, 0], selectRectLinePoints[i, 1]);
+                        if (isParallel) {
+                            continue;
+                        }
+
+                        PointF crossPoint = FindCross(myCut.P1, myCut.P2, selectRectLinePoints[i, 0], selectRectLinePoints[i, 1]);
+                        //Отрезки пересекаются, если точка пересечения прямых, чрез них проходящих, принадлежит им обоим.
+                        bool isTouches = CheckIsPointInCut(myCut.P1, myCut.P2, crossPoint) && CheckIsPointInCut(selectRectLinePoints[i, 0], selectRectLinePoints[i, 1], crossPoint);
+                        if (isTouches) {
+                            out_list.Add(figure);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return out_list;
+        }
+        public PointF FindCross(Point _p1, Point _p2, Point _p3, Point _p4) {
+            //параллельны/что-то совпадает
+            if (Math.Abs((_p1.X - _p2.X) * (_p3.Y - _p4.Y)) == Math.Abs((_p1.Y - _p2.Y) * (_p3.X - _p4.X))) {
+                throw new Exception();
+            }
+
+            Single y = (Single)((_p4.X * _p3.Y - _p3.X * _p4.Y) * (_p1.Y - _p2.Y) - (_p3.Y - _p4.Y) * (_p2.X * _p1.Y - _p1.X * _p2.Y)) / ((_p3.Y - _p4.Y) * (_p1.X - _p2.X) + (_p4.X - _p3.X) * (_p1.Y - _p2.Y));
+            Single x;
+            if (_p1.Y - _p2.Y == 0) {
+                x = (Single)(y * (_p3.X - _p4.X) + (_p4.X * _p3.Y - _p3.X * _p4.Y)) / (_p3.Y - _p4.Y);
+            }
+            else {
+                x = (Single)(y * (_p1.X - _p2.X) + (_p2.X * _p1.Y - _p1.X * _p2.Y)) / (_p1.Y - _p2.Y);
+            }
+
+            return new PointF(x, y);
+        }
+        public bool IsParallel(Point _p1, Point _p2, Point _p3, Point _p4) {
+            if (Math.Abs((_p1.X - _p2.X) * (_p3.Y - _p4.Y)) == Math.Abs((_p1.Y - _p2.Y) * (_p3.X - _p4.X))) {
+                return true;
+            }
+
+            return false;
+        }
+        public bool CheckIsPointInCut(Point _cutP1, Point _cutP2, PointF _p) {
+            //Вертикальная прямая
+            if (_cutP1.X == _cutP2.X) {
+                return _p.Y >= Math.Min(_cutP1.Y, _cutP2.Y) && _p.Y <= Math.Max(_cutP1.Y, _cutP2.Y);
+            }
+            else {
+                return _p.X <= Math.Max(_cutP1.X, _cutP2.X) && _p.X >= Math.Min(_cutP1.X, _cutP2.X);
+            }
         }
 
 

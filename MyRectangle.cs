@@ -40,6 +40,9 @@ namespace OOP_Paint {
 
         protected override void DrawFigure(Graphics _screen, Pen _pen) {
             if (Width != 0 && Height != 0) {
+                if (IsFill) {
+                    _screen.FillRectangle(new SolidBrush(FillColor), X, Y, Width, Height);
+                }
                 _screen.DrawRectangle(_pen, X, Y, Width, Height);
             }
             else
