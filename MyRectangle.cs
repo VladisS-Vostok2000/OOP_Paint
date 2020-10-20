@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OOP_Paint {
-    //MyRectangle#44: добавить заливку
     public class MyRectangle : MyFigure {
         public Int32 Width { set; get; }
         public Int32 Height { set; get; }
