@@ -15,9 +15,10 @@ using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
 namespace OOP_Paint {
+    //MyCut#01: заменить Point на PointF
     class MyCut : MyFigure{
-        private Point p1;
-        public Point P1 { 
+        private PointF p1;
+        public PointF P1 { 
             set {
                 if (value != p1) {
                     p1 = value;
@@ -29,8 +30,8 @@ namespace OOP_Paint {
                 return p1;
             }
         }
-        private Point p2;
-        public Point P2 {
+        private PointF p2;
+        public PointF P2 {
             set {
                 if (value != p2) {
                     p2 = value;

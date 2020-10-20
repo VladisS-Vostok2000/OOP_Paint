@@ -102,8 +102,8 @@ namespace OOP_Paint {
         /// <summary>
         /// Находил целочисленную длину между двумя точками
         /// </summary>
-        public static Int32 FindLength(Point _p1, Point _p2) {
-            return (Int32)Math.Truncate(Math.Sqrt(Math.Pow(_p1.X - _p2.X, 2) + Math.Pow(_p1.Y - _p2.Y, 2)));
+        public static double FindLength(Point _p1, Point _p2) {
+            return Math.Sqrt(Math.Pow(_p1.X - _p2.X, 2) + Math.Pow(_p1.Y - _p2.Y, 2));
         }
     }
 }

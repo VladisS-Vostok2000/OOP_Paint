@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Configuration;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -79,7 +80,7 @@ namespace OOP_Paint {
 
 
         //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
-        //!!!Запретить выделение "линией"
+        //!!!MainCode#01: Запретить выделение "линией"
         public ConstructorOperationResult AddSoftPoint(Point _point) {
             if (currConstructorStage == 0) {
                 return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
@@ -272,7 +273,7 @@ namespace OOP_Paint {
                 default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
             }
         }
-        //!!!MainCode#01: рассмотреть возможность открыть лист Figures
+        //!!!MainCode#02: рассмотреть возможность открыть лист Figures
         public void SelectFigure(Int32 _id) {
             for (Int32 i = 0; i < figures.Count; i++) {
                 if (figures[i].Id == _id) {
@@ -328,7 +329,7 @@ namespace OOP_Paint {
 
             return out_list;
         }
-        public PointF FindCross(Point _p1, Point _p2, Point _p3, Point _p4) {
+        private PointF FindCross(Point _p1, Point _p2, Point _p3, Point _p4) {
             //параллельны/что-то совпадает
             if (Math.Abs((_p1.X - _p2.X) * (_p3.Y - _p4.Y)) == Math.Abs((_p1.Y - _p2.Y) * (_p3.X - _p4.X))) {
                 throw new Exception();
@@ -345,14 +346,14 @@ namespace OOP_Paint {
 
             return new PointF(x, y);
         }
-        public bool IsParallel(Point _p1, Point _p2, Point _p3, Point _p4) {
+        private bool IsParallel(Point _p1, Point _p2, Point _p3, Point _p4) {
             if (Math.Abs((_p1.X - _p2.X) * (_p3.Y - _p4.Y)) == Math.Abs((_p1.Y - _p2.Y) * (_p3.X - _p4.X))) {
                 return true;
             }
 
             return false;
         }
-        public bool CheckIsPointInCut(Point _cutP1, Point _cutP2, PointF _p) {
+        private bool CheckIsPointInCut(Point _cutP1, Point _cutP2, PointF _p) {
             //Вертикальная прямая
             if (_cutP1.X == _cutP2.X) {
                 return _p.Y >= Math.Min(_cutP1.Y, _cutP2.Y) && _p.Y <= Math.Max(_cutP1.Y, _cutP2.Y);
@@ -362,6 +363,27 @@ namespace OOP_Paint {
             }
         }
 
+
+        private List<Point> FindFiguresNearPoint(Point _target, int _interval) {
+            foreach(var figure in figures) {
+                if (figure is MyCut) {
+                    var cut = figure as MyCut;
+                    var area = FindCutArea(cut.P1, cut.P2, _interval);
+                }
+            }
+        }
+        /// <summary>
+        /// Возвращает прямоугольник, образованный перпендикулярным сдвигом отрезка на интервал
+        /// в одну и в другую сторону
+        /// </summary>
+        private Point[] FindCutArea(Point _p1, Point _p2, int _interval) {
+            double cutLength = MyFigure.FindLength(_p1, _p2);
+            //double z = 1 - Math.Abs(_p1.Y - _p2.Y) / cutLength;
+            //double a = 1 - Math.Abs(_p1.X - _p2.X) / cutLength;
+            float z = Convert.ToSingle((_p1.X - _p2.X) * _interval / cutLength);
+            float a = Convert.ToSingle((_p2.Y - _p1.Y) * _interval / cutLength);
+            PointF[] b = { new PointF(_p1.X - a, _p1.Y + z), new PointF(_p1.X + a, _p1.Y) })
+        }
 
         private void CloseConstructor() {
             //CurrBuildingVariant = BuildingVariants.None;
