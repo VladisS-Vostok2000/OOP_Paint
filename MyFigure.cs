@@ -73,14 +73,14 @@ namespace OOP_Paint {
 
         //???Может переместить их куда-то? Неочевидные методы.
         /// <summary>
-        /// Возвращает левый верхний угол прямоугольника по координатам двух точек
+        /// Возвращает левый верхний угол прямоугольника с горизональной гранью по координатам двух точек
         /// </summary>
         /// <param name="_p1">Первая точка</param>
         /// <param name="_p2">Вторая точка</param>
-        public static Point FindLeftUpCornerCoord(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
-            Int32 lowX = _x1 > _x2 ? _x2 : _x1;
-            Int32 lowY = _y1 > _y2 ? _y2 : _y1;
-            return new Point(lowX, lowY);
+        public static PointF FindLeftUpCornerCoord(Single _x1, Single _y1, Single _x2, Single _y2) {
+            Single lowX = _x1 > _x2 ? _x2 : _x1;
+            Single lowY = _y1 > _y2 ? _y2 : _y1;
+            return new PointF(lowX, lowY);
         }
         /// <summary>
         /// Обрубает координатный прямоугольник до квадрата относительно первой точки
