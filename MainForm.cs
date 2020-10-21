@@ -184,6 +184,13 @@ namespace OOP_Paint {
         }
         #endregion
 
+        //#Test#: FindCutArea(PointF _p1, PointF _p2, Single _interval)
+        private void button1_Click(Object sender, EventArgs e) {
+            var a = Code.FindCutArea(new PointF(10, 10), new PointF(50, 50), 2);
+            //Ожидается:
+            //(10-2.8284;10-1.4142), (10+2.8284;10+1.4142), (50-2.8284;10-1.4142), (50+2.8284;10+1.4142)
+            MessageBox.Show("");
+        }
     }
 }
 //MainForm#46: Поменять таймер на MouseMowe

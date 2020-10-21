@@ -371,18 +371,25 @@ namespace OOP_Paint {
                     var area = FindCutArea(cut.P1, cut.P2, _interval);
                 }
             }
+            throw new Exception();
         }
         /// <summary>
-        /// Возвращает прямоугольник, образованный перпендикулярным сдвигом отрезка на интервал
-        /// в одну и в другую сторону
+        /// Возвращает вершины прямоугольника, образованного перпендикулярным сдвигом отрезка на интервал
+        /// в обе стороны
         /// </summary>
-        private PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
+        public PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
             Single cutLength = MyFigure.FindLength(_p1, _p2);
             //double z = 1 - Math.Abs(_p1.Y - _p2.Y) / cutLength;
             //double a = 1 - Math.Abs(_p1.X - _p2.X) / cutLength;
-            Single z = Convert.ToSingle((_p1.X - _p2.X) * _interval / cutLength);
-            Single a = Convert.ToSingle((_p2.Y - _p1.Y) * _interval / cutLength);
-            PointF[] b = { new PointF(_p1.X - a, _p1.Y + z), new PointF(_p1.X + a, _p1.Y) };
+            Single z = (Single)((_p1.X - _p2.X) * _interval / cutLength);
+            Single a = (Single)((_p2.Y - _p1.Y) * _interval / cutLength);
+            PointF[] rect = { 
+                new PointF(_p1.X - a, _p1.Y + z),
+                new PointF(_p1.X + a, _p1.Y),
+                new PointF(_p2.X - a, _p2.Y + z),
+                new PointF(_p2.X + a, _p2.Y)
+            };
+            return rect;
         }
 
         private void CloseConstructor() {
