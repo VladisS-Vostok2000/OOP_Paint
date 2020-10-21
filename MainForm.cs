@@ -186,9 +186,28 @@ namespace OOP_Paint {
 
         //#Test#: FindCutArea(PointF _p1, PointF _p2, Single _interval)
         private void button1_Click(Object sender, EventArgs e) {
+            //k=-45*
             var a = Code.FindCutArea(new PointF(10, 10), new PointF(50, 50), 2);
             //Ожидается:
             //(10-2.8284;10-1.4142), (10+2.8284;10+1.4142), (50-2.8284;10-1.4142), (50+2.8284;10+1.4142)
+            //ok
+
+            //k=0
+            var b = Code.FindCutArea(new PointF(10, 10), new PointF(10, 50), 2);
+            //Ожидается:
+            //(8;10), (12;10), (48;50), (52;50)
+            //ok
+
+            //y=0
+            var c = Code.FindCutArea(new PointF(10, 10), new PointF(50, 10), 2);
+            //Ожидается:
+            //(10;8), (10;12), (50;8), (50;12)
+            //ok
+
+            //k=45*
+            var d = Code.FindCutArea(new PointF(10, 50), new PointF(50, 10), 2);
+            //Ожидается:
+            //(10-2.8284;50+1.4142), (10+2.8284;10-1.4142), (50-2.8284;10+1.4142), (50+2.8284;10-1.4142)
             MessageBox.Show("");
         }
     }

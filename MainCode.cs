@@ -385,9 +385,9 @@ namespace OOP_Paint {
             Single a = (Single)((_p2.Y - _p1.Y) * _interval / cutLength);
             PointF[] rect = { 
                 new PointF(_p1.X - a, _p1.Y + z),
-                new PointF(_p1.X + a, _p1.Y),
+                new PointF(_p1.X + a, _p1.Y - z),
                 new PointF(_p2.X - a, _p2.Y + z),
-                new PointF(_p2.X + a, _p2.Y)
+                new PointF(_p2.X + a, _p2.Y - z)
             };
             return rect;
         }
