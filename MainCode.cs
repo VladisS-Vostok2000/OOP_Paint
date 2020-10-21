@@ -215,7 +215,7 @@ namespace OOP_Paint {
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
                                 case 1:
-                                    Int32 radius = MyFigure.FindLength(_point, pointsList[0]);
+                                    Single radius = MyFigure.FindLength(_point, pointsList[0]);
                                     if (radius == 0) {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
@@ -310,15 +310,15 @@ namespace OOP_Paint {
             foreach (var figure in figures) {
                 if (figure is MyCut) {
                     var myCut = figure as MyCut;
-                    for (int i = 0; i < selectRectLinePoints.GetLength(0); i++) {
-                        bool isParallel = IsParallel(myCut.P1, myCut.P2, selectRectLinePoints[i, 0], selectRectLinePoints[i, 1]);
+                    for (Int32 i = 0; i < selectRectLinePoints.GetLength(0); i++) {
+                        Boolean isParallel = IsParallel(myCut.P1, myCut.P2, selectRectLinePoints[i, 0], selectRectLinePoints[i, 1]);
                         if (isParallel) {
                             continue;
                         }
 
                         PointF crossPoint = FindCross(myCut.P1, myCut.P2, selectRectLinePoints[i, 0], selectRectLinePoints[i, 1]);
                         //Отрезки пересекаются, если точка пересечения прямых, чрез них проходящих, принадлежит им обоим.
-                        bool isTouches = CheckIsPointInCut(myCut.P1, myCut.P2, crossPoint) && CheckIsPointInCut(selectRectLinePoints[i, 0], selectRectLinePoints[i, 1], crossPoint);
+                        Boolean isTouches = CheckIsPointInCut(myCut.P1, myCut.P2, crossPoint) && CheckIsPointInCut(selectRectLinePoints[i, 0], selectRectLinePoints[i, 1], crossPoint);
                         if (isTouches) {
                             out_list.Add(figure);
                             break;
@@ -329,7 +329,7 @@ namespace OOP_Paint {
 
             return out_list;
         }
-        private PointF FindCross(Point _p1, Point _p2, Point _p3, Point _p4) {
+        private PointF FindCross(PointF _p1, PointF _p2, PointF _p3, PointF _p4) {
             //параллельны/что-то совпадает
             if (Math.Abs((_p1.X - _p2.X) * (_p3.Y - _p4.Y)) == Math.Abs((_p1.Y - _p2.Y) * (_p3.X - _p4.X))) {
                 throw new Exception();
@@ -346,14 +346,14 @@ namespace OOP_Paint {
 
             return new PointF(x, y);
         }
-        private bool IsParallel(Point _p1, Point _p2, Point _p3, Point _p4) {
+        private Boolean IsParallel(PointF _p1, PointF _p2, PointF _p3, PointF _p4) {
             if (Math.Abs((_p1.X - _p2.X) * (_p3.Y - _p4.Y)) == Math.Abs((_p1.Y - _p2.Y) * (_p3.X - _p4.X))) {
                 return true;
             }
 
             return false;
         }
-        private bool CheckIsPointInCut(Point _cutP1, Point _cutP2, PointF _p) {
+        private Boolean CheckIsPointInCut(PointF _cutP1, PointF _cutP2, PointF _p) {
             //Вертикальная прямая
             if (_cutP1.X == _cutP2.X) {
                 return _p.Y >= Math.Min(_cutP1.Y, _cutP2.Y) && _p.Y <= Math.Max(_cutP1.Y, _cutP2.Y);
@@ -364,7 +364,7 @@ namespace OOP_Paint {
         }
 
 
-        private List<Point> FindFiguresNearPoint(Point _target, int _interval) {
+        private List<Point> FindFiguresNearPoint(PointF _target, Single _interval) {
             foreach(var figure in figures) {
                 if (figure is MyCut) {
                     var cut = figure as MyCut;
@@ -376,13 +376,13 @@ namespace OOP_Paint {
         /// Возвращает прямоугольник, образованный перпендикулярным сдвигом отрезка на интервал
         /// в одну и в другую сторону
         /// </summary>
-        private Point[] FindCutArea(Point _p1, Point _p2, int _interval) {
-            double cutLength = MyFigure.FindLength(_p1, _p2);
+        private PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
+            Single cutLength = MyFigure.FindLength(_p1, _p2);
             //double z = 1 - Math.Abs(_p1.Y - _p2.Y) / cutLength;
             //double a = 1 - Math.Abs(_p1.X - _p2.X) / cutLength;
-            float z = Convert.ToSingle((_p1.X - _p2.X) * _interval / cutLength);
-            float a = Convert.ToSingle((_p2.Y - _p1.Y) * _interval / cutLength);
-            PointF[] b = { new PointF(_p1.X - a, _p1.Y + z), new PointF(_p1.X + a, _p1.Y) })
+            Single z = Convert.ToSingle((_p1.X - _p2.X) * _interval / cutLength);
+            Single a = Convert.ToSingle((_p2.Y - _p1.Y) * _interval / cutLength);
+            PointF[] b = { new PointF(_p1.X - a, _p1.Y + z), new PointF(_p1.X + a, _p1.Y) };
         }
 
         private void CloseConstructor() {

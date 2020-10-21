@@ -43,19 +43,19 @@ namespace OOP_Paint {
                 return p2;
             }
         }
-        public Int32 Length { private set; get; }
+        public Single Length { private set; get; }
 
 
 
-        public MyCut(Color _color, Point _p1, Point _p2) : base(_color) {
+        public MyCut(Color _color, PointF _p1, PointF _p2) : base(_color) {
             //???Повторяющийся код
             InitializeFigure(_p1, _p2);
         }
-        public MyCut(Pen _pen, Point _p1, Point _p2) : base (_pen) {
+        public MyCut(Pen _pen, PointF _p1, PointF _p2) : base (_pen) {
             //???Повторяющийся код
             InitializeFigure(_p1, _p2);
         }
-        private void InitializeFigure(Point _p1, Point _p2) {
+        private void InitializeFigure(PointF _p1, PointF _p2) {
             P1 = _p1;
             P2 = _p2;
         }
@@ -67,11 +67,11 @@ namespace OOP_Paint {
         }
 
 
-        public void Resize(Point _p1, Point _p2) {
+        public void Resize(PointF _p1, PointF _p2) {
             InitializeFigure(_p1, _p2);
         }
-        public void Resize(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
-            InitializeFigure(new Point(_x1, _y1), new Point(_x2, _y2));
+        public void Resize(Single _x1, Single _y1, Single _x2, Single _y2) {
+            InitializeFigure(new PointF(_x1, _y1), new PointF(_x2, _y2));
         }
 
     }

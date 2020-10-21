@@ -14,11 +14,11 @@ namespace OOP_Paint {
         //!!!MyFigure#01: рефакторинг конструкторов: изменить порядок параметров и убрать задание через "color".
         public static Int32 FiguresCount = 0;
         public Int32 Id = 0;
-        protected Int32 x;
-        public virtual Int32 X { set; get; }
-        protected Int32 y;
-        public virtual Int32 Y { set; get; }
-        public Point Location {
+        protected Single x;
+        public virtual Single X { set; get; }
+        protected Single y;
+        public virtual Single Y { set; get; }
+        public PointF Location {
             set {
                 if (value.X != X || value.Y != Y) {
                     X = value.X;
@@ -26,7 +26,7 @@ namespace OOP_Paint {
                 }
             }
             get {
-                return new Point(X, Y);
+                return new PointF(X, Y);
             }
         }
         public Pen Pen { set; get; } = new Pen(Color.Black, 1);
@@ -85,12 +85,12 @@ namespace OOP_Paint {
         /// <summary>
         /// Обрубает координатный прямоугольник до квадрата относительно первой точки
         /// </summary>
-        public static (Point, Point) CutCoordinatesRectangleToSquare(Int32 _x1, Int32 _y1, Int32 _x2, Int32 _y2) {
-            var p1 = new Point(_x1, _y1);
-            var p2 = new Point(_x2, _y2);
+        public static (PointF, PointF) CutCoordinatesRectangleToSquare(Single _x1, Single _y1, Single _x2, Single _y2) {
+            var p1 = new PointF(_x1, _y1);
+            var p2 = new PointF(_x2, _y2);
 
-            Int32 a = Math.Abs(p2.X - p1.X);
-            Int32 b = Math.Abs(p2.Y - p1.Y);
+            Single a = Math.Abs(p2.X - p1.X);
+            Single b = Math.Abs(p2.Y - p1.Y);
             if (Math.Abs(a) > Math.Abs(b)) {
                 p2.X = _x1 > _x2 ? p1.X - b : p1.X + b;
             }
@@ -100,10 +100,10 @@ namespace OOP_Paint {
             return (p1, p2);
         }
         /// <summary>
-        /// Находил целочисленную длину между двумя точками
+        /// Находит длину между двумя точками
         /// </summary>
-        public static double FindLength(Point _p1, Point _p2) {
-            return Math.Sqrt(Math.Pow(_p1.X - _p2.X, 2) + Math.Pow(_p1.Y - _p2.Y, 2));
+        public static Single FindLength(PointF _p1, PointF _p2) {
+            return (Single)Math.Sqrt(Math.Pow(_p1.X - _p2.X, 2) + Math.Pow(_p1.Y - _p2.Y, 2));
         }
     }
 }
