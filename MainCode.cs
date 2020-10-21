@@ -365,10 +365,11 @@ namespace OOP_Paint {
 
 
         private List<Point> FindFiguresNearPoint(PointF _target, Single _interval) {
-            foreach(var figure in figures) {
+            foreach (var figure in figures) {
                 if (figure is MyCut) {
                     var cut = figure as MyCut;
-                    var area = FindCutArea(cut.P1, cut.P2, _interval);
+                    PointF[] area = FindCutArea(cut.P1, cut.P2, _interval);
+
                 }
             }
             throw new Exception();
@@ -377,13 +378,11 @@ namespace OOP_Paint {
         /// Возвращает вершины прямоугольника, образованного перпендикулярным сдвигом отрезка на интервал
         /// в обе стороны
         /// </summary>
-        public PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
+        private PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
             Single cutLength = MyFigure.FindLength(_p1, _p2);
-            //double z = 1 - Math.Abs(_p1.Y - _p2.Y) / cutLength;
-            //double a = 1 - Math.Abs(_p1.X - _p2.X) / cutLength;
             Single z = (Single)((_p1.X - _p2.X) * _interval / cutLength);
             Single a = (Single)((_p2.Y - _p1.Y) * _interval / cutLength);
-            PointF[] rect = { 
+            PointF[] rect = {
                 new PointF(_p1.X - a, _p1.Y + z),
                 new PointF(_p1.X + a, _p1.Y - z),
                 new PointF(_p2.X - a, _p2.Y + z),
@@ -391,6 +390,17 @@ namespace OOP_Paint {
             };
             return rect;
         }
+        /// <param name="_area">Замкнутый выпуклый полигон</param>
+        private Boolean IsPointInArea(PointF[] _area, PointF _point) {
+
+        }
+        /// <summary>
+        /// Находит, выше точка прямой или ниже (совпадает)
+        /// </summary>
+        public Boolean IsPointOverLine(PointF _p1, PointF _p2, PointF _point) {
+            return (_p2.X - _p1.X) * _point.Y - (_p2.Y - _p1.Y) * _point.X > 0;
+        }
+
 
         private void CloseConstructor() {
             //CurrBuildingVariant = BuildingVariants.None;
