@@ -392,13 +392,53 @@ namespace OOP_Paint {
         }
         /// <param name="_area">Замкнутый выпуклый полигон</param>
         private Boolean IsPointInArea(PointF[] _area, PointF _point) {
-
+            throw new Exception();
         }
+
         /// <summary>
-        /// Находит, выше точка прямой или ниже (совпадает)
+        /// Находит, выше (1) точка прямой, лежит на ней (0) или ниже (-1). Если прямая вертикальна или координаты её точек идентичны - exeption.
         /// </summary>
-        public Boolean IsPointOverLine(PointF _p1, PointF _p2, PointF _point) {
-            return (_p2.X - _p1.X) * _point.Y - (_p2.Y - _p1.Y) * _point.X > 0;
+        /// <param name="_p1">
+        /// Координаты первой точки прямой
+        /// </param>
+        /// <param name="_p2">
+        /// Коордианы второй точки прямой</param>
+        /// <param name="_p3">
+        /// Координаты точки
+        /// </param>
+        public Int32 IsPointOverLine(in PointF _p1, in PointF _p2, in PointF _p3) {
+            #region Неоптимальный способ
+            //return _point.Y > ((_point.X - _p1.X) * (_p2.Y - _p1.Y) + _point.Y * (_p2.X - _p1.X))/(_p2.X - _p1.X);
+            #endregion
+
+            //Если точки совпадают или прямая вертикальна
+            if (_p1.X == _p2.X) {
+                throw new Exception();
+            }
+
+            #region Человеческий вид
+            //Single a = _p2.X - _p1.X;
+            //Single b = -_p2.Y - -_p1.Y;
+            //Single c = _p3.X - _p1.X;
+            //Single d = -_p3.Y - -_p1.Y;
+
+            //Int32 e = Math.Sign(a * d - b * c);
+
+            //if (a > 0) {
+            //    return e;
+            //}
+            //else {
+            //    return -e;
+            //}
+            #endregion
+
+            Single a = _p2.X - _p1.X;
+            if (a > 0) {
+                return Math.Sign((-a * (_p3.Y - _p1.Y)) + (_p2.Y - _p1.Y) * (_p3.X - _p1.X));
+            }
+            else {
+                return -Math.Sign((-a * (_p3.Y - _p1.Y)) + (_p2.Y - _p1.Y) * (_p3.X - _p1.X));
+            }
         }
 
 

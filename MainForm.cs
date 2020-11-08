@@ -30,7 +30,7 @@ namespace OOP_Paint {
             Code = _code;
 
             InitializeComponent();
-            
+
             screen = MainFromPctrbxScreen.CreateGraphics();
             Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
             Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
@@ -187,11 +187,47 @@ namespace OOP_Paint {
 
         //#Test#: IsPointOverLine(PointF _p1, PointF _p2, PointF _point)
         private void button1_Click(Object sender, EventArgs e) {
-            //
-
+            //Компьютерные координаты
+            //k<0
+            var a = Code.IsPointOverLine(new PointF(10, 10), new PointF(50, 50), new PointF(20, 10));
             //Ожидается:
-            //(10-2.8284;10-1.4142), (10+2.8284;10+1.4142), (50-2.8284;10-1.4142), (50+2.8284;10+1.4142)
-            //ok
+            //true
+            var b = Code.IsPointOverLine(new PointF(10, 10), new PointF(50, 50), new PointF(30, 30));
+            //Ожидается:
+            //false
+            var c = Code.IsPointOverLine(new PointF(10, 10), new PointF(50, 50), new PointF(10, 20));
+            //Ожидается:
+            //false
+            var d = Code.IsPointOverLine(new PointF(50, 50), new PointF(10, 10), new PointF(20, 10));
+            //Ожидается:                                                
+            //true                                                      
+            var f = Code.IsPointOverLine(new PointF(50, 50), new PointF(10, 10), new PointF(30, 30));
+            //Ожидается:                                                
+            //false                                                     
+            var g = Code.IsPointOverLine(new PointF(50, 50), new PointF(10, 10), new PointF(10, 20));
+            //Ожидается:
+            //false
+
+            //k>0
+            var h = Code.IsPointOverLine(new PointF(10, 50), new PointF(50, 10), new PointF(10, 10));
+            //Ожидается:                                    
+            //true                                                      
+            var i = Code.IsPointOverLine(new PointF(10, 50), new PointF(50, 10), new PointF(30, 30));
+            //Ожидается:
+            //false                                                     
+            var j = Code.IsPointOverLine(new PointF(10, 50), new PointF(50, 10), new PointF(50, 50));
+            //Ожидается:
+            //false
+            var k = Code.IsPointOverLine(new PointF(50, 10), new PointF(10, 50), new PointF(10, 10));
+            //Ожидается:                                                
+            //true                                                      
+            var l = Code.IsPointOverLine(new PointF(50, 10), new PointF(10, 50), new PointF(30, 30));
+            //Ожидается:                                                
+            //false                                                     
+            var m = Code.IsPointOverLine(new PointF(50, 10), new PointF(10, 50), new PointF(50, 50));
+            //Ожидается:
+            //false
+
 
             MessageBox.Show("");
         }
