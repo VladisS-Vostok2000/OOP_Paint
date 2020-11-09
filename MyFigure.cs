@@ -32,6 +32,7 @@ namespace OOP_Paint {
         public Pen Pen { set; get; } = new Pen(Color.Black, 1);
         public Pen SelectedPen { set; get; } = new Pen(Color.White, 2);
         public Boolean IsSelected;
+        public Boolean IsHightLighed;
         public Boolean IsFill;
         public Color FillColor;
 

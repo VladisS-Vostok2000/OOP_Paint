@@ -81,7 +81,7 @@ namespace OOP_Paint {
 
         //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
         //!!!MainCode#01: Запретить выделение "линией"
-        public ConstructorOperationResult AddSoftPoint(Point _point) {
+        public ConstructorOperationResult AddSoftPoint(in PointF _point) {
             if (currConstructorStage == 0) {
                 return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
             }
@@ -91,6 +91,10 @@ namespace OOP_Paint {
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             switch (SelectedFigure) {
                 case Figure.None:
+                    int[] indexes = FindFiguresNearPoint(_point);
+                    for (int i = 0; i < indexes.Length; i++) {
+                        figures[indexes[i]].IsHightLighed = true;
+                    }
                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                 case Figure.Select:
                     switch (SelectedBuildingMethod) {
@@ -273,7 +277,7 @@ namespace OOP_Paint {
                 default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
             }
         }
-        //!!!MainCode#02: рассмотреть возможность открыть лист Figures
+        //!!!MainCode#02: добавить класс-контейнер Figures
         public void SelectFigure(Int32 _id) {
             for (Int32 i = 0; i < figures.Count; i++) {
                 if (figures[i].Id == _id) {
@@ -346,6 +350,10 @@ namespace OOP_Paint {
 
             return new PointF(x, y);
         }
+
+        /// <summary>
+        /// Определяет параллельность/коллинеарность отрезков
+        /// </summary>
         private Boolean IsParallel(PointF _p1, PointF _p2, PointF _p3, PointF _p4) {
             if (Math.Abs((_p1.X - _p2.X) * (_p3.Y - _p4.Y)) == Math.Abs((_p1.Y - _p2.Y) * (_p3.X - _p4.X))) {
                 return true;
@@ -353,6 +361,7 @@ namespace OOP_Paint {
 
             return false;
         }
+        //MainCode#08: исправить CheckIsPointInCut(PointF _cutP1, PointF _cutP2, PointF _p)
         private Boolean CheckIsPointInCut(PointF _cutP1, PointF _cutP2, PointF _p) {
             //Вертикальная прямая
             if (_cutP1.X == _cutP2.X) {
@@ -364,19 +373,26 @@ namespace OOP_Paint {
         }
 
 
-        private List<Point> FindFiguresNearPoint(PointF _target, Single _interval) {
-            foreach (var figure in figures) {
-                if (figure is MyCut) {
-                    var cut = figure as MyCut;
+        /// <summary>
+        /// Находит все фигуры на заданном от цели расстоянии
+        /// </summary>
+        /// <returns>
+        /// Целочисленный массив с индексами figures
+        /// </returns>
+        private int[] FindFiguresNearPoint(PointF _target, Single _interval = 5) {
+            for (int i = 0; i < figures.Count;i++) {
+                if (figures[i] is MyCut) {
+                    var cut = figures[i] as MyCut;
                     PointF[] area = FindCutArea(cut.P1, cut.P2, _interval);
 
                 }
             }
             throw new Exception();
         }
+
         /// <summary>
-        /// Возвращает вершины прямоугольника, образованного перпендикулярным сдвигом отрезка на интервал
-        /// в обе стороны
+        /// Возвращает последовательные вершины прямоугольника, образованного "перпендикулярным" сдвигом отрезка на интервал
+        /// в обе стороны.
         /// </summary>
         private PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
             Single cutLength = MyFigure.FindLength(_p1, _p2);
@@ -385,11 +401,12 @@ namespace OOP_Paint {
             PointF[] rect = {
                 new PointF(_p1.X - a, _p1.Y + z),
                 new PointF(_p1.X + a, _p1.Y - z),
-                new PointF(_p2.X - a, _p2.Y + z),
-                new PointF(_p2.X + a, _p2.Y - z)
+                new PointF(_p2.X + a, _p2.Y - z),
+                new PointF(_p2.X - a, _p2.Y + z)
             };
             return rect;
         }
+
         /// <param name="_area">Замкнутый выпуклый полигон</param>
         private Boolean IsPointInArea(PointF[] _area, PointF _point) {
             throw new Exception();

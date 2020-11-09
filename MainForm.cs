@@ -18,6 +18,7 @@ using static OOP_Paint.FiguresEnum;
 //!!!Projekt#30: добавить полярные линии
 //Projekt#42: добавить выделение фигур мышью, когда она рядом
 //!!!Projekt#50: добавить масштаб
+//!!!Projekt#07: добавить модификаторы in
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
