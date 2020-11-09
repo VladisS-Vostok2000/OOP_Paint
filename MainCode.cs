@@ -82,7 +82,7 @@ namespace OOP_Paint {
         //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
         //!!!MainCode#01: Запретить выделение "линией"
         public ConstructorOperationResult AddSoftPoint(in PointF _point) {
-            if (currConstructorStage == 0) {
+            if (currConstructorStage == 0 && SelectedFigure != Figure.None) {
                 return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
             }
 
@@ -91,10 +91,15 @@ namespace OOP_Paint {
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             switch (SelectedFigure) {
                 case Figure.None:
-                    int[] indexes = FindFiguresNearPoint(_point);
-                    for (int i = 0; i < indexes.Length; i++) {
+                    foreach(var figure in figures) {
+                        figure.IsHightLighed = false;
+                    }
+
+                    List<int> indexes = FindFiguresNearPoint(_point);
+                    for (int i = 0; i < indexes.Count; i++) {
                         figures[indexes[i]].IsHightLighed = true;
                     }
+
                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                 case Figure.Select:
                     switch (SelectedBuildingMethod) {
@@ -335,17 +340,18 @@ namespace OOP_Paint {
         }
         private PointF FindCross(PointF _p1, PointF _p2, PointF _p3, PointF _p4) {
             //параллельны/что-то совпадает
-            if (Math.Abs((_p1.X - _p2.X) * (_p3.Y - _p4.Y)) == Math.Abs((_p1.Y - _p2.Y) * (_p3.X - _p4.X))) {
+            bool isParallel = IsParallel(_p1, _p2, _p3, _p4);
+            if (isParallel) {
                 throw new Exception();
             }
 
-            Single y = (Single)((_p4.X * _p3.Y - _p3.X * _p4.Y) * (_p1.Y - _p2.Y) - (_p3.Y - _p4.Y) * (_p2.X * _p1.Y - _p1.X * _p2.Y)) / ((_p3.Y - _p4.Y) * (_p1.X - _p2.X) + (_p4.X - _p3.X) * (_p1.Y - _p2.Y));
+            Single y = ((_p4.X * _p3.Y - _p3.X * _p4.Y) * (_p1.Y - _p2.Y) - (_p3.Y - _p4.Y) * (_p2.X * _p1.Y - _p1.X * _p2.Y)) / ((_p3.Y - _p4.Y) * (_p1.X - _p2.X) + (_p4.X - _p3.X) * (_p1.Y - _p2.Y));
             Single x;
             if (_p1.Y - _p2.Y == 0) {
-                x = (Single)(y * (_p3.X - _p4.X) + (_p4.X * _p3.Y - _p3.X * _p4.Y)) / (_p3.Y - _p4.Y);
+                x = (y * (_p3.X - _p4.X) + (_p4.X * _p3.Y - _p3.X * _p4.Y)) / (_p3.Y - _p4.Y);
             }
             else {
-                x = (Single)(y * (_p1.X - _p2.X) + (_p2.X * _p1.Y - _p1.X * _p2.Y)) / (_p1.Y - _p2.Y);
+                x = (y * (_p1.X - _p2.X) + (_p2.X * _p1.Y - _p1.X * _p2.Y)) / (_p1.Y - _p2.Y);
             }
 
             return new PointF(x, y);
@@ -355,16 +361,15 @@ namespace OOP_Paint {
         /// Определяет параллельность/коллинеарность отрезков
         /// </summary>
         private Boolean IsParallel(PointF _p1, PointF _p2, PointF _p3, PointF _p4) {
+            //Если отношения смещений на клетку х и у двух отрезков по модулю равны, то они параллельны (k коэфф один)
+            //И по свойству пропорции:
             if (Math.Abs((_p1.X - _p2.X) * (_p3.Y - _p4.Y)) == Math.Abs((_p1.Y - _p2.Y) * (_p3.X - _p4.X))) {
                 return true;
             }
 
             return false;
         }
-
-        //MainCode#08: исправить CheckIsPointInCut(PointF _cutP1, PointF _cutP2, PointF _p)
-        //!!!На самом деле private
-        public Boolean CheckIsPointInCut(PointF _cutP1, PointF _cutP2, PointF _target) {
+        private Boolean CheckIsPointInCut(PointF _cutP1, PointF _cutP2, PointF _target) {
             bool isInLine = CheckIsPointInLine(_cutP1, _cutP2, _target);
             if (!isInLine) {
                 return false;
@@ -372,7 +377,6 @@ namespace OOP_Paint {
 
             return _target.X <= Math.Max(_cutP1.X, _cutP2.X) && _target.X >= Math.Min(_cutP1.X, _cutP2.X);
         }
-
         private Boolean CheckIsPointInLine(PointF _cutP1, PointF _cutP2, PointF _target) {
             #region Человеческий вид
             //float a = _p2.X - _p1.X;
@@ -396,37 +400,107 @@ namespace OOP_Paint {
         /// <returns>
         /// Целочисленный массив с индексами figures
         /// </returns>
-        private int[] FindFiguresNearPoint(PointF _target, Single _interval = 5) {
+        private List<int> FindFiguresNearPoint(PointF _target, Single _interval = 10) {
+            var out_list = new List<int>();
             for (int i = 0; i < figures.Count;i++) {
                 if (figures[i] is MyCut) {
                     var cut = figures[i] as MyCut;
                     PointF[] area = FindCutArea(cut.P1, cut.P2, _interval);
-
+                    bool isInArea = IsPointInArea(_target, area);
+                    if (isInArea) {
+                        out_list.Add(i);
+                    }
                 }
             }
-            throw new Exception();
+
+            return out_list;
         }
 
         /// <summary>
         /// Возвращает последовательные вершины прямоугольника, образованного "перпендикулярным" сдвигом отрезка на интервал
         /// в обе стороны.
         /// </summary>
-        private PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
+        //MainCode#06: исправить FindCutArea(PointF _p1, PointF _p2, Single _interval)
+        public PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
             Single cutLength = MyFigure.FindLength(_p1, _p2);
-            Single z = (Single)((_p1.X - _p2.X) * _interval / cutLength);
-            Single a = (Single)((_p2.Y - _p1.Y) * _interval / cutLength);
+            Single z = (_p2.X - _p1.X) * _interval / cutLength;
+            Single a = (_p2.Y - _p1.Y) * _interval / cutLength;
             PointF[] rect = {
                 new PointF(_p1.X - a, _p1.Y + z),
                 new PointF(_p1.X + a, _p1.Y - z),
-                new PointF(_p2.X + a, _p2.Y - z),
-                new PointF(_p2.X - a, _p2.Y + z)
+                new PointF(_p2.X - a, _p2.Y + z),
+                new PointF(_p2.X + a, _p2.Y - z)
             };
+
             return rect;
         }
 
-        /// <param name="_area">Замкнутый выпуклый полигон</param>
-        private Boolean IsPointInArea(PointF[] _area, PointF _point) {
-            throw new Exception();
+        /// <summary>
+        /// Возвращает false, если точка лежит за пределами области
+        /// </summary>
+        /// <param name="_area">Замкнутый выпуклый полигон с последовательными вершинами</param>
+        private Boolean IsPointInArea(PointF _point, PointF[] _area) {
+            if (_area.Length < 2) {
+                throw new Exception();
+            }
+
+            foreach(var apex in _area) {
+                if (apex == _point) {
+                    return true;
+                }
+            }
+
+            //Здесь можно проще: как-то через бинарный поиск
+            //По-моему, тут цикл на 2 можно увеличить и подключить процентик
+            int last = _area.Length - 1;
+            int prelast = _area.Length - 2;
+            float a = _area[last].X - _area[prelast].X;
+            float b = _area[last].Y - _area[prelast].Y;
+
+            float c = _area[0].X - _area[prelast].X;
+            float d = _area[0].Y - _area[prelast].Y;
+
+            float e = _point.X - _area[prelast].X;
+            float f = _point.Y - _area[prelast].Y;
+
+            bool isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
+            if (!isOk) {
+                return false;
+            }
+
+            a = _area[0].X - _area[last].X;
+            b = _area[0].Y - _area[last].Y;
+
+            c = _area[1].X - _area[last].X;
+            d = _area[1].Y - _area[last].Y;
+
+            e = _point.X - _area[last].X;
+            f = _point.Y - _area[last].Y;
+
+            isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
+            if (!isOk) {
+                return false;
+            }
+
+            for (int i = 0; i < _area.Length - 2; i++) {
+                //Основная сторона
+                a = _area[i + 1].X - _area[i].X;
+                b = _area[i + 1].Y - _area[i].Y;
+                //Внутренняя сторона
+                c = _area[i + 2].X - _area[i].X;
+                d = _area[i + 2].Y - _area[i].Y;
+                //Вектор от стороны к точке
+                e = _point.X - _area[i].X;
+                f = _point.Y - _area[i].Y;
+
+                //Вращение стороны к следующей стороне (всегда вовнутрь) должно быть равно этому же вращению стороны к вектору
+                isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
+                if (!isOk) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -440,7 +514,7 @@ namespace OOP_Paint {
         /// <param name="_p3">
         /// Координаты точки
         /// </param>
-        public Int32 IsPointOverLine(in PointF _p1, in PointF _p2, in PointF _p3) {
+        private Int32 IsPointOverLine(in PointF _p1, in PointF _p2, in PointF _p3) {
             #region Неоптимальный способ
             //return _point.Y > ((_point.X - _p1.X) * (_p2.Y - _p1.Y) + _point.Y * (_p2.X - _p1.X))/(_p2.X - _p1.X);
             #endregion

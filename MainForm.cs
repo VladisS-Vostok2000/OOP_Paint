@@ -48,17 +48,21 @@ namespace OOP_Paint {
 
 
         private void MainFromPctrbxScreen_MouseDown(Object sender, MouseEventArgs e) {
+            //MainFormTmr.Stop();
             if (Code.SelectedFigure == Figure.Select) {
                 MainFormTmr.Enabled = true;
                 Code.SetPoint(e.Location);
             }
+            //MainFormTmr.Start();
         }
         private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
+            //MainFormTmr.Stop();
             Point mouseLocation = e.Location;
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
 
             Code.AddSoftPoint(e.Location);
+            //MainFormTmr.Start();
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
             //За пределами экрана
@@ -109,6 +113,9 @@ namespace OOP_Paint {
         }
         private void MainFormBttnSelect_Click(Object sender, EventArgs e) {
             Code.SelectedFigure = Figure.Select;
+        }
+        private void MainFormBttnNothing_Click(Object sender, EventArgs e) {
+            Code.SelectedFigure = Figure.None;
         }
 
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
@@ -186,34 +193,41 @@ namespace OOP_Paint {
         #endregion
 
 
-        //#Test#: CheckIsPointInLine(PointF _p1, PointF _p2, PointF _target)
+
         private void button1_Click(Object sender, EventArgs e) {
-            var a = new PointF(10, 10);
-            var b = new PointF(50, 50);
+            //Code.SelectedFigure = Figure.Cut;
+            //Code.SelectedBuildingMethod = BuildingMethod.CutTwoPoints;
+            //Code.SetPoint(new Point(10, 10));
+            //Code.SetPoint(new Point(50, 50));
+            //Code.SelectedFigure = Figure.None;
+            //Code.AddSoftPoint(new PointF(48, 49));
 
-            bool c = Code.CheckIsPointInCut(a, b, new PointF(5,5));
-            //Ожидается: true
-            bool d = Code.CheckIsPointInCut(a, b, new PointF(5, 10));
-            //Ожидается: false
-            bool f = Code.CheckIsPointInCut(a, b, new PointF(10, 5));
-            //Ожидается: false
+            //Вот здесь что-то странное
+            //k=-45*
+            var a = Code.FindCutArea(new PointF(10, 10), new PointF(50, 50), 2);
+            //Ожидается:
+            //(10-1.4142;10-1.4142), (10+2.8284;10+1.4142), (50-2.8284;10-1.4142), (50+2.8284;10+1.4142)
+            //ok
 
-            bool g = Code.CheckIsPointInCut(a, b, new PointF(20, 20));
-            //Ожидается: true
-            bool h = Code.CheckIsPointInCut(a, b, new PointF(5, 10));
-            //Ожидается: false
-            bool i = Code.CheckIsPointInCut(a, b, new PointF(10, 5));
-            //Ожидается: false
+            //k=0
+            var b = Code.FindCutArea(new PointF(10, 10), new PointF(10, 50), 2);
+            //Ожидается:
+            //(8;10), (12;10), (48;50), (52;50)
+            //ok
 
-            bool j = Code.CheckIsPointInCut(a, b, new PointF(60, 60));
-            //Ожидается: true
-            bool k = Code.CheckIsPointInCut(a, b, new PointF(61, 60));
-            //Ожидается: false
-            bool l = Code.CheckIsPointInCut(a, b, new PointF(60, 61));
-            //Ожидается: false
+            //y=0
+            var c = Code.FindCutArea(new PointF(10, 10), new PointF(50, 10), 2);
+            //Ожидается:
+            //(10;8), (10;12), (50;8), (50;12)
+            //ok
 
+            //k=45*
+            var d = Code.FindCutArea(new PointF(10, 50), new PointF(50, 10), 2);
+            //Ожидается:
+            //(10-2.8284;50+1.4142), (10+2.8284;10-1.4142), (50-2.8284;10+1.4142), (50+2.8284;10-1.4142)
             MessageBox.Show("");
         }
+
     }
 }
 //MainForm#46: Поменять таймер на MouseMowe

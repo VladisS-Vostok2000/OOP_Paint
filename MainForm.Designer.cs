@@ -39,6 +39,7 @@
             this.MainFormBttnCut = new System.Windows.Forms.Button();
             this.MainFormBttnSelect = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.MainFormBttnNothing = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -69,6 +70,7 @@
             // 
             // MainFormTmr
             // 
+            this.MainFormTmr.Enabled = true;
             this.MainFormTmr.Interval = 50;
             this.MainFormTmr.Tick += new System.EventHandler(this.MainFormTmr_Tick);
             // 
@@ -186,6 +188,16 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // MainFormBttnNothing
+            // 
+            this.MainFormBttnNothing.Location = new System.Drawing.Point(430, 311);
+            this.MainFormBttnNothing.Name = "MainFormBttnNothing";
+            this.MainFormBttnNothing.Size = new System.Drawing.Size(106, 23);
+            this.MainFormBttnNothing.TabIndex = 11;
+            this.MainFormBttnNothing.Text = "Ничего";
+            this.MainFormBttnNothing.UseVisualStyleBackColor = true;
+            this.MainFormBttnNothing.Click += new System.EventHandler(this.MainFormBttnNothing_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -193,6 +205,7 @@
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.MainFormCmbbxBuildingVariants);
+            this.Controls.Add(this.MainFormBttnNothing);
             this.Controls.Add(this.MainFormBttnSelect);
             this.Controls.Add(this.MainFormBttnCut);
             this.Controls.Add(this.MainFormBttnRectangle);
@@ -229,6 +242,7 @@
         private System.Windows.Forms.Button MainFormBttnCut;
         private System.Windows.Forms.Button MainFormBttnSelect;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button MainFormBttnNothing;
     }
 }
 

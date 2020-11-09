@@ -31,6 +31,7 @@ namespace OOP_Paint {
         }
         public Pen Pen { set; get; } = new Pen(Color.Black, 1);
         public Pen SelectedPen { set; get; } = new Pen(Color.White, 2);
+        public Pen HightLightedPen { set; get; } = new Pen(Color.BlueViolet, 2);
         public Boolean IsSelected;
         public Boolean IsHightLighed;
         public Boolean IsFill;
@@ -59,9 +60,14 @@ namespace OOP_Paint {
             if (IsSelected) {
                 _pen = SelectedPen;
             }
+            else
+            if (IsHightLighed) {
+                _pen = HightLightedPen;
+            }
             else {
                 _pen = Pen;
             }
+
             DrawFigure(_screen, _pen);
         }
         protected abstract void DrawFigure(Graphics _screen, Pen _pen);
