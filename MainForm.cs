@@ -190,9 +190,29 @@ namespace OOP_Paint {
         private void button1_Click(Object sender, EventArgs e) {
             var a = new PointF(10, 10);
             var b = new PointF(50, 50);
+
             bool c = Code.CheckIsPointInLine(a, b, new PointF(5,5));
             //Ожидается: true
+            bool d = Code.CheckIsPointInLine(a, b, new PointF(5, 10));
+            //Ожидается: false
+            bool f = Code.CheckIsPointInLine(a, b, new PointF(10, 5));
+            //Ожидается: false
 
+            bool g = Code.CheckIsPointInLine(a, b, new PointF(20, 20));
+            //Ожидается: true
+            bool h = Code.CheckIsPointInLine(a, b, new PointF(5, 10));
+            //Ожидается: false
+            bool i = Code.CheckIsPointInLine(a, b, new PointF(10, 5));
+            //Ожидается: false
+
+            bool j = Code.CheckIsPointInLine(a, b, new PointF(60, 60));
+            //Ожидается: true
+            bool k = Code.CheckIsPointInLine(a, b, new PointF(61, 60));
+            //Ожидается: false
+            bool l = Code.CheckIsPointInLine(a, b, new PointF(60, 61));
+            //Ожидается: false
+
+            MessageBox.Show("");
         }
     }
 }

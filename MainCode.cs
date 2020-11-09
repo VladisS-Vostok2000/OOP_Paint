@@ -372,7 +372,7 @@ namespace OOP_Paint {
             if (e != 0) {
                 return false;
             }
-
+            return true;
 
 
             //Вертикальная прямая
@@ -397,6 +397,7 @@ namespace OOP_Paint {
             //    return false;
             //}
             #endregion
+
             return ((_p2.X - _p1.X) * (_target.Y - _p1.Y) - (_p2.Y - _p1.Y) * (_target.X - _p1.X)) == 0;
         }
 
