@@ -363,13 +363,41 @@ namespace OOP_Paint {
         }
         //MainCode#08: исправить CheckIsPointInCut(PointF _cutP1, PointF _cutP2, PointF _p)
         private Boolean CheckIsPointInCut(PointF _cutP1, PointF _cutP2, PointF _p) {
+            float a = _cutP2.X - _cutP1.X;
+            float b = _cutP2.Y - _cutP1.Y;
+            float c = _p.X - _cutP1.X;
+            float d = _p.X - _cutP1.X;
+
+            int e = Math.Sign(a * d - b * c);
+            if (e != 0) {
+                return false;
+            }
+
+
+
             //Вертикальная прямая
-            if (_cutP1.X == _cutP2.X) {
-                return _p.Y >= Math.Min(_cutP1.Y, _cutP2.Y) && _p.Y <= Math.Max(_cutP1.Y, _cutP2.Y);
-            }
-            else {
-                return _p.X <= Math.Max(_cutP1.X, _cutP2.X) && _p.X >= Math.Min(_cutP1.X, _cutP2.X);
-            }
+            //if (_cutP1.X == _cutP2.X) {
+            //    return _p.Y >= Math.Min(_cutP1.Y, _cutP2.Y) && _p.Y <= Math.Max(_cutP1.Y, _cutP2.Y);
+            //}
+            //else {
+            //    return _p.X <= Math.Max(_cutP1.X, _cutP2.X) && _p.X >= Math.Min(_cutP1.X, _cutP2.X);
+            //}
+        }
+
+        //!!!На самом деле private
+        public Boolean CheckIsPointInLine(PointF _p1, PointF _p2, PointF _target) {
+            #region Человеческий вид
+            //float a = _p2.X - _p1.X;
+            //float b = _p2.Y - _p1.Y;
+            //float c = _target.X - _p1.X;
+            //float d = _target.X - _p1.X;
+
+            //int e = Math.Sign(a * d - b * c);
+            //if (e != 0) {
+            //    return false;
+            //}
+            #endregion
+            return ((_p2.X - _p1.X) * (_target.Y - _p1.Y) - (_p2.Y - _p1.Y) * (_target.X - _p1.X)) == 0;
         }
 
 
