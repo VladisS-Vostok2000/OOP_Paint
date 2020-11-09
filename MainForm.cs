@@ -14,14 +14,14 @@ using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
-//!!!Projekt#20: добавить магнитную привязку
+//Projekt#20: добавить магнитную привязку
 //!!!Projekt#30: добавить полярные линии
-//Projekt#42: добавить выделение фигур мышью, когда она рядом
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
+        private readonly Bitmap bitmap;
         private readonly Graphics screen;
         private readonly MainCode Code;
 
@@ -32,7 +32,8 @@ namespace OOP_Paint {
 
             InitializeComponent();
 
-            screen = MainFromPctrbxScreen.CreateGraphics();
+            bitmap = new Bitmap(496, 290);
+            screen = Graphics.FromImage(bitmap);
             Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
             Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
             Code.FiguresListChanged += Code_FiguresListChanged;
@@ -90,6 +91,10 @@ namespace OOP_Paint {
         }
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
             Code.DrawFigures(screen);
+            Display();
+        }
+        private void Display() {
+            MainFromPctrbxScreen.Image = bitmap;
         }
 
 
