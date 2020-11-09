@@ -50,7 +50,7 @@ namespace OOP_Paint {
         private void MainFromPctrbxScreen_MouseDown(Object sender, MouseEventArgs e) {
             //MainFormTmr.Stop();
             if (Code.SelectedFigure == Figure.Select) {
-                MainFormTmr.Enabled = true;
+                //MainFormTmr.Enabled = true;
                 Code.SetPoint(e.Location);
             }
             //MainFormTmr.Start();
@@ -73,17 +73,17 @@ namespace OOP_Paint {
 
             ConstructorOperationResult constructorResult = Code.SetPoint(e.Location);
             if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Continious) {
-                MainFormTmr.Enabled = true;
+                //MainFormTmr.Enabled = true;
                 MainFormSttsstpLblHint.Text = constructorResult.OperationMessage;
             }
             else
             if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Canselled) {
-                MainFormTmr.Enabled = false;
+                //MainFormTmr.Enabled = false;
                 MainFormSttsstpLblHint.Text = "Отменено";
             }
             else
             if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Finished) {
-                MainFormTmr.Enabled = false;
+                //MainFormTmr.Enabled = false;
                 Code.DrawFigures(screen);
                 MainFormSttsstpLblHint.Text = "Успешно.";
             }
@@ -195,44 +195,44 @@ namespace OOP_Paint {
 
 
         private void button1_Click(Object sender, EventArgs e) {
-            //Code.SelectedFigure = Figure.Cut;
-            //Code.SelectedBuildingMethod = BuildingMethod.CutTwoPoints;
-            //Code.SetPoint(new Point(10, 10));
-            //Code.SetPoint(new Point(50, 50));
-            //Code.SelectedFigure = Figure.None;
-            //Code.AddSoftPoint(new PointF(48, 49));
+            Code.SelectedFigure = Figure.Cut;
+            Code.SelectedBuildingMethod = BuildingMethod.CutTwoPoints;
+            Code.SetPoint(new Point(10, 10));
+            Code.SetPoint(new Point(50, 50));
+            Code.SelectedFigure = Figure.None;
+            Code.AddSoftPoint(new PointF(48, 49));
 
-            //Вот здесь что-то странное
-            //k=-45*
-            var a = Code.FindCutArea(new PointF(10, 10), new PointF(50, 50), 2);
-            var f = Code.FindCutArea(new PointF(50, 50), new PointF(10, 10), 2);
-            //Ожидается:
-            //(10-1.4142;10+1.4142), (10+1.4142;10-1.4142), (50-1.4142;50+1.4142), (50+1.4142;50-1.4142)
-            //(8;11), (11;8), (48;51), (51;48)
-            //ok
+            ////Вот здесь что-то странное
+            ////k=-45*
+            //var a = Code.FindCutArea(new PointF(10, 10), new PointF(50, 50), 2);
+            //var f = Code.FindCutArea(new PointF(50, 50), new PointF(10, 10), 2);
+            ////Ожидается:
+            ////(10-1.4142;10+1.4142), (10+1.4142;10-1.4142), (50-1.4142;50+1.4142), (50+1.4142;50-1.4142)
+            ////(8;11), (11;8), (48;51), (51;48)
+            ////ok
 
-            //k=0
-            var b = Code.FindCutArea(new PointF(10, 10), new PointF(10, 50), 2);
-            var g = Code.FindCutArea(new PointF(10, 50), new PointF(10, 10), 2);
-            //Ожидается:
-            //(8;10), (12;10), (8;50), (12;50)
-            //ok
+            ////k=0
+            //var b = Code.FindCutArea(new PointF(10, 10), new PointF(10, 50), 2);
+            //var g = Code.FindCutArea(new PointF(10, 50), new PointF(10, 10), 2);
+            ////Ожидается:
+            ////(8;10), (12;10), (8;50), (12;50)
+            ////ok
 
-            //y=0
-            var c = Code.FindCutArea(new PointF(10, 10), new PointF(50, 10), 2);
-            var h = Code.FindCutArea(new PointF(50, 10), new PointF(10, 10), 2);
-            //Ожидается:
-            //(10;8), (10;12), (50;8), (50;12)
-            //ok
+            ////y=0
+            //var c = Code.FindCutArea(new PointF(10, 10), new PointF(50, 10), 2);
+            //var h = Code.FindCutArea(new PointF(50, 10), new PointF(10, 10), 2);
+            ////Ожидается:
+            ////(10;8), (10;12), (50;8), (50;12)
+            ////ok
 
-            //k=45*
-            var d = Code.FindCutArea(new PointF(10, 50), new PointF(50, 10), 2);
-            var i = Code.FindCutArea(new PointF(50, 10), new PointF(10, 50), 2);
-            //Ожидается:
-            //(10-1.4142;50-1.4142), (10+1.4142;10+1.4142), (50-1.4142;10-1.4142), (50+1.4142;10+1.4142)
-            //(8;48), (11;51), (48;8), (51;11)
+            ////k=45*
+            //var d = Code.FindCutArea(new PointF(10, 50), new PointF(50, 10), 2);
+            //var i = Code.FindCutArea(new PointF(50, 10), new PointF(10, 50), 2);
+            ////Ожидается:
+            ////(10-1.4142;50-1.4142), (10+1.4142;10+1.4142), (50-1.4142;10-1.4142), (50+1.4142;10+1.4142)
+            ////(8;48), (11;51), (48;8), (51;11)
 
-            MessageBox.Show("");
+            //MessageBox.Show("");
         }
 
     }

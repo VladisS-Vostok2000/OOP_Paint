@@ -400,7 +400,7 @@ namespace OOP_Paint {
         /// <returns>
         /// Целочисленный массив с индексами figures
         /// </returns>
-        private List<int> FindFiguresNearPoint(PointF _target, Single _interval = 10) {
+        private List<int> FindFiguresNearPoint(PointF _target, Single _interval = 5) {
             var out_list = new List<int>();
             for (int i = 0; i < figures.Count;i++) {
                 if (figures[i] is MyCut) {
@@ -420,7 +420,6 @@ namespace OOP_Paint {
         /// Возвращает последовательные вершины прямоугольника, образованного "перпендикулярным" сдвигом отрезка на интервал
         /// в обе стороны.
         /// </summary>
-        //MainCode#06: исправить FindCutArea(PointF _p1, PointF _p2, Single _interval)
         public PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
             Single cutLength = MyFigure.FindLength(_p1, _p2);
             Single z = (_p2.X - _p1.X) * _interval / cutLength;
@@ -428,8 +427,8 @@ namespace OOP_Paint {
             PointF[] rect = {
                 new PointF(_p1.X - a, _p1.Y + z),
                 new PointF(_p1.X + a, _p1.Y - z),
+                new PointF(_p2.X + a, _p2.Y - z),
                 new PointF(_p2.X - a, _p2.Y + z),
-                new PointF(_p2.X + a, _p2.Y - z)
             };
 
             return rect;
@@ -443,7 +442,7 @@ namespace OOP_Paint {
             if (_area.Length < 2) {
                 throw new Exception();
             }
-
+            //Такое уже включает в себя проверка
             foreach(var apex in _area) {
                 if (apex == _point) {
                     return true;
