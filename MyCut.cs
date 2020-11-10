@@ -15,7 +15,7 @@ using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
 namespace OOP_Paint {
-    //MyCut#01: заменить Point на PointF
+    //MyCut#01: заменить вершины на контейнер
     class MyCut : MyFigure{
         private PointF p1;
         public PointF P1 { 
