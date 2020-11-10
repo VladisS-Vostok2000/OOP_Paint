@@ -61,6 +61,9 @@ namespace OOP_Paint {
         private static readonly Pen figurePen = new Pen(Color.Black);
         private static readonly Pen selectPen = new Pen(Color.White) { Width = 1, DashStyle = DashStyle.Dash };
 
+        private static readonly Pen SnapPen = new Pen(Color.Green, 2);
+        private static readonly MyRectangle SnapPoint = new MyRectangle(0, 0, 5, 5, SnapPen);
+
 
 
         //???Лист реализует Binding-логику, которая необходима для привязки и реализации событий в GUI,
@@ -301,6 +304,11 @@ namespace OOP_Paint {
         }
         public Int32 GetFiguresCount() {
             return figures.Count;
+        }
+
+
+        public PointF FindNearlyVertex(int _interval = 5) {
+
         }
 
 

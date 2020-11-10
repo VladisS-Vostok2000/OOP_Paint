@@ -44,6 +44,7 @@ namespace OOP_Paint {
             }
         }
         public Single Length { private set; get; }
+        public List<PointF> Vertexes { private set; get; }
 
 
 

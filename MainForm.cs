@@ -24,6 +24,8 @@ namespace OOP_Paint {
         private readonly Bitmap bitmap;
         private readonly Graphics screen;
         private readonly MainCode Code;
+        private readonly MyCursor myCursor;
+
 
 
 
@@ -63,6 +65,7 @@ namespace OOP_Paint {
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
 
             Code.AddSoftPoint(e.Location);
+            Code.FindNearlyAxes();
             //MainFormTmr.Start();
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
