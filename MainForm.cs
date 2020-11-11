@@ -18,7 +18,6 @@ using static OOP_Paint.FiguresEnum;
 //!!!Projekt#30: добавить полярные линии
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
-//VertexesContainer#10: реализовать контейнер вершин фигур - начало работы
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {

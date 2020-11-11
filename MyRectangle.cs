@@ -28,7 +28,6 @@ namespace OOP_Paint {
             Location = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
             Width = Math.Abs(_x1 - _x2);
             Height = Math.Abs(_y1 - _y2);
-
         }
 
 
