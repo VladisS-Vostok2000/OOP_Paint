@@ -307,19 +307,19 @@ namespace OOP_Paint {
         }
 
 
-
         /// <summary>
         /// Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур
         /// </summary>
-        public PointF FindNearestVertex(List<MyFigure> _figues, PointF _target) {
-            if (_figues.Count == 0) {
+        public PointF FindNearestVertex(PointF _target) => FindNearestVertex(figures, _target);
+        private PointF FindNearestVertex(BindingList<MyFigure> figures, PointF _target) {
+            if (figures.Count == 0) {
                 throw new Exception();
             }
 
             float minDistance = float.MaxValue;
             PointF out_vertex = new PointF(0, 0);
             bool isOk = false;
-            foreach (var figure in _figues) {
+            foreach (var figure in figures) {
                 foreach (var vetrex in figure.Vertexes) {
                     float distance = MyFigure.FindLength(vetrex, _target);
                     if (distance <= minDistance) {
@@ -455,7 +455,7 @@ namespace OOP_Paint {
         /// Возвращает последовательные вершины прямоугольника, образованного "перпендикулярным" сдвигом отрезка на интервал
         /// в обе стороны.
         /// </summary>
-        public PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
+        private PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
             Single cutLength = MyFigure.FindLength(_p1, _p2);
             Single z = (_p2.X - _p1.X) * _interval / cutLength;
             Single a = (_p2.Y - _p1.Y) * _interval / cutLength;

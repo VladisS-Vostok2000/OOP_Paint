@@ -18,9 +18,12 @@ using static OOP_Paint.FiguresEnum;
 //!!!Projekt#30: добавить полярные линии
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
+//Projekt#40: добавить контейнер фигур
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
+        private readonly int snapDistance = 5;
+
         private readonly Bitmap bitmap;
         private readonly Graphics screen;
         private readonly MainCode Code;
@@ -36,6 +39,8 @@ namespace OOP_Paint {
 
             bitmap = new Bitmap(496, 290);
             screen = Graphics.FromImage(bitmap);
+            myCursor = new MyCursor(snapDistance);
+
             Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
             Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
             Code.FiguresListChanged += Code_FiguresListChanged;
@@ -59,14 +64,25 @@ namespace OOP_Paint {
             //MainFormTmr.Start();
         }
         private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
-            //MainFormTmr.Stop();
             Point mouseLocation = e.Location;
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
 
             Code.AddSoftPoint(e.Location);
-            //Code.FindNearlyAxes();
-            //MainFormTmr.Start();
+
+            if (myCursor.IsSnapped) {
+                myCursor.ContinueSnap(e.Location);
+            }
+            else {
+                if (e.Button == MouseButtons.None) {
+                    PointF vetrex = Code.FindNearestVertex(e.Location);
+                    float distance = MyFigure.FindLength(vetrex, e.Location);
+                    if (distance <= snapDistance) {
+                        myCursor.DoSnap(e.Location);
+                    }
+                }
+
+            }
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
             //За пределами экрана
@@ -203,11 +219,11 @@ namespace OOP_Paint {
 
 
         private void button1_Click(Object sender, EventArgs e) {
-            var a = new List<MyFigure>();
-            a.Add(new MyCut(Color.Black, new PointF(0, 0), new PointF(5, 5)));
+            //var a = new List<MyFigure>();
+            //a.Add(new MyCut(Color.Black, new PointF(0, 0), new PointF(5, 5)));
 
-            PointF b = Code.FindNearestVertex(a, new PointF(3, 3));
-            MessageBox.Show(b.X.ToString() + ";" + b.Y.ToString());
+            //PointF b = Code.FindNearestVertex(a, new PointF(3, 3));
+            //MessageBox.Show(b.X.ToString() + ";" + b.Y.ToString());
 
 
             //int a = int.MaxValue;

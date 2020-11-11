@@ -15,7 +15,6 @@ using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
 namespace OOP_Paint {
-    //MyCut#01: заменить вершины на контейнер
     public class MyCut : MyFigure{
         private const int VetrexesCount = 2;
         private PointF p1;
