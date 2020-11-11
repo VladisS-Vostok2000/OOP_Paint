@@ -94,7 +94,7 @@ namespace OOP_Paint {
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             switch (SelectedFigure) {
                 case Figure.None:
-                    foreach(var figure in figures) {
+                    foreach (var figure in figures) {
                         figure.IsHightLighed = false;
                     }
 
@@ -307,8 +307,35 @@ namespace OOP_Paint {
         }
 
 
-        public PointF FindNearlyVertex(int _interval = 5) {
 
+        /// <summary>
+        /// Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур
+        /// </summary>
+        public PointF FindNearestVertex(List<MyFigure> _figues, PointF _target) {
+            if (_figues.Count == 0) {
+                throw new Exception();
+            }
+
+            float minDistance = float.MaxValue;
+            PointF out_vertex = new PointF(0, 0);
+            bool isOk = false;
+            foreach (var figure in _figues) {
+                foreach (var vetrex in figure.Vertexes) {
+                    float distance = MyFigure.FindLength(vetrex, _target);
+                    if (distance <= minDistance) {
+                        isOk = true;
+                        minDistance = distance;
+                        out_vertex = vetrex;
+                    }
+                }
+            }
+
+            if (isOk) {
+                return out_vertex;
+            }
+            else {
+                throw new Exception();
+            }
         }
 
 
@@ -410,7 +437,7 @@ namespace OOP_Paint {
         /// </returns>
         private List<int> FindFiguresNearPoint(PointF _target, Single _interval = 5) {
             var out_list = new List<int>();
-            for (int i = 0; i < figures.Count;i++) {
+            for (int i = 0; i < figures.Count; i++) {
                 if (figures[i] is MyCut) {
                     var cut = figures[i] as MyCut;
                     PointF[] area = FindCutArea(cut.P1, cut.P2, _interval);
@@ -451,7 +478,7 @@ namespace OOP_Paint {
                 throw new Exception();
             }
             //Такое уже включает в себя проверка
-            foreach(var apex in _area) {
+            foreach (var apex in _area) {
                 if (apex == _point) {
                     return true;
                 }

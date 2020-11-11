@@ -16,7 +16,8 @@ using static OOP_Paint.FiguresEnum;
 
 namespace OOP_Paint {
     //MyCut#01: заменить вершины на контейнер
-    class MyCut : MyFigure{
+    public class MyCut : MyFigure{
+        private const int VetrexesCount = 2;
         private PointF p1;
         public PointF P1 { 
             set {
@@ -44,21 +45,22 @@ namespace OOP_Paint {
             }
         }
         public Single Length { private set; get; }
-        public List<PointF> Vertexes { private set; get; }
 
 
 
-        public MyCut(Color _color, PointF _p1, PointF _p2) : base(_color) {
+        public MyCut(Color _color, PointF _p1, PointF _p2) : base(_color, VetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(_p1, _p2);
         }
-        public MyCut(Pen _pen, PointF _p1, PointF _p2) : base (_pen) {
+        public MyCut(Pen _pen, PointF _p1, PointF _p2) : base (_pen, VetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(_p1, _p2);
         }
         private void InitializeFigure(PointF _p1, PointF _p2) {
             P1 = _p1;
             P2 = _p2;
+            VertexesArray[0] = _p1;
+            VertexesArray[1] = _p2;
         }
 
 

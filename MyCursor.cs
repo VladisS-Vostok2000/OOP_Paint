@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace OOP_Paint {
-    class MyCursor {
+    public sealed class MyCursor {
 
     }
 }

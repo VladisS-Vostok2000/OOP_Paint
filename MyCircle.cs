@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyCircle : MyFigure {
+        private const int vetrexesCount = 0;
         protected Single radius;
         public Single Radius {
             set {
@@ -36,21 +37,21 @@ namespace OOP_Paint {
         /// <summary>
         /// Ограничивающий прямоугольник
         /// </summary>
-        public MyCircle(Single _x1, Single _y1, Single _x2, Single _y2, Pen _pen) : base(_pen) {
+        public MyCircle(Single _x1, Single _y1, Single _x2, Single _y2, Pen _pen) : base(_pen, vetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
         }
         /// <summary>
         /// Ограничивающий прямоугольник
         /// </summary>
-        public MyCircle(Single _x1, Single _y1, Single _x2, Single _y2, Color _color) : base(_color) {
+        public MyCircle(Single _x1, Single _y1, Single _x2, Single _y2, Color _color) : base(_color, vetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
         }
         /// <summary>
         /// Центр, радиус
         /// </summary>
-        public MyCircle(Pen _pen, Point _center, Single _radius) : base(_pen) {
+        public MyCircle(Pen _pen, Point _center, Single _radius) : base(_pen, vetrexesCount) {
             InitializeFigure(_center, _radius);
         }
         /// <summary>

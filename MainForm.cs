@@ -18,6 +18,7 @@ using static OOP_Paint.FiguresEnum;
 //!!!Projekt#30: добавить полярные линии
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
+//VertexesContainer#10: реализовать контейнер вершин фигур - начало работы
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
@@ -65,7 +66,7 @@ namespace OOP_Paint {
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
 
             Code.AddSoftPoint(e.Location);
-            Code.FindNearlyAxes();
+            //Code.FindNearlyAxes();
             //MainFormTmr.Start();
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
@@ -203,12 +204,22 @@ namespace OOP_Paint {
 
 
         private void button1_Click(Object sender, EventArgs e) {
-            Code.SelectedFigure = Figure.Cut;
-            Code.SelectedBuildingMethod = BuildingMethod.CutTwoPoints;
-            Code.SetPoint(new Point(10, 10));
-            Code.SetPoint(new Point(50, 50));
-            Code.SelectedFigure = Figure.None;
-            Code.AddSoftPoint(new PointF(48, 49));
+            var a = new List<MyFigure>();
+            a.Add(new MyCut(Color.Black, new PointF(0, 0), new PointF(5, 5)));
+
+            PointF b = Code.FindNearestVertex(a, new PointF(3, 3));
+            MessageBox.Show(b.X.ToString() + ";" + b.Y.ToString());
+
+
+            //int a = int.MaxValue;
+            //a++;
+
+            //Code.SelectedFigure = Figure.Cut;
+            //Code.SelectedBuildingMethod = BuildingMethod.CutTwoPoints;
+            //Code.SetPoint(new Point(10, 10));
+            //Code.SetPoint(new Point(50, 50));
+            //Code.SelectedFigure = Figure.None;
+            //Code.AddSoftPoint(new PointF(48, 49));
 
             ////Вот здесь что-то странное
             ////k=-45*

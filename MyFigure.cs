@@ -36,16 +36,23 @@ namespace OOP_Paint {
         public Boolean IsHightLighed;
         public Boolean IsFill;
         public Color FillColor;
+        
+        public IReadOnlyList<PointF> Vertexes { get; }
+        protected PointF[] VertexesArray;
 
 
+        protected MyFigure(int vertexesCount) {
+            VertexesArray = new PointF[vertexesCount];
+            Vertexes = Array.AsReadOnly(VertexesArray);
 
-        protected MyFigure(Pen _pen) {
+        }
+        protected MyFigure(Pen _pen, int vertexesCount) : this(vertexesCount) {
             Pen = _pen;
             FiguresCount++;
             Id = FiguresCount;
 
         }
-        protected MyFigure(Color _color) : this(new Pen(_color, 1)) {
+        protected MyFigure(Color _color, int vertexesCount) : this(new Pen(_color, 1), vertexesCount) {
 
         }
 

@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyRectangle : MyFigure {
+        private const int vetrexesCount = 4;
         public Single Width { set; get; }
         public Single Height { set; get; }
 
 
 
-        public MyRectangle(Single _x1, Single _y1, Single _x2, Single _y2, Pen _pen) : base(_pen) {
+        public MyRectangle(Single _x1, Single _y1, Single _x2, Single _y2, Pen _pen) : base(_pen, vetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
-        public MyRectangle(Single _x1, Single _y1, Single _x2, Single _y2, Color _color) : base(_color) {
+        public MyRectangle(Single _x1, Single _y1, Single _x2, Single _y2, Color _color) : base(_color, vetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
 

@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyPoint : MyFigure {
-        public MyPoint(Single _x, Single _y, Color _color) : base(_color) {
+        private const int vetrexesCount = 1;
+        public MyPoint(Single _x, Single _y, Color _color) : base(_color, vetrexesCount) {
             X = _x;
             Y = _y;
 
