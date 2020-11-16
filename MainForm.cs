@@ -1,14 +1,16 @@
 ﻿using System;
+using System.Xml;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
@@ -28,7 +30,6 @@ namespace OOP_Paint {
         private readonly Graphics screen;
         private readonly MainCode Code;
         private readonly MyCursor myCursor;
-
 
 
 
@@ -75,6 +76,9 @@ namespace OOP_Paint {
             }
             else {
                 if (e.Button == MouseButtons.None) {
+                    if () {
+
+                    }
                     PointF vetrex = Code.FindNearestVertex(e.Location);
                     float distance = MyFigure.FindLength(vetrex, e.Location);
                     if (distance <= snapDistance) {

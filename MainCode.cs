@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
+//!!!!MainCode#20: переименовать перечисления-названия фигур в инструменты
 namespace OOP_Paint {
     public sealed class MainCode {
         public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
@@ -23,6 +24,7 @@ namespace OOP_Paint {
         #region API
         public event FigureHandler SelectedFigureChanged;
         public event BuildingMethodHandler SelectedBuildingVariantChanged;
+        //!!!!Сюда нужно засунуть MyFiguresContainer
         public event ListChangedEventHandler FiguresListChanged;
         #endregion
 
@@ -52,7 +54,8 @@ namespace OOP_Paint {
         }
         private Int32 currConstructorStage = 0;
 
-        private readonly BindingList<MyFigure> figures = new BindingList<MyFigure>();
+        //private readonly BindingList<MyFigure> figures = new BindingList<MyFigure>();
+        public readonly MyFiguresContainer figuresContainer = new MyFiguresContainer();
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 
@@ -72,7 +75,7 @@ namespace OOP_Paint {
         //события ради события выглядит нелепо. Стоит сделать list public?
         //Но зато API красивее смотрится.
         public MainCode() {
-            figures.ListChanged += Figures_ListChanged;
+            figuresContainer.ListChanged += Figures_ListChanged;
         }
 
 
@@ -94,13 +97,13 @@ namespace OOP_Paint {
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             switch (SelectedFigure) {
                 case Figure.None:
-                    foreach (var figure in figures) {
+                    foreach (var figure in figuresContainer.FiguresList) {
                         figure.IsHightLighed = false;
                     }
 
                     List<int> indexes = FindFiguresNearPoint(_point);
                     for (int i = 0; i < indexes.Count; i++) {
-                        figures[indexes[i]].IsHightLighed = true;
+                        figuresContainer[indexes[i]].IsHightLighed = true;
                     }
 
                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
@@ -212,7 +215,7 @@ namespace OOP_Paint {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    figures.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
+                                    figuresContainer.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default:
@@ -232,7 +235,7 @@ namespace OOP_Paint {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    figures.Add(new MyCircle(figurePen, pointsList[0], radius));
+                                    figuresContainer.Add(new MyCircle(figurePen, pointsList[0], radius));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default: throw new Exception();
@@ -253,7 +256,7 @@ namespace OOP_Paint {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    figures.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
+                                    figuresContainer.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default:
@@ -275,7 +278,7 @@ namespace OOP_Paint {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    figures.Add(new MyCut(figurePen, pointsList[0], _point));
+                                    figuresContainer.Add(new MyCut(figurePen, pointsList[0], _point));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default: throw new Exception();
@@ -287,31 +290,29 @@ namespace OOP_Paint {
         }
         //!!!MainCode#02: добавить класс-контейнер Figures
         public void SelectFigure(Int32 _id) {
-            for (Int32 i = 0; i < figures.Count; i++) {
-                if (figures[i].Id == _id) {
-                    figures[i].IsSelected = true;
+            for (Int32 i = 0; i < figuresContainer.FiguresList.Count; i++) {
+                if (figuresContainer[i].Id == _id) {
+                    figuresContainer[i].IsSelected = true;
                     break;
                 }
             }
         }
         public void UnselectFigure(Int32 _id) {
-            for (Int32 i = 0; i < figures.Count; i++) {
-                if (figures[i].Id == _id) {
-                    figures[i].IsSelected = false;
+            for (Int32 i = 0; i < figuresContainer.FiguresList.Count; i++) {
+                if (figuresContainer[i].Id == _id) {
+                    figuresContainer[i].IsSelected = false;
                     break;
                 }
             }
         }
         public Int32 GetFiguresCount() {
-            return figures.Count;
+            return figuresContainer.FiguresList.Count;
         }
 
 
-        /// <summary>
-        /// Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур
-        /// </summary>
-        public PointF FindNearestVertex(PointF _target) => FindNearestVertex(figures, _target);
-        private PointF FindNearestVertex(BindingList<MyFigure> figures, PointF _target) {
+        /// <summary> Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур </summary>
+        public PointF FindNearestVertex(PointF _target) => FindNearestVertex(new List<MyFigure>(figuresContainer.FiguresList), _target);
+        private PointF FindNearestVertex(List<MyFigure> figures, PointF _target) {
             if (figures.Count == 0) {
                 throw new Exception();
             }
@@ -351,7 +352,7 @@ namespace OOP_Paint {
                 { _p1, new Point(_p1.X, _p2.Y) }
             };
 
-            foreach (var figure in figures) {
+            foreach (var figure in figuresContainer.) {
                 if (figure is MyCut) {
                     var myCut = figure as MyCut;
                     for (Int32 i = 0; i < selectRectLinePoints.GetLength(0); i++) {
@@ -392,9 +393,7 @@ namespace OOP_Paint {
             return new PointF(x, y);
         }
 
-        /// <summary>
-        /// Определяет параллельность/коллинеарность отрезков
-        /// </summary>
+        /// <summary> Определяет параллельность/коллинеарность отрезков </summary>
         private Boolean IsParallel(PointF _p1, PointF _p2, PointF _p3, PointF _p4) {
             //Если отношения смещений на клетку х и у двух отрезков по модулю равны, то они параллельны (k коэфф один)
             //И по свойству пропорции:
@@ -437,9 +436,9 @@ namespace OOP_Paint {
         /// </returns>
         private List<int> FindFiguresNearPoint(PointF _target, Single _interval = 5) {
             var out_list = new List<int>();
-            for (int i = 0; i < figures.Count; i++) {
-                if (figures[i] is MyCut) {
-                    var cut = figures[i] as MyCut;
+            for (int i = 0; i < figuresContainer.FiguresList.Count; i++) {
+                if (figuresContainer[i] is MyCut) {
+                    var cut = figuresContainer[i] as MyCut;
                     PointF[] area = FindCutArea(cut.P1, cut.P2, _interval);
                     bool isInArea = IsPointInArea(_target, area);
                     if (isInArea) {
@@ -594,7 +593,7 @@ namespace OOP_Paint {
 
         public void DrawFigures(Graphics _screen) {
             _screen.Clear(Color.FromArgb(250, 64, 64, 64));
-            foreach (var figure in figures) {
+            foreach (var figure in figuresContainer.FiguresList) {
                 figure.Draw(_screen);
             }
             foreach (var figure in supportFigures) {

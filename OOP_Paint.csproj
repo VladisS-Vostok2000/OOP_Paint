@@ -62,6 +62,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MyCircle.cs" />
+    <Compile Include="MyFiguresContainer.cs" />
     <Compile Include="MyPoint.cs" />
     <Compile Include="MyRectangle.cs" />
     <Compile Include="Program.cs" />
