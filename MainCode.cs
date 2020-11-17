@@ -65,7 +65,7 @@ namespace OOP_Paint {
         private static readonly Pen selectPen = new Pen(Color.White) { Width = 1, DashStyle = DashStyle.Dash };
 
         private static readonly Pen SnapPen = new Pen(Color.Green, 2);
-        private static readonly MyRectangle SnapPoint = new MyRectangle(0, 0, 5, 5, SnapPen);
+        private static readonly MyRectangle SnapPoint = new MyRectangle(0, 0, 6, 6, SnapPen) { IsHide = true };
 
 
 
@@ -76,6 +76,7 @@ namespace OOP_Paint {
         //Но зато API красивее смотрится.
         public MainCode() {
             figuresContainer.FiguresList.ListChanged += FiguresListChanged;
+            supportFigures.Add(SnapPoint);
         }
 
 
@@ -307,6 +308,10 @@ namespace OOP_Paint {
         }
         public Int32 GetFiguresCount() {
             return figuresContainer.FiguresList.Count;
+        }
+        public void AddSnapPoint(Point location) {
+            SnapPoint.Location = new Point(location.X - 3;location.Y - 3);
+            SnapPoint.IsHide = false;
         }
 
 
