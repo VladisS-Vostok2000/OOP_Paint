@@ -33,8 +33,8 @@ namespace OOP_Paint {
 
 
 
-        public MainForm(MainCode _code) {
-            Code = _code;
+        public MainForm(MainCode code) {
+            Code = code;
 
             InitializeComponent();
 
@@ -42,8 +42,8 @@ namespace OOP_Paint {
             screen = Graphics.FromImage(bitmap);
             myCursor = new MyCursor(snapDistance);
 
-            Code.SelectedFigureChanged += Code_SelectedFigure_Changed;
-            Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
+            Code.SelectedFigureChanged += Code_SelectedFigureChanged;
+            Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethodChanged;
             Code.FiguresListChanged += Code_FiguresListChanged;
             MainFormCmbbxBuildingVariants.DisplayMember = "DisplayMember";
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
@@ -76,13 +76,16 @@ namespace OOP_Paint {
             }
             else {
                 if (e.Button == MouseButtons.None) {
-                    if () {
-
-                    }
-                    PointF vetrex = Code.FindNearestVertex(e.Location);
-                    float distance = MyFigure.FindLength(vetrex, e.Location);
-                    if (distance <= snapDistance) {
-                        myCursor.DoSnap(e.Location);
+                    int figCount = Code.GetFiguresCount();
+                    if (figCount != 0) {
+                        PointF vetrex = Code.FindNearestVertex(e.Location);
+                        float distance = MyFigure.FindLength(vetrex, e.Location);
+                        if (distance <= snapDistance) {
+                            int x = (int)Math.Round(vetrex.X);
+                            int y = (int)Math.Round(vetrex.Y);
+                            Point point = ControlPointToScreen(new Point(x, y), MainFromPctrbxScreen);
+                            myCursor.DoSnap(point);
+                        }
                     }
                 }
 
@@ -166,8 +169,8 @@ namespace OOP_Paint {
 
 
         #region API
-        private void Code_SelectedFigure_Changed(Figure _value, EventArgs e) {
-            List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(_value);
+        private void Code_SelectedFigureChanged(Figure value, EventArgs e) {
+            List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(value);
             MainFormCmbbxBuildingVariants.Items.Clear();
             var cbm = new ComboboxBuildingMethod[pbm.Count];
             for (Int32 i = 0; i < pbm.Count; i++) {
@@ -176,9 +179,9 @@ namespace OOP_Paint {
             MainFormCmbbxBuildingVariants.Items.AddRange(cbm);
         }
         //!!!MainForm#42.1: выделение нескольких элементов некорректно работает
-        private void Code_SelectedBuildingMethod_Changed(BuildingMethod _value, EventArgs e) {
+        private void Code_SelectedBuildingMethodChanged(BuildingMethod value, EventArgs e) {
             for (Int32 i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
-                if ((MainFormCmbbxBuildingVariants.Items[i] as ComboboxBuildingMethod).BuildingMethod == _value) {
+                if ((MainFormCmbbxBuildingVariants.Items[i] as ComboboxBuildingMethod).BuildingMethod == value) {
                     MainFormCmbbxBuildingVariants.SelectedIndex = i;
                     break;
                 }
@@ -220,6 +223,13 @@ namespace OOP_Paint {
         }
         #endregion
 
+
+        private Point ControlPointToScreen(Point location, Control controlOnForm) {
+            Point out_point = PointToScreen(location);
+            out_point.X += controlOnForm.Location.X;
+            out_point.Y += controlOnForm.Location.Y;
+            return out_point;
+        }
 
 
         private void button1_Click(Object sender, EventArgs e) {

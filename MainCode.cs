@@ -75,19 +75,19 @@ namespace OOP_Paint {
         //события ради события выглядит нелепо. Стоит сделать list public?
         //Но зато API красивее смотрится.
         public MainCode() {
-            figuresContainer.ListChanged += Figures_ListChanged;
+            figuresContainer.FiguresList.ListChanged += FiguresListChanged;
         }
 
 
 
-        private void Figures_ListChanged(Object sender, ListChangedEventArgs e) {
+        private void FiguresList_Changed(Object sender, ListChangedEventArgs e) {
             FiguresListChanged?.Invoke(sender, e);
         }
 
 
         //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
         //!!!MainCode#01: Запретить выделение "линией"
-        public ConstructorOperationResult AddSoftPoint(in PointF _point) {
+        public ConstructorOperationResult AddSoftPoint(in PointF point) {
             if (currConstructorStage == 0 && SelectedFigure != Figure.None) {
                 return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
             }
@@ -97,11 +97,11 @@ namespace OOP_Paint {
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             switch (SelectedFigure) {
                 case Figure.None:
-                    foreach (var figure in figuresContainer.FiguresList) {
+                    foreach (var figure in figuresContainer) {
                         figure.IsHightLighed = false;
                     }
 
-                    List<int> indexes = FindFiguresNearPoint(_point);
+                    List<int> indexes = FindFiguresNearPoint(point);
                     for (int i = 0; i < indexes.Count; i++) {
                         figuresContainer[indexes[i]].IsHightLighed = true;
                     }
@@ -112,10 +112,10 @@ namespace OOP_Paint {
                         case BuildingMethod.None:
                             switch (currConstructorStage) {
                                 case 1:
-                                    if (pointsList[0] == _point) {
+                                    if (pointsList[0] == point) {
 
                                     }
-                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
+                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                 default: throw new Exception();
                             }
@@ -126,7 +126,7 @@ namespace OOP_Paint {
                         case BuildingMethod.RectangleTwoPoints:
                             switch (currConstructorStage) {
                                 case 1:
-                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
+                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                 default: throw new Exception();
                             }
@@ -137,8 +137,8 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleInRectangleByTwoDots:
                             switch (currConstructorStage) {
                                 case 1:
-                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
-                                    (supportFigures[1] as MyCircle).Resize(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y);
+                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
+                                    (supportFigures[1] as MyCircle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                 default:
                                     throw new Exception();
@@ -146,8 +146,8 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleCenterRadius:
                             switch (currConstructorStage) {
                                 case 1:
-                                    (supportFigures[0] as MyCut).P2 = _point;
-                                    (supportFigures[1] as MyCircle).Radius = MyFigure.FindLength(_point, pointsList[0]);
+                                    (supportFigures[0] as MyCut).P2 = point;
+                                    (supportFigures[1] as MyCircle).Radius = MyFigure.FindLength(point, pointsList[0]);
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                 default: throw new Exception();
                             }
@@ -158,7 +158,7 @@ namespace OOP_Paint {
                         case BuildingMethod.CutTwoPoints:
                             switch (currConstructorStage) {
                                 case 1:
-                                    (supportFigures[0] as MyCut).P2 = _point;
+                                    (supportFigures[0] as MyCut).P2 = point;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                 default: throw new Exception();
                             }
@@ -167,7 +167,7 @@ namespace OOP_Paint {
                 default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
             }
         }
-        public ConstructorOperationResult SetPoint(Point _point) {
+        public ConstructorOperationResult SetPoint(Point point) {
             ///currSelectedFigure -> Выбор фигуры построения
             ///currBuildingVariant -> Выбор варианта построения фигуры
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
@@ -179,16 +179,16 @@ namespace OOP_Paint {
                         case BuildingMethod.None:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, selectPen) { IsFill = true, FillColor = Color.FromArgb(50, Color.Blue) });
-                                    pointsList.Add(_point);
+                                    supportFigures.Add(new MyRectangle(point.X, point.Y, point.X, point.Y, selectPen) { IsFill = true, FillColor = Color.FromArgb(50, Color.Blue) });
+                                    pointsList.Add(point);
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                 case 1:
-                                    if (pointsList[0] == _point) {
+                                    if (pointsList[0] == point) {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    List<MyFigure> myFigures = FindFiguresTouchesRect(pointsList[0], _point);
+                                    List<MyFigure> myFigures = FindFiguresTouchesRect(pointsList[0], point);
                                     foreach (var figure in myFigures) {
                                         figure.IsSelected = true;
                                     }
@@ -205,17 +205,17 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleInRectangleByTwoDots:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, supportPen));
-                                    supportFigures.Add(new MyCircle(_point.X, _point.Y, _point.X, _point.Y, supportFigurePen));
-                                    pointsList.Add(_point);
+                                    supportFigures.Add(new MyRectangle(point.X, point.Y, point.X, point.Y, supportPen));
+                                    supportFigures.Add(new MyCircle(point.X, point.Y, point.X, point.Y, supportFigurePen));
+                                    pointsList.Add(point);
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                 case 1:
-                                    if (pointsList[0].X == _point.X || pointsList[0].Y == _point.Y) {
+                                    if (pointsList[0].X == point.X || pointsList[0].Y == point.Y) {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    figuresContainer.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
+                                    figuresContainer.FiguresList.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, point.X, point.Y, figurePen));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default:
@@ -224,18 +224,18 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleCenterRadius:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyCut(supportPen, _point, _point));
-                                    supportFigures.Add(new MyCircle(supportFigurePen, _point, 0));
-                                    pointsList.Add(_point);
+                                    supportFigures.Add(new MyCut(supportPen, point, point));
+                                    supportFigures.Add(new MyCircle(supportFigurePen, point, 0));
+                                    pointsList.Add(point);
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
                                 case 1:
-                                    Single radius = MyFigure.FindLength(_point, pointsList[0]);
+                                    Single radius = MyFigure.FindLength(point, pointsList[0]);
                                     if (radius == 0) {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    figuresContainer.Add(new MyCircle(figurePen, pointsList[0], radius));
+                                    figuresContainer.FiguresList.Add(new MyCircle(figurePen, pointsList[0], radius));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default: throw new Exception();
@@ -247,16 +247,16 @@ namespace OOP_Paint {
                         case BuildingMethod.RectangleTwoPoints:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyRectangle(_point.X, _point.Y, _point.X, _point.Y, supportPen));
-                                    pointsList.Add(_point);
+                                    supportFigures.Add(new MyRectangle(point.X, point.Y, point.X, point.Y, supportPen));
+                                    pointsList.Add(point);
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                 case 1:
-                                    if (pointsList[0].X == _point.X || pointsList[0].Y == _point.Y) {
+                                    if (pointsList[0].X == point.X || pointsList[0].Y == point.Y) {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    figuresContainer.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, _point.X, _point.Y, figurePen));
+                                    figuresContainer.FiguresList.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, point.X, point.Y, figurePen));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default:
@@ -269,16 +269,16 @@ namespace OOP_Paint {
                         case BuildingMethod.CutTwoPoints:
                             switch (currConstructorStage) {
                                 case 0:
-                                    pointsList.Add(_point);
+                                    pointsList.Add(point);
                                     supportFigures.Add(new MyCut(supportFigurePen, pointsList[0], pointsList[0]));
                                     currConstructorStage++;
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                 case 1:
-                                    if (pointsList[0] == _point) {
+                                    if (pointsList[0] == point) {
                                         return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
                                     }
 
-                                    figuresContainer.Add(new MyCut(figurePen, pointsList[0], _point));
+                                    figuresContainer.FiguresList.Add(new MyCut(figurePen, pointsList[0], point));
                                     CloseConstructor();
                                     return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
                                 default: throw new Exception();
@@ -289,17 +289,17 @@ namespace OOP_Paint {
             }
         }
         //!!!MainCode#02: добавить класс-контейнер Figures
-        public void SelectFigure(Int32 _id) {
+        public void SelectFigure(Int32 id) {
             for (Int32 i = 0; i < figuresContainer.FiguresList.Count; i++) {
-                if (figuresContainer[i].Id == _id) {
+                if (figuresContainer[i].Id == id) {
                     figuresContainer[i].IsSelected = true;
                     break;
                 }
             }
         }
-        public void UnselectFigure(Int32 _id) {
+        public void UnselectFigure(Int32 id) {
             for (Int32 i = 0; i < figuresContainer.FiguresList.Count; i++) {
-                if (figuresContainer[i].Id == _id) {
+                if (figuresContainer[i].Id == id) {
                     figuresContainer[i].IsSelected = false;
                     break;
                 }
@@ -311,28 +311,28 @@ namespace OOP_Paint {
 
 
         /// <summary> Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур </summary>
-        public PointF FindNearestVertex(PointF _target) => FindNearestVertex(new List<MyFigure>(figuresContainer.FiguresList), _target);
-        private PointF FindNearestVertex(List<MyFigure> figures, PointF _target) {
+        public PointF FindNearestVertex(PointF target) => FindNearestVertex(new List<MyFigure>(figuresContainer.FiguresList), target);
+        private PointF FindNearestVertex(List<MyFigure> figures, PointF target) {
             if (figures.Count == 0) {
                 throw new Exception();
             }
 
             float minDistance = float.MaxValue;
-            PointF out_vertex = new PointF(0, 0);
+            PointF outvertex = new PointF(0, 0);
             bool isOk = false;
             foreach (var figure in figures) {
                 foreach (var vetrex in figure.Vertexes) {
-                    float distance = MyFigure.FindLength(vetrex, _target);
+                    float distance = MyFigure.FindLength(vetrex, target);
                     if (distance <= minDistance) {
                         isOk = true;
                         minDistance = distance;
-                        out_vertex = vetrex;
+                        outvertex = vetrex;
                     }
                 }
             }
 
             if (isOk) {
-                return out_vertex;
+                return outvertex;
             }
             else {
                 throw new Exception();
@@ -341,18 +341,18 @@ namespace OOP_Paint {
 
 
         //!!!MainCode#45: добавить выделение прямоугольника и круга
-        private List<MyFigure> FindFiguresTouchesRect(Point _p1, Point _p2) {
-            var out_list = new List<MyFigure>();
+        private List<MyFigure> FindFiguresTouchesRect(Point p1, Point p2) {
+            var outlist = new List<MyFigure>();
 
             //Все грани выделяющего прямоугольника
             Point[,] selectRectLinePoints = {
-                { _p1, new Point(_p2.X, _p1.Y) },
-                { _p2, new Point(_p2.X, _p1.Y) },
-                { _p2, new Point(_p1.X, _p2.Y) },
-                { _p1, new Point(_p1.X, _p2.Y) }
+                { p1, new Point(p2.X, p1.Y) },
+                { p2, new Point(p2.X, p1.Y) },
+                { p2, new Point(p1.X, p2.Y) },
+                { p1, new Point(p1.X, p2.Y) }
             };
 
-            foreach (var figure in figuresContainer.) {
+            foreach (var figure in figuresContainer) {
                 if (figure is MyCut) {
                     var myCut = figure as MyCut;
                     for (Int32 i = 0; i < selectRectLinePoints.GetLength(0); i++) {
@@ -365,58 +365,58 @@ namespace OOP_Paint {
                         //Отрезки пересекаются, если точка пересечения прямых, чрез них проходящих, принадлежит им обоим.
                         Boolean isTouches = CheckIsPointInCut(myCut.P1, myCut.P2, crossPoint) && CheckIsPointInCut(selectRectLinePoints[i, 0], selectRectLinePoints[i, 1], crossPoint);
                         if (isTouches) {
-                            out_list.Add(figure);
+                            outlist.Add(figure);
                             break;
                         }
                     }
                 }
             }
 
-            return out_list;
+            return outlist;
         }
-        private PointF FindCross(PointF _p1, PointF _p2, PointF _p3, PointF _p4) {
+        private PointF FindCross(PointF p1, PointF p2, PointF p3, PointF p4) {
             //параллельны/что-то совпадает
-            bool isParallel = IsParallel(_p1, _p2, _p3, _p4);
+            bool isParallel = IsParallel(p1, p2, p3, p4);
             if (isParallel) {
                 throw new Exception();
             }
 
-            Single y = ((_p4.X * _p3.Y - _p3.X * _p4.Y) * (_p1.Y - _p2.Y) - (_p3.Y - _p4.Y) * (_p2.X * _p1.Y - _p1.X * _p2.Y)) / ((_p3.Y - _p4.Y) * (_p1.X - _p2.X) + (_p4.X - _p3.X) * (_p1.Y - _p2.Y));
+            Single y = ((p4.X * p3.Y - p3.X * p4.Y) * (p1.Y - p2.Y) - (p3.Y - p4.Y) * (p2.X * p1.Y - p1.X * p2.Y)) / ((p3.Y - p4.Y) * (p1.X - p2.X) + (p4.X - p3.X) * (p1.Y - p2.Y));
             Single x;
-            if (_p1.Y - _p2.Y == 0) {
-                x = (y * (_p3.X - _p4.X) + (_p4.X * _p3.Y - _p3.X * _p4.Y)) / (_p3.Y - _p4.Y);
+            if (p1.Y - p2.Y == 0) {
+                x = (y * (p3.X - p4.X) + (p4.X * p3.Y - p3.X * p4.Y)) / (p3.Y - p4.Y);
             }
             else {
-                x = (y * (_p1.X - _p2.X) + (_p2.X * _p1.Y - _p1.X * _p2.Y)) / (_p1.Y - _p2.Y);
+                x = (y * (p1.X - p2.X) + (p2.X * p1.Y - p1.X * p2.Y)) / (p1.Y - p2.Y);
             }
 
             return new PointF(x, y);
         }
 
         /// <summary> Определяет параллельность/коллинеарность отрезков </summary>
-        private Boolean IsParallel(PointF _p1, PointF _p2, PointF _p3, PointF _p4) {
+        private Boolean IsParallel(PointF p1, PointF p2, PointF p3, PointF p4) {
             //Если отношения смещений на клетку х и у двух отрезков по модулю равны, то они параллельны (k коэфф один)
             //И по свойству пропорции:
-            if (Math.Abs((_p1.X - _p2.X) * (_p3.Y - _p4.Y)) == Math.Abs((_p1.Y - _p2.Y) * (_p3.X - _p4.X))) {
+            if (Math.Abs((p1.X - p2.X) * (p3.Y - p4.Y)) == Math.Abs((p1.Y - p2.Y) * (p3.X - p4.X))) {
                 return true;
             }
 
             return false;
         }
-        private Boolean CheckIsPointInCut(PointF _cutP1, PointF _cutP2, PointF _target) {
-            bool isInLine = CheckIsPointInLine(_cutP1, _cutP2, _target);
+        private Boolean CheckIsPointInCut(PointF cutP1, PointF cutP2, PointF target) {
+            bool isInLine = CheckIsPointInLine(cutP1, cutP2, target);
             if (!isInLine) {
                 return false;
             }
 
-            return _target.X <= Math.Max(_cutP1.X, _cutP2.X) && _target.X >= Math.Min(_cutP1.X, _cutP2.X);
+            return target.X <= Math.Max(cutP1.X, cutP2.X) && target.X >= Math.Min(cutP1.X, cutP2.X);
         }
-        private Boolean CheckIsPointInLine(PointF _cutP1, PointF _cutP2, PointF _target) {
+        private Boolean CheckIsPointInLine(PointF cutP1, PointF cutP2, PointF target) {
             #region Человеческий вид
-            //float a = _p2.X - _p1.X;
-            //float b = _p2.Y - _p1.Y;
-            //float c = _target.X - _p1.X;
-            //float d = _target.X - _p1.X;
+            //float a = p2.X - p1.X;
+            //float b = p2.Y - p1.Y;
+            //float c = target.X - p1.X;
+            //float d = target.X - p1.X;
 
             //int e = Math.Sign(a * d - b * c);
             //if (e != 0) {
@@ -424,7 +424,7 @@ namespace OOP_Paint {
             //}
             #endregion
 
-            return ((_cutP2.X - _cutP1.X) * (_target.Y - _cutP1.Y) - (_cutP2.Y - _cutP1.Y) * (_target.X - _cutP1.X)) == 0;
+            return ((cutP2.X - cutP1.X) * (target.Y - cutP1.Y) - (cutP2.Y - cutP1.Y) * (target.X - cutP1.X)) == 0;
         }
 
 
@@ -434,35 +434,35 @@ namespace OOP_Paint {
         /// <returns>
         /// Целочисленный массив с индексами figures
         /// </returns>
-        private List<int> FindFiguresNearPoint(PointF _target, Single _interval = 5) {
-            var out_list = new List<int>();
+        private List<int> FindFiguresNearPoint(PointF target, Single interval = 5) {
+            var outlist = new List<int>();
             for (int i = 0; i < figuresContainer.FiguresList.Count; i++) {
                 if (figuresContainer[i] is MyCut) {
                     var cut = figuresContainer[i] as MyCut;
-                    PointF[] area = FindCutArea(cut.P1, cut.P2, _interval);
-                    bool isInArea = IsPointInArea(_target, area);
+                    PointF[] area = FindCutArea(cut.P1, cut.P2, interval);
+                    bool isInArea = IsPointInArea(target, area);
                     if (isInArea) {
-                        out_list.Add(i);
+                        outlist.Add(i);
                     }
                 }
             }
 
-            return out_list;
+            return outlist;
         }
 
         /// <summary>
         /// Возвращает последовательные вершины прямоугольника, образованного "перпендикулярным" сдвигом отрезка на интервал
         /// в обе стороны.
         /// </summary>
-        private PointF[] FindCutArea(PointF _p1, PointF _p2, Single _interval) {
-            Single cutLength = MyFigure.FindLength(_p1, _p2);
-            Single z = (_p2.X - _p1.X) * _interval / cutLength;
-            Single a = (_p2.Y - _p1.Y) * _interval / cutLength;
+        private PointF[] FindCutArea(PointF p1, PointF p2, Single interval) {
+            Single cutLength = MyFigure.FindLength(p1, p2);
+            Single z = (p2.X - p1.X) * interval / cutLength;
+            Single a = (p2.Y - p1.Y) * interval / cutLength;
             PointF[] rect = {
-                new PointF(_p1.X - a, _p1.Y + z),
-                new PointF(_p1.X + a, _p1.Y - z),
-                new PointF(_p2.X + a, _p2.Y - z),
-                new PointF(_p2.X - a, _p2.Y + z),
+                new PointF(p1.X - a, p1.Y + z),
+                new PointF(p1.X + a, p1.Y - z),
+                new PointF(p2.X + a, p2.Y - z),
+                new PointF(p2.X - a, p2.Y + z),
             };
 
             return rect;
@@ -471,60 +471,60 @@ namespace OOP_Paint {
         /// <summary>
         /// Возвращает false, если точка лежит за пределами области
         /// </summary>
-        /// <param name="_area">Замкнутый выпуклый полигон с последовательными вершинами</param>
-        private Boolean IsPointInArea(PointF _point, PointF[] _area) {
-            if (_area.Length < 2) {
+        /// <param name="area">Замкнутый выпуклый полигон с последовательными вершинами</param>
+        private Boolean IsPointInArea(PointF point, PointF[] area) {
+            if (area.Length < 2) {
                 throw new Exception();
             }
             //Такое уже включает в себя проверка
-            foreach (var apex in _area) {
-                if (apex == _point) {
+            foreach (var apex in area) {
+                if (apex == point) {
                     return true;
                 }
             }
 
             //Здесь можно проще: как-то через бинарный поиск
             //По-моему, тут цикл на 2 можно увеличить и подключить процентик
-            int last = _area.Length - 1;
-            int prelast = _area.Length - 2;
-            float a = _area[last].X - _area[prelast].X;
-            float b = _area[last].Y - _area[prelast].Y;
+            int last = area.Length - 1;
+            int prelast = area.Length - 2;
+            float a = area[last].X - area[prelast].X;
+            float b = area[last].Y - area[prelast].Y;
 
-            float c = _area[0].X - _area[prelast].X;
-            float d = _area[0].Y - _area[prelast].Y;
+            float c = area[0].X - area[prelast].X;
+            float d = area[0].Y - area[prelast].Y;
 
-            float e = _point.X - _area[prelast].X;
-            float f = _point.Y - _area[prelast].Y;
+            float e = point.X - area[prelast].X;
+            float f = point.Y - area[prelast].Y;
 
             bool isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
             if (!isOk) {
                 return false;
             }
 
-            a = _area[0].X - _area[last].X;
-            b = _area[0].Y - _area[last].Y;
+            a = area[0].X - area[last].X;
+            b = area[0].Y - area[last].Y;
 
-            c = _area[1].X - _area[last].X;
-            d = _area[1].Y - _area[last].Y;
+            c = area[1].X - area[last].X;
+            d = area[1].Y - area[last].Y;
 
-            e = _point.X - _area[last].X;
-            f = _point.Y - _area[last].Y;
+            e = point.X - area[last].X;
+            f = point.Y - area[last].Y;
 
             isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
             if (!isOk) {
                 return false;
             }
 
-            for (int i = 0; i < _area.Length - 2; i++) {
+            for (int i = 0; i < area.Length - 2; i++) {
                 //Основная сторона
-                a = _area[i + 1].X - _area[i].X;
-                b = _area[i + 1].Y - _area[i].Y;
+                a = area[i + 1].X - area[i].X;
+                b = area[i + 1].Y - area[i].Y;
                 //Внутренняя сторона
-                c = _area[i + 2].X - _area[i].X;
-                d = _area[i + 2].Y - _area[i].Y;
+                c = area[i + 2].X - area[i].X;
+                d = area[i + 2].Y - area[i].Y;
                 //Вектор от стороны к точке
-                e = _point.X - _area[i].X;
-                f = _point.Y - _area[i].Y;
+                e = point.X - area[i].X;
+                f = point.Y - area[i].Y;
 
                 //Вращение стороны к следующей стороне (всегда вовнутрь) должно быть равно этому же вращению стороны к вектору
                 isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
@@ -539,29 +539,29 @@ namespace OOP_Paint {
         /// <summary>
         /// Находит, выше (1) точка прямой, лежит на ней (0) или ниже (-1). Если прямая вертикальна или координаты её точек идентичны - exeption.
         /// </summary>
-        /// <param name="_p1">
+        /// <param name="p1">
         /// Координаты первой точки прямой
         /// </param>
-        /// <param name="_p2">
+        /// <param name="p2">
         /// Коордианы второй точки прямой</param>
-        /// <param name="_p3">
+        /// <param name="p3">
         /// Координаты точки
         /// </param>
-        private Int32 IsPointOverLine(in PointF _p1, in PointF _p2, in PointF _p3) {
+        private Int32 IsPointOverLine(in PointF p1, in PointF p2, in PointF p3) {
             #region Неоптимальный способ
-            //return _point.Y > ((_point.X - _p1.X) * (_p2.Y - _p1.Y) + _point.Y * (_p2.X - _p1.X))/(_p2.X - _p1.X);
+            //return point.Y > ((point.X - p1.X) * (p2.Y - p1.Y) + point.Y * (p2.X - p1.X))/(p2.X - p1.X);
             #endregion
 
             //Если точки совпадают или прямая вертикальна
-            if (_p1.X == _p2.X) {
+            if (p1.X == p2.X) {
                 throw new Exception();
             }
 
             #region Человеческий вид
-            //Single a = _p2.X - _p1.X;
-            //Single b = -_p2.Y - -_p1.Y;
-            //Single c = _p3.X - _p1.X;
-            //Single d = -_p3.Y - -_p1.Y;
+            //Single a = p2.X - p1.X;
+            //Single b = -p2.Y - -p1.Y;
+            //Single c = p3.X - p1.X;
+            //Single d = -p3.Y - -p1.Y;
 
             //Int32 e = Math.Sign(a * d - b * c);
 
@@ -573,12 +573,12 @@ namespace OOP_Paint {
             //}
             #endregion
 
-            Single a = _p2.X - _p1.X;
+            Single a = p2.X - p1.X;
             if (a > 0) {
-                return Math.Sign((-a * (_p3.Y - _p1.Y)) + (_p2.Y - _p1.Y) * (_p3.X - _p1.X));
+                return Math.Sign((-a * (p3.Y - p1.Y)) + (p2.Y - p1.Y) * (p3.X - p1.X));
             }
             else {
-                return -Math.Sign((-a * (_p3.Y - _p1.Y)) + (_p2.Y - _p1.Y) * (_p3.X - _p1.X));
+                return -Math.Sign((-a * (p3.Y - p1.Y)) + (p2.Y - p1.Y) * (p3.X - p1.X));
             }
         }
 
@@ -591,13 +591,13 @@ namespace OOP_Paint {
         }
 
 
-        public void DrawFigures(Graphics _screen) {
-            _screen.Clear(Color.FromArgb(250, 64, 64, 64));
-            foreach (var figure in figuresContainer.FiguresList) {
-                figure.Draw(_screen);
+        public void DrawFigures(Graphics screen) {
+            screen.Clear(Color.FromArgb(250, 64, 64, 64));
+            foreach (var figure in figuresContainer) {
+                figure.Draw(screen);
             }
             foreach (var figure in supportFigures) {
-                figure.Draw(_screen);
+                figure.Draw(screen);
             }
         }
 

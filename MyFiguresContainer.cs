@@ -33,7 +33,6 @@ namespace OOP_Paint {
 
 
         public IEnumerator<MyFigure> GetEnumerator() {
-            //return FiguresList.GetEnumerator();
             return FiguresList.GetEnumerator();
         }
 

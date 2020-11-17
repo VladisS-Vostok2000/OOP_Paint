@@ -21,9 +21,7 @@ namespace OOP_Paint {
         public PointF P1 { 
             set {
                 if (value != p1) {
-                    p1 = value;
-                    Location = FindLeftUpCornerCoord(value.X, value.Y, P2.X, P2.Y);
-                    Length = FindLength(value, P2);
+                    InitializeFigure(value, P2);
                 }
             } 
             get {
@@ -34,9 +32,7 @@ namespace OOP_Paint {
         public PointF P2 {
             set {
                 if (value != p2) {
-                    p2 = value;
-                    Location = FindLeftUpCornerCoord(value.X, value.Y, P2.X, P2.Y);
-                    FindLength(value, P2);
+                    InitializeFigure(P1, value);
                 }
             }
             get {
@@ -47,33 +43,40 @@ namespace OOP_Paint {
 
 
 
-        public MyCut(Color _color, PointF _p1, PointF _p2) : base(_color, VetrexesCount) {
+        public MyCut(Color color, PointF p1, PointF p2) : base(color, VetrexesCount) {
             //???Повторяющийся код
-            InitializeFigure(_p1, _p2);
+            InitializeFigure(p1, p2);
         }
-        public MyCut(Pen _pen, PointF _p1, PointF _p2) : base (_pen, VetrexesCount) {
+        public MyCut(Pen pen, PointF p1, PointF p2) : base (pen, VetrexesCount) {
             //???Повторяющийся код
-            InitializeFigure(_p1, _p2);
+            InitializeFigure(p1, p2);
         }
-        private void InitializeFigure(PointF _p1, PointF _p2) {
-            P1 = _p1;
-            P2 = _p2;
-            VertexesArray[0] = _p1;
-            VertexesArray[1] = _p2;
-        }
-
-
-
-        protected override void DrawFigure(Graphics _screen, Pen _pen) {
-            _screen.DrawLine(_pen, P1, P2);
+        private void InitializeFigure(PointF p1, PointF p2) {
+            this.p1 = p1;
+            this.p2 = p2;
+            VertexesArray[0] = p1;
+            VertexesArray[1] = p2;
+            Length = FindLength(p1, p2);
+            ResetLocation();
         }
 
 
-        public void Resize(PointF _p1, PointF _p2) {
-            InitializeFigure(_p1, _p2);
+
+        protected void ResetLocation() {
+            PointF location = FindLeftUpCornerCoord(P1.X, P1.Y, P2.X, P2.Y);
+            x = location.X;
+            y = location.Y;
         }
-        public void Resize(Single _x1, Single _y1, Single _x2, Single _y2) {
-            InitializeFigure(new PointF(_x1, _y1), new PointF(_x2, _y2));
+        protected override void DrawFigure(Graphics screen, Pen pen) {
+            screen.DrawLine(pen, P1, P2);
+        }
+
+
+        public void Resize(PointF p1, PointF p2) {
+            InitializeFigure(p1, p2);
+        }
+        public void Resize(Single x1, Single y1, Single x2, Single y2) {
+            InitializeFigure(new PointF(x1, y1), new PointF(x2, y2));
         }
 
     }

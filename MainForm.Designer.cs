@@ -40,6 +40,11 @@
             this.MainFormBttnSelect = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.MainFormBttnNothing = new System.Windows.Forms.Button();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormSttsstpLblMouseScreenX = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormSttsstpLblMouseScreenY = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -81,10 +86,15 @@
             this.MainFormSttsstpLblMouseX,
             this.toolStripStatusLabel3,
             this.MainFormSttsstpLblMouseY,
+            this.toolStripStatusLabel2,
+            this.toolStripStatusLabel4,
+            this.MainFormSttsstpLblMouseScreenX,
+            this.toolStripStatusLabel5,
+            this.MainFormSttsstpLblMouseScreenY,
             this.MainFormSttsstpLblHint});
-            this.MainFormSttsstp.Location = new System.Drawing.Point(0, 425);
+            this.MainFormSttsstp.Location = new System.Drawing.Point(0, 428);
             this.MainFormSttsstp.Name = "MainFormSttsstp";
-            this.MainFormSttsstp.Size = new System.Drawing.Size(800, 25);
+            this.MainFormSttsstp.Size = new System.Drawing.Size(800, 22);
             this.MainFormSttsstp.TabIndex = 10;
             this.MainFormSttsstp.Text = "statusStrip1";
             // 
@@ -92,7 +102,7 @@
             // 
             this.toolStripStatusLabel1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(17, 20);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(17, 17);
             this.toolStripStatusLabel1.Text = "X:";
             // 
             // MainFormSttsstpLblMouseX
@@ -100,14 +110,14 @@
             this.MainFormSttsstpLblMouseX.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MainFormSttsstpLblMouseX.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainFormSttsstpLblMouseX.Name = "MainFormSttsstpLblMouseX";
-            this.MainFormSttsstpLblMouseX.Size = new System.Drawing.Size(29, 20);
+            this.MainFormSttsstpLblMouseX.Size = new System.Drawing.Size(29, 17);
             this.MainFormSttsstpLblMouseX.Text = "   ";
             // 
             // toolStripStatusLabel3
             // 
             this.toolStripStatusLabel3.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.toolStripStatusLabel3.Name = "toolStripStatusLabel3";
-            this.toolStripStatusLabel3.Size = new System.Drawing.Size(17, 20);
+            this.toolStripStatusLabel3.Size = new System.Drawing.Size(17, 17);
             this.toolStripStatusLabel3.Text = "Y:";
             // 
             // MainFormSttsstpLblMouseY
@@ -115,7 +125,7 @@
             this.MainFormSttsstpLblMouseY.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MainFormSttsstpLblMouseY.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.MainFormSttsstpLblMouseY.Name = "MainFormSttsstpLblMouseY";
-            this.MainFormSttsstpLblMouseY.Size = new System.Drawing.Size(29, 20);
+            this.MainFormSttsstpLblMouseY.Size = new System.Drawing.Size(29, 17);
             this.MainFormSttsstpLblMouseY.Text = "   ";
             // 
             // MainFormSttsstpLblHint
@@ -124,7 +134,7 @@
             this.MainFormSttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MainFormSttsstpLblHint.Name = "MainFormSttsstpLblHint";
             this.MainFormSttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(693, 20);
+            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(566, 17);
             this.MainFormSttsstpLblHint.Spring = true;
             this.MainFormSttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -198,6 +208,39 @@
             this.MainFormBttnNothing.UseVisualStyleBackColor = true;
             this.MainFormBttnNothing.Click += new System.EventHandler(this.MainFormBttnNothing_Click);
             // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.toolStripStatusLabel2.BorderStyle = System.Windows.Forms.Border3DStyle.Raised;
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(4, 17);
+            // 
+            // toolStripStatusLabel4
+            // 
+            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
+            this.toolStripStatusLabel4.Size = new System.Drawing.Size(17, 17);
+            this.toolStripStatusLabel4.Text = "X:";
+            // 
+            // MainFormSttsstpLblMouseScreenX
+            // 
+            this.MainFormSttsstpLblMouseScreenX.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MainFormSttsstpLblMouseScreenX.Name = "MainFormSttsstpLblMouseScreenX";
+            this.MainFormSttsstpLblMouseScreenX.Size = new System.Drawing.Size(29, 17);
+            this.MainFormSttsstpLblMouseScreenX.Text = "   ";
+            // 
+            // toolStripStatusLabel5
+            // 
+            this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
+            this.toolStripStatusLabel5.Size = new System.Drawing.Size(17, 17);
+            this.toolStripStatusLabel5.Text = "Y:";
+            // 
+            // MainFormSttsstpLblMouseScreenY
+            // 
+            this.MainFormSttsstpLblMouseScreenY.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MainFormSttsstpLblMouseScreenY.Name = "MainFormSttsstpLblMouseScreenY";
+            this.MainFormSttsstpLblMouseScreenY.Size = new System.Drawing.Size(29, 17);
+            this.MainFormSttsstpLblMouseScreenY.Text = "   ";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -243,6 +286,11 @@
         private System.Windows.Forms.Button MainFormBttnSelect;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button MainFormBttnNothing;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
+        private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseScreenX;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel5;
+        private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseScreenY;
     }
 }
 

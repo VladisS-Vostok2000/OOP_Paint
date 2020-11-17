@@ -8,6 +8,7 @@ using System.Windows.Forms;
 
 namespace OOP_Paint {
     public sealed class MyCursor {
+        //!!!!Мышку кудато-выпинывает далеко. PointToClient где-то нужен
         public bool IsSnapped { get; set; }
         private Point SnapLocation;
         public int SnapDistance { get; set; }
