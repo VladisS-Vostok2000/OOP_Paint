@@ -76,7 +76,6 @@ namespace OOP_Paint {
         //Но зато API красивее смотрится.
         public MainCode() {
             figuresContainer.FiguresList.ListChanged += FiguresListChanged;
-            supportFigures.Add(SnapPoint);
         }
 
 
@@ -309,9 +308,14 @@ namespace OOP_Paint {
         public Int32 GetFiguresCount() {
             return figuresContainer.FiguresList.Count;
         }
+
+
         public void AddSnapPoint(Point location) {
-            SnapPoint.Location = new Point(location.X - 3;location.Y - 3);
+            SnapPoint.Location = new Point(location.X - 3,location.Y - 3);
             SnapPoint.IsHide = false;
+        }
+        public void RemoveSnapPoint() {
+            SnapPoint.IsHide = true;
         }
 
 
@@ -604,6 +608,7 @@ namespace OOP_Paint {
             foreach (var figure in supportFigures) {
                 figure.Draw(screen);
             }
+            SnapPoint.Draw(screen);
         }
 
     }

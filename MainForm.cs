@@ -14,6 +14,8 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
+using static OOP_Paint.Debugger;
+using System.IO;
 
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
 //Projekt#20: добавить магнитную привязку
@@ -34,6 +36,7 @@ namespace OOP_Paint {
 
 
         public MainForm(MainCode code) {
+            Debugger.Log("Start");
             Code = code;
 
             InitializeComponent();
@@ -45,6 +48,8 @@ namespace OOP_Paint {
             Code.SelectedFigureChanged += Code_SelectedFigureChanged;
             Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethodChanged;
             Code.FiguresListChanged += Code_FiguresListChanged;
+            myCursor.SnapTorned += MyCursor_SnapTorned;
+
             MainFormCmbbxBuildingVariants.DisplayMember = "DisplayMember";
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
             MainFormLstbxFigures.DisplayMember = "DisplayMember";
@@ -72,6 +77,7 @@ namespace OOP_Paint {
             Code.AddSoftPoint(e.Location);
 
             if (myCursor.IsSnapped) {
+                Debugger.Log("SnapContinued");
                 myCursor.ContinueSnap(e.Location);
             }
             else {
@@ -83,8 +89,10 @@ namespace OOP_Paint {
                         if (distance <= snapDistance) {
                             int x = (int)Math.Round(vetrex.X);
                             int y = (int)Math.Round(vetrex.Y);
+                            Code.AddSnapPoint(new Point(x, y));
                             Point point = ControlPointToScreen(new Point(x, y), MainFromPctrbxScreen);
                             myCursor.DoSnap(point);
+                            Debugger.Log($"SnapCreating: ({x};{y})");
                         }
                     }
                 }
@@ -118,6 +126,7 @@ namespace OOP_Paint {
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
             Code.DrawFigures(screen);
             Display();
+            Debugger.Log("Display");
         }
         private void Display() {
             MainFromPctrbxScreen.Image = bitmap;
@@ -221,6 +230,11 @@ namespace OOP_Paint {
             }
 
         }
+
+        private void MyCursor_SnapTorned(object sender, EventArgs e) {
+            Debugger.Log("SnapTorned");
+            Code.RemoveSnapPoint();
+        }
         #endregion
 
 
@@ -233,6 +247,7 @@ namespace OOP_Paint {
 
 
         private void button1_Click(Object sender, EventArgs e) {
+            Debugger.Stop();
             //var a = new List<MyFigure>();
             //a.Add(new MyCut(Color.Black, new PointF(0, 0), new PointF(5, 5)));
 

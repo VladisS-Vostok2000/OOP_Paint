@@ -68,6 +68,10 @@ namespace OOP_Paint {
 
 
         public virtual void Draw(Graphics screen) {
+            if (IsHide) {
+                return;
+            }
+
             Pen pen;
             if (IsSelected) {
                 pen = SelectedPen;

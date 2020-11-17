@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ComboboxBuildingMethod.cs" />
     <Compile Include="ConstructorOperationResult.cs" />
+    <Compile Include="Debugger.cs" />
     <Compile Include="Dummy.cs" />
     <Compile Include="FiguresEnum.cs" />
     <Compile Include="ListBoxFigure.cs" />
