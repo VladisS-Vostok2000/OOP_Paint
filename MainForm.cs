@@ -21,6 +21,7 @@ using System.IO;
 //Projekt#30: добавить полярные линии
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
+//Projekt#31: реализовать поле OperationResult в MainCode и событие изменения и его обработку в клиенте
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
@@ -75,6 +76,7 @@ namespace OOP_Paint {
 
             code.AddSoftPoint(e.Location);
 
+            #region Snap
             if (myCursor.IsSnapped) {
                 myCursor.ContinueSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen));
             }
@@ -99,6 +101,9 @@ namespace OOP_Paint {
                 }
 
             }
+            #endregion
+
+
         }
         private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
             //За пределами экрана

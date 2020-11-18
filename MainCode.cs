@@ -64,8 +64,10 @@ namespace OOP_Paint {
         private static readonly Pen figurePen = new Pen(Color.Black);
         private static readonly Pen selectPen = new Pen(Color.White) { Width = 1, DashStyle = DashStyle.Dash };
 
-        private static readonly Pen SnapPen = new Pen(Color.Green, 2);
-        private static readonly MyRectangle SnapPoint = new MyRectangle(0, 0, 6, 6, SnapPen) { IsHide = true };
+        private static readonly Pen snapPen = new Pen(Color.Green, 2);
+        private static readonly MyRectangle snapPoint = new MyRectangle(0, 0, 6, 6, snapPen) { IsHide = true };
+        private static readonly Pen PolarPen = new Pen(Color.Lime, 1) { DashStyle = DashStyle.Dash };
+        private static readonly MyCut polarLine = new MyCut(PolarPen, new PointF(0, 0), new PointF(0, 0));
 
 
 
@@ -311,11 +313,18 @@ namespace OOP_Paint {
 
 
         public void AddSnapPoint(Point location) {
-            SnapPoint.Location = new Point(location.X - 3,location.Y - 3);
-            SnapPoint.IsHide = false;
+            snapPoint.Location = new Point(location.X - 3,location.Y - 3);
+            snapPoint.IsHide = false;
         }
         public void RemoveSnapPoint() {
-            SnapPoint.IsHide = true;
+            snapPoint.IsHide = true;
+        }
+
+        public void AddPolarLine(in PointF p1, in PointF p2) {
+            polarLine.P1 = p1;
+            checked {
+                polarLine.P2 = new PointF(p2.X + 1000 * Math.Sign(p2.X), p2.Y + 1000 * Math.Sign(p2.Y));
+            }
         }
 
 
@@ -608,7 +617,7 @@ namespace OOP_Paint {
             foreach (var figure in supportFigures) {
                 figure.Draw(screen);
             }
-            SnapPoint.Draw(screen);
+            snapPoint.Draw(screen);
         }
 
     }
