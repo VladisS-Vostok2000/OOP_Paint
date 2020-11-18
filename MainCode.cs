@@ -20,26 +20,27 @@ namespace OOP_Paint {
     public sealed class MainCode {
         public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
         public delegate void FigureHandler(Figure figure, EventArgs e);
+        public delegate void ConstructorOperationStatusHandler(ConstructorOperationStatus ConstructorOperationStatus, EventArgs e);
 
         #region API
-        public event FigureHandler SelectedFigureChanged;
+        public event FigureHandler SelectedToolChanged;
         public event BuildingMethodHandler SelectedBuildingVariantChanged;
         //!!!!Сюда нужно засунуть MyFiguresContainer
         public event ListChangedEventHandler FiguresListChanged;
+        public event ConstructorOperationStatusHandler ConstructorOperationStatusChanged;
         #endregion
-
-        private Figure selectedFigure;
-        public Figure SelectedFigure {
+        private Figure selectedTool;
+        public Figure SelectedTool {
             set {
-                if (selectedFigure != value) {
+                if (selectedTool != value) {
                     CloseConstructor();
-                    SelectedFigureChanged?.Invoke(value, EventArgs.Empty);
-                    selectedFigure = value;
+                    SelectedToolChanged?.Invoke(value, EventArgs.Empty);
+                    selectedTool = value;
 
-                    SelectedBuildingMethod = ReturnPossibleBuildingVariants(SelectedFigure)[0];
+                    SelectedBuildingMethod = ReturnPossibleBuildingVariants(SelectedTool)[0];
                 }
             }
-            get => selectedFigure;
+            get => selectedTool;
         }
         private BuildingMethod selectedBuildingMethod;
         public BuildingMethod SelectedBuildingMethod {
@@ -51,6 +52,16 @@ namespace OOP_Paint {
                 }
             }
             get => selectedBuildingMethod;
+        }
+        private ConstructorOperationStatus constructorOperationStatus;
+        public ConstructorOperationStatus ConstructorOperationStatus { 
+            set {
+                if (constructorOperationStatus != value) {
+                    constructorOperationStatus = value;
+                    ConstructorOperationStatusChanged?.Invoke(value, EventArgs.Empty);
+                }
+            }
+            get => constructorOperationStatus;
         }
         private Int32 currConstructorStage = 0;
 
@@ -87,17 +98,17 @@ namespace OOP_Paint {
         }
 
 
-        //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationResult += Continius)
+        //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationStatus += Continius)
         //!!!MainCode#01: Запретить выделение "линией"
-        public ConstructorOperationResult AddSoftPoint(in PointF point) {
-            if (currConstructorStage == 0 && SelectedFigure != Figure.None) {
-                return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+        public void AddSoftPoint(in PointF point) {
+            if (currConstructorStage == 0 && SelectedTool != Figure.None) {
+                return;
             }
 
             ///currSelectedFigure -> Выбор фигуры построения
             ///currBuildingVariant -> Выбор варианта построения фигуры
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
-            switch (SelectedFigure) {
+            switch (SelectedTool) {
                 case Figure.None:
                     foreach (var figure in figuresContainer) {
                         figure.IsHightLighed = false;
@@ -107,8 +118,7 @@ namespace OOP_Paint {
                     for (int i = 0; i < indexes.Count; i++) {
                         figuresContainer[indexes[i]].IsHightLighed = true;
                     }
-
-                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                    return;
                 case Figure.Select:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.None:
@@ -118,10 +128,10 @@ namespace OOP_Paint {
 
                                     }
                                     (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    return;
                                 default: throw new Exception();
                             }
-                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
+                        default: throw new Exception($"Фигура {SelectedTool} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
                     }
                 case Figure.Rectangle:
                     switch (SelectedBuildingMethod) {
@@ -129,10 +139,10 @@ namespace OOP_Paint {
                             switch (currConstructorStage) {
                                 case 1:
                                     (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    return;
                                 default: throw new Exception();
                             }
-                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
+                        default: throw new Exception($"Фигура {SelectedTool} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
                     }
                 case Figure.Circle:
                     switch (SelectedBuildingMethod) {
@@ -141,7 +151,7 @@ namespace OOP_Paint {
                                 case 1:
                                     (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
                                     (supportFigures[1] as MyCircle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    return;
                                 default:
                                     throw new Exception();
                             }
@@ -150,10 +160,10 @@ namespace OOP_Paint {
                                 case 1:
                                     (supportFigures[0] as MyCut).P2 = point;
                                     (supportFigures[1] as MyCircle).Radius = MyFigure.FindLength(point, pointsList[0]);
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    return;
                                 default: throw new Exception();
                             }
-                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
+                        default: throw new Exception($"Фигура {SelectedTool} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
                     }
                 case Figure.Cut:
                     switch (SelectedBuildingMethod) {
@@ -161,21 +171,21 @@ namespace OOP_Paint {
                             switch (currConstructorStage) {
                                 case 1:
                                     (supportFigures[0] as MyCut).P2 = point;
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                    return;
                                 default: throw new Exception();
                             }
-                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
+                        default: throw new Exception($"Фигура {SelectedTool} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
                     }
-                default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
+                default: throw new NotImplementedException($"Фигура {SelectedTool} не реализована.");
             }
         }
-        public ConstructorOperationResult SetPoint(Point point) {
-            ///currSelectedFigure -> Выбор фигуры построения
-            ///currBuildingVariant -> Выбор варианта построения фигуры
-            ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
-            switch (SelectedFigure) {
+        public void SetPoint(Point point) {
+            //currSelectedFigure -> Выбор фигуры построения
+            //currBuildingVariant -> Выбор варианта построения фигуры
+            //currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
+            switch (SelectedTool) {
                 case Figure.None:
-                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                    return;
                 case Figure.Select:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.None:
@@ -184,10 +194,11 @@ namespace OOP_Paint {
                                     supportFigures.Add(new MyRectangle(point.X, point.Y, point.X, point.Y, selectPen) { IsFill = true, FillColor = Color.FromArgb(50, Color.Blue) });
                                     pointsList.Add(point);
                                     currConstructorStage++;
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                    ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                    return;
                                 case 1:
                                     if (pointsList[0] == point) {
-                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                        return;
                                     }
 
                                     List<MyFigure> myFigures = FindFiguresTouchesRect(pointsList[0], point);
@@ -196,11 +207,11 @@ namespace OOP_Paint {
                                     }
 
                                     CloseConstructor();
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                    return;
                                 default:
                                     throw new Exception();
                             }
-                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
+                        default: throw new Exception($"Фигура {SelectedTool} выбрана, но не задан вариант построения.");
                     }
                 case Figure.Circle:
                     switch (SelectedBuildingMethod) {
@@ -211,15 +222,16 @@ namespace OOP_Paint {
                                     supportFigures.Add(new MyCircle(point.X, point.Y, point.X, point.Y, supportFigurePen));
                                     pointsList.Add(point);
                                     currConstructorStage++;
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                    ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                    return;
                                 case 1:
                                     if (pointsList[0].X == point.X || pointsList[0].Y == point.Y) {
-                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                        return;
                                     }
 
                                     figuresContainer.FiguresList.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, point.X, point.Y, figurePen));
                                     CloseConstructor();
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                    return;
                                 default:
                                     throw new Exception();
                             }
@@ -230,19 +242,21 @@ namespace OOP_Paint {
                                     supportFigures.Add(new MyCircle(supportFigurePen, point, 0));
                                     pointsList.Add(point);
                                     currConstructorStage++;
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
+                                    ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
+                                    return;
                                 case 1:
                                     Single radius = MyFigure.FindLength(point, pointsList[0]);
                                     if (radius == 0) {
-                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                        return;
                                     }
 
                                     figuresContainer.FiguresList.Add(new MyCircle(figurePen, pointsList[0], radius));
                                     CloseConstructor();
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                    ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Finished, "");
+                                    return;
                                 default: throw new Exception();
                             }
-                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
+                        default: throw new Exception($"Фигура {SelectedTool} выбрана, но не задан вариант построения.");
                     }
                 case Figure.Rectangle:
                     switch (SelectedBuildingMethod) {
@@ -252,19 +266,20 @@ namespace OOP_Paint {
                                     supportFigures.Add(new MyRectangle(point.X, point.Y, point.X, point.Y, supportPen));
                                     pointsList.Add(point);
                                     currConstructorStage++;
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                    ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                    return;
                                 case 1:
                                     if (pointsList[0].X == point.X || pointsList[0].Y == point.Y) {
-                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                        return;
                                     }
 
                                     figuresContainer.FiguresList.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, point.X, point.Y, figurePen));
                                     CloseConstructor();
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                    return;
                                 default:
                                     throw new Exception();
                             }
-                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
+                        default: throw new Exception($"Фигура {SelectedTool} выбрана, но не задан вариант построения.");
                     }
                 case Figure.Cut:
                     switch (SelectedBuildingMethod) {
@@ -274,22 +289,27 @@ namespace OOP_Paint {
                                     pointsList.Add(point);
                                     supportFigures.Add(new MyCut(supportFigurePen, pointsList[0], pointsList[0]));
                                     currConstructorStage++;
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                    ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
+                                    return;
                                 case 1:
                                     if (pointsList[0] == point) {
-                                        return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.None, "");
+                                        return;
                                     }
 
                                     figuresContainer.FiguresList.Add(new MyCut(figurePen, pointsList[0], point));
                                     CloseConstructor();
-                                    return new ConstructorOperationResult(ConstructorOperationResult.OperationStatus.Finished, "");
+                                    ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Finished, "");
+                                    return;
                                 default: throw new Exception();
                             }
-                        default: throw new Exception($"Фигура {SelectedFigure} выбрана, но не задан вариант построения.");
+                        default: throw new Exception($"Фигура {SelectedTool} выбрана, но не задан вариант построения.");
                     }
-                default: throw new NotImplementedException($"Фигура {SelectedFigure} не реализована.");
+                default: throw new NotImplementedException($"Фигура {SelectedTool} не реализована.");
             }
         }
+
+
+
         //!!!MainCode#02: добавить класс-контейнер Figures
         public void SelectFigure(Int32 id) {
             for (Int32 i = 0; i < figuresContainer.FiguresList.Count; i++) {

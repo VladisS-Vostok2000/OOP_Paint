@@ -45,9 +45,10 @@ namespace OOP_Paint {
             screen = Graphics.FromImage(bitmap);
             myCursor = new MyCursor(snapDistancePx);
 
-            this.code.SelectedFigureChanged += Code_SelectedFigureChanged;
-            this.code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethodChanged;
-            this.code.FiguresListChanged += Code_FiguresListChanged;
+            this.code.SelectedToolChanged += Code_SelectedTool_Changed;
+            this.code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
+            this.code.FiguresListChanged += Code_FiguresList_Changed;
+            this.code.ConstructorOperationStatusChanged += MainCode_ConstructorOperationStatus_Changed;
             myCursor.SnapTorned += MyCursor_SnapTorned;
 
             MainFormCmbbxBuildingVariants.DisplayMember = "DisplayMember";
@@ -63,7 +64,7 @@ namespace OOP_Paint {
 
         private void MainFromPctrbxScreen_MouseDown(Object sender, MouseEventArgs e) {
             //MainFormTmr.Stop();
-            if (code.SelectedFigure == Figure.Select) {
+            if (code.SelectedTool == Figure.Select) {
                 //MainFormTmr.Enabled = true;
                 code.SetPoint(e.Location);
             }
@@ -112,22 +113,7 @@ namespace OOP_Paint {
                 return;
             }
 
-            ConstructorOperationResult constructorResult = code.SetPoint(e.Location);
-            if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Continious) {
-                //MainFormTmr.Enabled = true;
-                MainFormSttsstpLblHint.Text = constructorResult.OperationMessage;
-            }
-            else
-            if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Canselled) {
-                //MainFormTmr.Enabled = false;
-                MainFormSttsstpLblHint.Text = "Отменено";
-            }
-            else
-            if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Finished) {
-                //MainFormTmr.Enabled = false;
-                code.DrawFigures(screen);
-                MainFormSttsstpLblHint.Text = "Успешно.";
-            }
+            code.SetPoint(e.Location);
         }
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
             code.DrawFigures(screen);
@@ -147,7 +133,7 @@ namespace OOP_Paint {
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             Figure firgureToSelect = Figure.Circle;
-            code.SelectedFigure = firgureToSelect;
+            code.SelectedTool = firgureToSelect;
 
             //Это, наверное, всё же лучше запихуть в Code в этой реализации, т.к.
             //сообщение одно для всех платформ. Однако для разных людей это не так.
@@ -156,18 +142,18 @@ namespace OOP_Paint {
 
         }
         private void MainFormBttnRectangle_Click(Object sender, EventArgs e) {
-            code.SelectedFigure = Figure.Rectangle;
+            code.SelectedTool = Figure.Rectangle;
             MainFormSttsstpLblHint.Text = "Прямоугольник. Выберете первую точку";
         }
         private void MainFormBttnCut_Click(Object sender, EventArgs e) {
-            code.SelectedFigure = Figure.Cut;
+            code.SelectedTool = Figure.Cut;
             MainFormSttsstpLblHint.Text = "Отрезок. Выберете первую точку";
         }
         private void MainFormBttnSelect_Click(Object sender, EventArgs e) {
-            code.SelectedFigure = Figure.Select;
+            code.SelectedTool = Figure.Select;
         }
         private void MainFormBttnNothing_Click(Object sender, EventArgs e) {
-            code.SelectedFigure = Figure.None;
+            code.SelectedTool = Figure.None;
         }
 
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
@@ -190,7 +176,7 @@ namespace OOP_Paint {
 
 
         #region API
-        private void Code_SelectedFigureChanged(Figure value, EventArgs e) {
+        private void Code_SelectedTool_Changed(Figure value, EventArgs e) {
             List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(value);
             MainFormCmbbxBuildingVariants.Items.Clear();
             var cbm = new ComboboxBuildingMethod[pbm.Count];
@@ -200,7 +186,7 @@ namespace OOP_Paint {
             MainFormCmbbxBuildingVariants.Items.AddRange(cbm);
         }
         //!!!MainForm#42.1: выделение нескольких элементов некорректно работает
-        private void Code_SelectedBuildingMethodChanged(BuildingMethod value, EventArgs e) {
+        private void Code_SelectedBuildingMethod_Changed(BuildingMethod value, EventArgs e) {
             for (Int32 i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
                 if ((MainFormCmbbxBuildingVariants.Items[i] as ComboboxBuildingMethod).BuildingMethod == value) {
                     MainFormCmbbxBuildingVariants.SelectedIndex = i;
@@ -210,7 +196,7 @@ namespace OOP_Paint {
 
         }
         //!!!MainForm#42: исправить в соответствии с возможностью выбрать несколько элементов
-        private void Code_FiguresListChanged(Object sender, ListChangedEventArgs e) {
+        private void Code_FiguresList_Changed(Object sender, ListChangedEventArgs e) {
             Int32 currListSelectedIndex = MainFormLstbxFigures.SelectedIndex;
             Boolean wasSmnSelected = currListSelectedIndex != -1;
             Int32 currListSelectedItemId = -1;
@@ -242,7 +228,23 @@ namespace OOP_Paint {
             }
 
         }
-
+        private void MainCode_ConstructorOperationStatus_Changed(ConstructorOperationStatus sender, EventArgs e) {
+            if (sender.Result == ConstructorOperationStatus.OperationStatus.Continious) {
+                //MainFormTmr.Enabled = true;
+                MainFormSttsstpLblHint.Text = sender.OperationMessage;
+            }
+            else
+            if (sender.Result == ConstructorOperationStatus.OperationStatus.Canselled) {
+                //MainFormTmr.Enabled = false;
+                MainFormSttsstpLblHint.Text = "Отменено";
+            }
+            else
+            if (sender.Result == ConstructorOperationStatus.OperationStatus.Finished) {
+                //MainFormTmr.Enabled = false;
+                code.DrawFigures(screen);
+                MainFormSttsstpLblHint.Text = "Успешно.";
+            }
+        }
         private void MyCursor_SnapTorned(object sender, EventArgs e) {
             code.RemoveSnapPoint();
         }
