@@ -19,14 +19,17 @@ using System.IO;
 
 namespace OOP_Paint {
     public static class Debugger {
-
         private static FileStream fileStream = new FileStream(@"C:\OOP_PaintLog.log", FileMode.Create);
         private static StreamWriter streamWriter = new StreamWriter(fileStream);
+
+
+
         public static void Log(string log) {
             streamWriter.Write(log + "\r\n");
         }
         public static void Stop() {
             fileStream.Close();
         }
+
     }
 }

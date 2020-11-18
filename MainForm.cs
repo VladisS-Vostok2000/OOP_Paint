@@ -18,36 +18,35 @@ using static OOP_Paint.Debugger;
 using System.IO;
 
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
-//Projekt#20: добавить магнитную привязку
 //!!!Projekt#30: добавить полярные линии
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
-//Projekt#40: добавить контейнер фигур
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
-        private readonly int snapDistance = 5;
+        private int scale = 1;
+        private readonly int snapDistancePx = 10;
 
         private readonly Bitmap bitmap;
         private readonly Graphics screen;
-        private readonly MainCode Code;
+        private readonly MainCode code;
         private readonly MyCursor myCursor;
 
 
 
         public MainForm(MainCode code) {
             Debugger.Log("Start");
-            Code = code;
+            this.code = code;
 
             InitializeComponent();
 
             bitmap = new Bitmap(496, 290);
             screen = Graphics.FromImage(bitmap);
-            myCursor = new MyCursor(snapDistance);
+            myCursor = new MyCursor(snapDistancePx);
 
-            Code.SelectedFigureChanged += Code_SelectedFigureChanged;
-            Code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethodChanged;
-            Code.FiguresListChanged += Code_FiguresListChanged;
+            this.code.SelectedFigureChanged += Code_SelectedFigureChanged;
+            this.code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethodChanged;
+            this.code.FiguresListChanged += Code_FiguresListChanged;
             myCursor.SnapTorned += MyCursor_SnapTorned;
 
             MainFormCmbbxBuildingVariants.DisplayMember = "DisplayMember";
@@ -63,9 +62,9 @@ namespace OOP_Paint {
 
         private void MainFromPctrbxScreen_MouseDown(Object sender, MouseEventArgs e) {
             //MainFormTmr.Stop();
-            if (Code.SelectedFigure == Figure.Select) {
+            if (code.SelectedFigure == Figure.Select) {
                 //MainFormTmr.Enabled = true;
-                Code.SetPoint(e.Location);
+                code.SetPoint(e.Location);
             }
             //MainFormTmr.Start();
         }
@@ -74,25 +73,27 @@ namespace OOP_Paint {
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
 
-            Code.AddSoftPoint(e.Location);
+            code.AddSoftPoint(e.Location);
 
             if (myCursor.IsSnapped) {
-                Debugger.Log("SnapContinued");
-                myCursor.ContinueSnap(e.Location);
+                myCursor.ContinueSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen));
             }
             else {
                 if (e.Button == MouseButtons.None) {
-                    int figCount = Code.GetFiguresCount();
+                    int figCount = code.GetFiguresCount();
                     if (figCount != 0) {
-                        PointF vetrex = Code.FindNearestVertex(e.Location);
-                        float distance = MyFigure.FindLength(vetrex, e.Location);
-                        if (distance <= snapDistance) {
+                        PointF vetrex = code.FindNearestVertex(e.Location);
+                        //Привязка считается в отображаемых пикселях
+                        ConvertRealCoordToPx(vetrex, out Point vetrexPx);
+                        float distance = MyFigure.FindLength(vetrexPx, e.Location);
+                        if (distance < snapDistancePx) {
                             int x = (int)Math.Round(vetrex.X);
                             int y = (int)Math.Round(vetrex.Y);
-                            Code.AddSnapPoint(new Point(x, y));
                             Point point = ControlPointToScreen(new Point(x, y), MainFromPctrbxScreen);
+                            Debugger.Log($"SnapCreating");
+                            Debugger.Log($"MouseLocation: ({Cursor.Position.X};{Cursor.Position.Y})");
                             myCursor.DoSnap(point);
-                            Debugger.Log($"SnapCreating: ({x};{y})");
+                            code.AddSnapPoint(new Point(x, y));
                         }
                     }
                 }
@@ -106,7 +107,7 @@ namespace OOP_Paint {
                 return;
             }
 
-            ConstructorOperationResult constructorResult = Code.SetPoint(e.Location);
+            ConstructorOperationResult constructorResult = code.SetPoint(e.Location);
             if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Continious) {
                 //MainFormTmr.Enabled = true;
                 MainFormSttsstpLblHint.Text = constructorResult.OperationMessage;
@@ -119,12 +120,12 @@ namespace OOP_Paint {
             else
             if (constructorResult.Result == ConstructorOperationResult.OperationStatus.Finished) {
                 //MainFormTmr.Enabled = false;
-                Code.DrawFigures(screen);
+                code.DrawFigures(screen);
                 MainFormSttsstpLblHint.Text = "Успешно.";
             }
         }
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
-            Code.DrawFigures(screen);
+            code.DrawFigures(screen);
             Display();
             Debugger.Log("Display");
         }
@@ -132,10 +133,16 @@ namespace OOP_Paint {
             MainFromPctrbxScreen.Image = bitmap;
         }
 
+        private void ConvertRealCoordToPx(PointF location, out Point pxLocation) {
+            pxLocation = new Point {
+                X = (int)Math.Round(location.X),
+                Y = (int)Math.Round(location.Y)
+            };
+        }
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             Figure firgureToSelect = Figure.Circle;
-            Code.SelectedFigure = firgureToSelect;
+            code.SelectedFigure = firgureToSelect;
 
             //Это, наверное, всё же лучше запихуть в Code в этой реализации, т.к.
             //сообщение одно для всех платформ. Однако для разных людей это не так.
@@ -144,36 +151,36 @@ namespace OOP_Paint {
 
         }
         private void MainFormBttnRectangle_Click(Object sender, EventArgs e) {
-            Code.SelectedFigure = Figure.Rectangle;
+            code.SelectedFigure = Figure.Rectangle;
             MainFormSttsstpLblHint.Text = "Прямоугольник. Выберете первую точку";
         }
         private void MainFormBttnCut_Click(Object sender, EventArgs e) {
-            Code.SelectedFigure = Figure.Cut;
+            code.SelectedFigure = Figure.Cut;
             MainFormSttsstpLblHint.Text = "Отрезок. Выберете первую точку";
         }
         private void MainFormBttnSelect_Click(Object sender, EventArgs e) {
-            Code.SelectedFigure = Figure.Select;
+            code.SelectedFigure = Figure.Select;
         }
         private void MainFormBttnNothing_Click(Object sender, EventArgs e) {
-            Code.SelectedFigure = Figure.None;
+            code.SelectedFigure = Figure.None;
         }
 
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
-            Code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
+            code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
         }
         private void MainFormLstbxFigures_SelectedIndexChanged(Object sender, EventArgs e) {
             //Мы не можем знать, снялось выделение или появилось, таким образом нужно снять выделения
             //со всех фигур и задать их заново
-            Int32 figuresCount = Code.GetFiguresCount();
+            Int32 figuresCount = code.GetFiguresCount();
             for (Int32 i = 0; i < figuresCount; i++) {
-                Code.UnselectFigure(((sender as ListBox).Items[0] as ListBoxFigure).Id);
+                code.UnselectFigure(((sender as ListBox).Items[0] as ListBoxFigure).Id);
             }
 
             foreach (Int32 index in (sender as ListBox).SelectedIndices) {
-                Code.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
+                code.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
             }
 
-            Code.DrawFigures(screen);
+            code.DrawFigures(screen);
         }
 
 
@@ -232,8 +239,7 @@ namespace OOP_Paint {
         }
 
         private void MyCursor_SnapTorned(object sender, EventArgs e) {
-            Debugger.Log("SnapTorned");
-            Code.RemoveSnapPoint();
+            code.RemoveSnapPoint();
         }
         #endregion
 
