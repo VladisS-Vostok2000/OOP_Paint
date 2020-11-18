@@ -19,7 +19,7 @@ namespace OOP_Paint {
         protected Single y;
         public virtual Single Y { set; get; }
 
-        //MyFigure#20: реализовать сдвиг фигур по локации
+        //!!!MyFigure#20: реализовать сдвиг фигур по локации
         /// <summary> Верхняя левая точка описывающего квадрата. При изменении перемещается вся фигура. </summary>
         public PointF Location {
             set {
