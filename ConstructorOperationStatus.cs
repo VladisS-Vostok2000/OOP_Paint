@@ -16,18 +16,17 @@ namespace OOP_Paint {
 
 
 
-        //???Слишком сложна!
-        public static bool operator ==(ConstructorOperationStatus c1, ConstructorOperationStatus c2) {
-            if (c1.Result == c2.Result && c1.OperationMessage == c2.OperationMessage) {
-                return true;
-            }
-            else return false;
+        public static Boolean operator ==(ConstructorOperationStatus c1, ConstructorOperationStatus c2) {
+            return c1.Result == c2.Result && c1.OperationMessage == c2.OperationMessage;
         }
-        public static bool operator !=(ConstructorOperationStatus c1, ConstructorOperationStatus c2) {
-            if (c1.Result == c2.Result && c1.OperationMessage == c2.OperationMessage) {
-                return false;
-            }
-            else return true;
+        public static Boolean operator !=(ConstructorOperationStatus c1, ConstructorOperationStatus c2) {
+            return c1.Result != c2.Result || c1.OperationMessage != c2.OperationMessage;
+        }
+        public override Boolean Equals(Object obj) {
+            return obj != null && GetType().Equals(obj.GetType()) && this == (ConstructorOperationStatus)obj;
+        }
+        public override Int32 GetHashCode() {
+            return base.GetHashCode();
         }
 
 

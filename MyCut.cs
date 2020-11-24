@@ -16,7 +16,7 @@ using static OOP_Paint.FiguresEnum;
 
 namespace OOP_Paint {
     public class MyCut : MyFigure{
-        private const int VetrexesCount = 2;
+        private const Int32 VetrexesCount = 2;
         private PointF p1;
         public PointF P1 { 
             set {

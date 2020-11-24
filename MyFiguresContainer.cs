@@ -18,10 +18,10 @@ using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public class MyFiguresContainer {
         public readonly BindingList<MyFigure> FiguresList = new BindingList<MyFigure>();
-        public readonly string[] test = new string[15];
+        public readonly String[] test = new String[15];
 
 
-        public MyFigure this[int index] {
+        public MyFigure this[Int32 index] {
             get {
                 return FiguresList[index];
             }
@@ -38,10 +38,10 @@ namespace OOP_Paint {
 
 
         #region xml
-        public void ToXml(string filename) {
+        public void ToXml(String filename) {
             XmlWriter writer = XmlWriter.Create(filename);
         }
-        public void FromXml(string filename) {
+        public void FromXml(String filename) {
             XmlReader reader = XmlReader.Create(filename);
         }
 

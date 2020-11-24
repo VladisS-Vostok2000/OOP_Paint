@@ -21,12 +21,12 @@ using System.IO;
 //Projekt#30: добавить полярные линии
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
-//Projekt#31: реализовать поле OperationResult в MainCode и событие изменения и его обработку в клиенте
+//Projekt#08: инкапсулировать лист в контейнере
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
-        private int scale = 1;
-        private readonly int snapDistancePx = 10;
+        private Int32 scale = 1;
+        private readonly Int32 snapDistancePx = 10;
 
         private readonly Bitmap bitmap;
         private readonly Graphics screen;
@@ -83,18 +83,18 @@ namespace OOP_Paint {
             }
             else {
                 if (e.Button == MouseButtons.None) {
-                    int figCount = code.GetFiguresCount();
+                    Int32 figCount = code.GetFiguresCount();
                     if (figCount != 0) {
                         PointF vetrex = code.FindNearestVertex(e.Location);
                         //Привязка считается в отображаемых пикселях
                         ConvertRealCoordToPx(vetrex, out Point vetrexPx);
-                        float distance = MyFigure.FindLength(vetrexPx, e.Location);
+                        Single distance = MyFigure.FindLength(vetrexPx, e.Location);
                         if (distance < snapDistancePx) {
-                            int x = (int)Math.Round(vetrex.X);
-                            int y = (int)Math.Round(vetrex.Y);
+                            Int32 x = (Int32)Math.Round(vetrex.X);
+                            Int32 y = (Int32)Math.Round(vetrex.Y);
                             Point point = ControlPointToScreen(new Point(x, y), MainFromPctrbxScreen);
-                            Debugger.Log($"SnapCreating");
-                            Debugger.Log($"MouseLocation: ({Cursor.Position.X};{Cursor.Position.Y})");
+                            //Debugger.Log($"SnapCreating");
+                            //Debugger.Log($"MouseLocation: ({Cursor.Position.X};{Cursor.Position.Y})");
                             myCursor.DoSnap(point);
                             code.AddSnapPoint(new Point(x, y));
                         }
@@ -118,7 +118,7 @@ namespace OOP_Paint {
         private void MainFormTmr_Tick(Object sender, EventArgs e) {
             code.DrawFigures(screen);
             Display();
-            Debugger.Log("Display");
+            //Debugger.Log("Display");
         }
         private void Display() {
             MainFromPctrbxScreen.Image = bitmap;
@@ -126,8 +126,8 @@ namespace OOP_Paint {
 
         private void ConvertRealCoordToPx(PointF location, out Point pxLocation) {
             pxLocation = new Point {
-                X = (int)Math.Round(location.X),
-                Y = (int)Math.Round(location.Y)
+                X = (Int32)Math.Round(location.X),
+                Y = (Int32)Math.Round(location.Y)
             };
         }
 
@@ -230,27 +230,26 @@ namespace OOP_Paint {
         }
         private void MainCode_ConstructorOperationStatus_Changed(ConstructorOperationStatus sender, EventArgs e) {
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Continious) {
-                //MainFormTmr.Enabled = true;
                 MainFormSttsstpLblHint.Text = sender.OperationMessage;
+                code.AddPolarLine(ControlPointToScreen(Cursor.Position, MainFromPctrbxScreen));
             }
             else
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Canselled) {
-                //MainFormTmr.Enabled = false;
                 MainFormSttsstpLblHint.Text = "Отменено";
             }
             else
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Finished) {
-                //MainFormTmr.Enabled = false;
                 code.DrawFigures(screen);
                 MainFormSttsstpLblHint.Text = "Успешно.";
             }
         }
-        private void MyCursor_SnapTorned(object sender, EventArgs e) {
+        private void MyCursor_SnapTorned(Object sender, EventArgs e) {
             code.RemoveSnapPoint();
         }
         #endregion
 
 
+        /// <summary> Вычисляет местоположение мыши в координатах контрола. </summary>
         private Point ControlPointToScreen(Point location, Control controlOnForm) {
             Point out_point = PointToScreen(location);
             out_point.X += controlOnForm.Location.X;
@@ -258,57 +257,46 @@ namespace OOP_Paint {
             return out_point;
         }
 
-
         private void button1_Click(Object sender, EventArgs e) {
+            Point startPoint = new Point(4, 6);
+            Point[] points = {
+                new Point(4,2), //v
+                new Point(5,2), //v
+                new Point(6,3), //d1
+                new Point(7,3), //d1
+                new Point(7,4), //d1
+                new Point(8,5), //h
+                new Point(8,6), //h
+                new Point(8,7), //h
+                new Point(7,8), //d2
+                new Point(7,9), //d2
+                new Point(6,9), //d2
+                new Point(5,10), //v
+                new Point(4,10), //v
+                new Point(3,10), //v
+                new Point(2,9), //d1
+                new Point(1,9), //d1
+                new Point(1,8), //d1
+                new Point(0,7), //h
+                new Point(0,6), //h
+                new Point(0,5), //h
+                new Point(1,4), //d2
+                new Point(1,3), //d2
+                new Point(2,3), //d2
+                new Point(3,2), //v
+            };
+            PointF[] points1 = new PointF[points.Length];
+            for (Int32 i = 0; i < points.Length; i++) {
+                if (i == 1) {
+                    Debugger.Log("");
+                }
+                points1[i] = code.ChoosePolarLine(startPoint, points[i]);
+            }
+            for (Int32 i = 0; i < points1.Length; i++) {
+                points1[i].X -= 4;
+                points1[i].Y -= 6;
+            }
             Debugger.Stop();
-            //var a = new List<MyFigure>();
-            //a.Add(new MyCut(Color.Black, new PointF(0, 0), new PointF(5, 5)));
-
-            //PointF b = Code.FindNearestVertex(a, new PointF(3, 3));
-            //MessageBox.Show(b.X.ToString() + ";" + b.Y.ToString());
-
-
-            //int a = int.MaxValue;
-            //a++;
-
-            //Code.SelectedFigure = Figure.Cut;
-            //Code.SelectedBuildingMethod = BuildingMethod.CutTwoPoints;
-            //Code.SetPoint(new Point(10, 10));
-            //Code.SetPoint(new Point(50, 50));
-            //Code.SelectedFigure = Figure.None;
-            //Code.AddSoftPoint(new PointF(48, 49));
-
-            ////Вот здесь что-то странное
-            ////k=-45*
-            //var a = Code.FindCutArea(new PointF(10, 10), new PointF(50, 50), 2);
-            //var f = Code.FindCutArea(new PointF(50, 50), new PointF(10, 10), 2);
-            ////Ожидается:
-            ////(10-1.4142;10+1.4142), (10+1.4142;10-1.4142), (50-1.4142;50+1.4142), (50+1.4142;50-1.4142)
-            ////(8;11), (11;8), (48;51), (51;48)
-            ////ok
-
-            ////k=0
-            //var b = Code.FindCutArea(new PointF(10, 10), new PointF(10, 50), 2);
-            //var g = Code.FindCutArea(new PointF(10, 50), new PointF(10, 10), 2);
-            ////Ожидается:
-            ////(8;10), (12;10), (8;50), (12;50)
-            ////ok
-
-            ////y=0
-            //var c = Code.FindCutArea(new PointF(10, 10), new PointF(50, 10), 2);
-            //var h = Code.FindCutArea(new PointF(50, 10), new PointF(10, 10), 2);
-            ////Ожидается:
-            ////(10;8), (10;12), (50;8), (50;12)
-            ////ok
-
-            ////k=45*
-            //var d = Code.FindCutArea(new PointF(10, 50), new PointF(50, 10), 2);
-            //var i = Code.FindCutArea(new PointF(50, 10), new PointF(10, 50), 2);
-            ////Ожидается:
-            ////(10-1.4142;50-1.4142), (10+1.4142;10+1.4142), (50-1.4142;10-1.4142), (50+1.4142;10+1.4142)
-            ////(8;48), (11;51), (48;8), (51;11)
-
-            //MessageBox.Show("");
         }
 
     }

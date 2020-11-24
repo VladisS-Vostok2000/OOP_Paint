@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyCircle : MyFigure {
-        private const int vetrexesCount = 0;
+        private const Int32 vetrexesCount = 0;
         protected Single radius;
         public Single Radius {
             set {

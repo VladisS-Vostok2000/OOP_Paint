@@ -24,11 +24,11 @@ namespace OOP_Paint {
 
 
 
-        public static void Log(string log) {
+        public static void Log(String log) {
             streamWriter.Write(log + "\r\n");
         }
         public static void Stop() {
-            fileStream.Close();
+            streamWriter.Close();
         }
 
     }

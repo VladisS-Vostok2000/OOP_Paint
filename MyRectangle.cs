@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyRectangle : MyFigure {
-        private const int vetrexesCount = 4;
+        private const Int32 vetrexesCount = 4;
         public Single Width { set; get; }
         public Single Height { set; get; }
 

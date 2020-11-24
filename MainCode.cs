@@ -54,7 +54,7 @@ namespace OOP_Paint {
             get => selectedBuildingMethod;
         }
         private ConstructorOperationStatus constructorOperationStatus;
-        public ConstructorOperationStatus ConstructorOperationStatus { 
+        public ConstructorOperationStatus ConstructorOperationStatus {
             set {
                 if (constructorOperationStatus != value) {
                     constructorOperationStatus = value;
@@ -64,6 +64,7 @@ namespace OOP_Paint {
             get => constructorOperationStatus;
         }
         private Int32 currConstructorStage = 0;
+
 
         //private readonly BindingList<MyFigure> figures = new BindingList<MyFigure>();
         public readonly MyFiguresContainer figuresContainer = new MyFiguresContainer();
@@ -114,8 +115,8 @@ namespace OOP_Paint {
                         figure.IsHightLighed = false;
                     }
 
-                    List<int> indexes = FindFiguresNearPoint(point);
-                    for (int i = 0; i < indexes.Count; i++) {
+                    List<Int32> indexes = FindFiguresNearPoint(point);
+                    for (Int32 i = 0; i < indexes.Count; i++) {
                         figuresContainer[indexes[i]].IsHightLighed = true;
                     }
                     return;
@@ -333,34 +334,77 @@ namespace OOP_Paint {
 
 
         public void AddSnapPoint(Point location) {
-            snapPoint.Location = new Point(location.X - 3,location.Y - 3);
+            snapPoint.Location = new Point(location.X - 3, location.Y - 3);
             snapPoint.IsHide = false;
         }
         public void RemoveSnapPoint() {
             snapPoint.IsHide = true;
         }
 
-        public void AddPolarLine(in PointF p1, in PointF p2) {
-            polarLine.P1 = p1;
+        /// <summary> Выстраивает полярную линию с последней точки построения в сторону данной. </summary>
+        public void AddPolarLine(in PointF p1) {
+            if (currConstructorStage == 0 || pointsList.Count == 0) {
+                throw new Exception();
+            }
+
+            polarLine.P1 = pointsList[pointsList.Count - 1];
             checked {
-                polarLine.P2 = new PointF(p2.X + 1000 * Math.Sign(p2.X), p2.Y + 1000 * Math.Sign(p2.Y));
+                //polarLine.P2 = new PointF(p2.X + 1000 * Math.Sign(p2.X), p2.Y + 1000 * Math.Sign(p2.Y));
             }
         }
+        /// <summary> По двум точкам находит ближайшую горизонтальную, вертикальную или диагональную прямую, проходящие через первую точку. </summary>
+        /// <returns> Точка, лежащая на ближайшей прямой с направлением второй точки. </returns>
+        public PointF ChoosePolarLine(in PointF p1, in PointF p2) {
+            Single a = p2.X - p1.X;
+            Single b = p2.Y - p1.Y;
+            Single k = b / a;
 
+            //Вторая точка уже лежит на прямой
+            if (k == 0 || Math.Abs(k) == 1 || Single.IsInfinity(k)) {
+                return new PointF(p1.X + a, p1.Y + b);
+            }
 
-        /// <summary> Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур </summary>
+            var p3 = new PointF(a, b);
+            Single c;
+            PointF p4;
+            //Выясняем, с какой прямой будем сравнивать
+            if (Math.Abs(k) < 1) {
+                //С горизонтальной
+                p4 = new PointF(a, 0);
+                c = p3.X;
+            }
+            else {
+                //С вертикальной
+                p4 = new PointF(0, b);
+                c = p3.Y;
+            }
+
+            Single sqrt2 = (Single)Math.Sqrt(2);
+            var p5 = new PointF(Math.Sign(a) * Math.Abs(c) / sqrt2, Math.Sign(b) * Math.Abs(c) / sqrt2);
+            
+            Boolean isDiagonalCloser = Math.Abs(a * p4.X + b * p4.Y) <= a * p5.X + b * p5.Y;
+            if (isDiagonalCloser) {
+                return new PointF(p1.X + p5.X, p1.Y + p5.Y);
+            }
+            else {
+                return new PointF(p1.X + p4.X, p1.Y + p4.Y);
+            }
+
+        }
+
+        /// <summary> Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур. </summary>
         public PointF FindNearestVertex(PointF target) => FindNearestVertex(new List<MyFigure>(figuresContainer.FiguresList), target);
         private PointF FindNearestVertex(List<MyFigure> figures, PointF target) {
             if (figures.Count == 0) {
                 throw new Exception();
             }
 
-            float minDistance = float.MaxValue;
+            Single minDistance = Single.MaxValue;
             PointF outvertex = new PointF(0, 0);
-            bool isOk = false;
+            Boolean isOk = false;
             foreach (var figure in figures) {
                 foreach (var vetrex in figure.Vertexes) {
-                    float distance = MyFigure.FindLength(vetrex, target);
+                    Single distance = MyFigure.FindLength(vetrex, target);
                     if (distance <= minDistance) {
                         isOk = true;
                         minDistance = distance;
@@ -414,7 +458,7 @@ namespace OOP_Paint {
         }
         private PointF FindCross(PointF p1, PointF p2, PointF p3, PointF p4) {
             //параллельны/что-то совпадает
-            bool isParallel = IsParallel(p1, p2, p3, p4);
+            Boolean isParallel = IsParallel(p1, p2, p3, p4);
             if (isParallel) {
                 throw new Exception();
             }
@@ -442,7 +486,7 @@ namespace OOP_Paint {
             return false;
         }
         private Boolean CheckIsPointInCut(PointF cutP1, PointF cutP2, PointF target) {
-            bool isInLine = CheckIsPointInLine(cutP1, cutP2, target);
+            Boolean isInLine = CheckIsPointInLine(cutP1, cutP2, target);
             if (!isInLine) {
                 return false;
             }
@@ -472,13 +516,13 @@ namespace OOP_Paint {
         /// <returns>
         /// Целочисленный массив с индексами figures
         /// </returns>
-        private List<int> FindFiguresNearPoint(PointF target, Single interval = 5) {
-            var outlist = new List<int>();
-            for (int i = 0; i < figuresContainer.FiguresList.Count; i++) {
+        private List<Int32> FindFiguresNearPoint(PointF target, Single interval = 5) {
+            var outlist = new List<Int32>();
+            for (Int32 i = 0; i < figuresContainer.FiguresList.Count; i++) {
                 if (figuresContainer[i] is MyCut) {
                     var cut = figuresContainer[i] as MyCut;
                     PointF[] area = FindCutArea(cut.P1, cut.P2, interval);
-                    bool isInArea = IsPointInArea(target, area);
+                    Boolean isInArea = IsPointInArea(target, area);
                     if (isInArea) {
                         outlist.Add(i);
                     }
@@ -523,18 +567,18 @@ namespace OOP_Paint {
 
             //Здесь можно проще: как-то через бинарный поиск
             //По-моему, тут цикл на 2 можно увеличить и подключить процентик
-            int last = area.Length - 1;
-            int prelast = area.Length - 2;
-            float a = area[last].X - area[prelast].X;
-            float b = area[last].Y - area[prelast].Y;
+            Int32 last = area.Length - 1;
+            Int32 prelast = area.Length - 2;
+            Single a = area[last].X - area[prelast].X;
+            Single b = area[last].Y - area[prelast].Y;
 
-            float c = area[0].X - area[prelast].X;
-            float d = area[0].Y - area[prelast].Y;
+            Single c = area[0].X - area[prelast].X;
+            Single d = area[0].Y - area[prelast].Y;
 
-            float e = point.X - area[prelast].X;
-            float f = point.Y - area[prelast].Y;
+            Single e = point.X - area[prelast].X;
+            Single f = point.Y - area[prelast].Y;
 
-            bool isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
+            Boolean isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
             if (!isOk) {
                 return false;
             }
@@ -553,7 +597,7 @@ namespace OOP_Paint {
                 return false;
             }
 
-            for (int i = 0; i < area.Length - 2; i++) {
+            for (Int32 i = 0; i < area.Length - 2; i++) {
                 //Основная сторона
                 a = area[i + 1].X - area[i].X;
                 b = area[i + 1].Y - area[i].Y;
