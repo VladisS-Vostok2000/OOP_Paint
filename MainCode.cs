@@ -25,10 +25,10 @@ namespace OOP_Paint {
         #region API
         public event FigureHandler SelectedToolChanged;
         public event BuildingMethodHandler SelectedBuildingVariantChanged;
-        //!!!!Сюда нужно засунуть MyFiguresContainer
-        public event ListChangedEventHandler FiguresListChanged;
+        public event EventHandler FiguresListChanged;
         public event ConstructorOperationStatusHandler ConstructorOperationStatusChanged;
         #endregion
+
         private Figure selectedTool;
         public Figure SelectedTool {
             set {
@@ -66,8 +66,7 @@ namespace OOP_Paint {
         private Int32 currConstructorStage = 0;
 
 
-        //private readonly BindingList<MyFigure> figures = new BindingList<MyFigure>();
-        public readonly MyFiguresContainer figuresContainer = new MyFiguresContainer();
+        public readonly MyListContainer<MyFigure> figuresContainer = new MyListContainer<MyFigure>();
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 
@@ -83,20 +82,12 @@ namespace OOP_Paint {
 
 
 
-        //???Лист реализует Binding-логику, которая необходима для привязки и реализации событий в GUI,
-        //однако он становится публичным и все его элементы доступны для редактирования снаружи.
-        //Странная защита листа: он один фиг передаётся как sender, а использование
-        //события ради события выглядит нелепо. Стоит сделать list public?
-        //Но зато API красивее смотрится.
         public MainCode() {
-            figuresContainer.FiguresList.ListChanged += FiguresListChanged;
+            figuresContainer.ContainerChanged += FiguresContainer_ContainerChanged;
         }
 
+        private void FiguresContainer_ContainerChanged(object sender, EventArgs e) => FiguresListChanged?.Invoke(sender, e);
 
-
-        private void FiguresList_Changed(Object sender, ListChangedEventArgs e) {
-            FiguresListChanged?.Invoke(sender, e);
-        }
 
 
         //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationStatus += Continius)
@@ -230,7 +221,7 @@ namespace OOP_Paint {
                                         return;
                                     }
 
-                                    figuresContainer.FiguresList.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, point.X, point.Y, figurePen));
+                                    figuresContainer.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, point.X, point.Y, figurePen));
                                     CloseConstructor();
                                     return;
                                 default:
@@ -251,7 +242,7 @@ namespace OOP_Paint {
                                         return;
                                     }
 
-                                    figuresContainer.FiguresList.Add(new MyCircle(figurePen, pointsList[0], radius));
+                                    figuresContainer.Add(new MyCircle(figurePen, pointsList[0], radius));
                                     CloseConstructor();
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Finished, "");
                                     return;
@@ -274,7 +265,7 @@ namespace OOP_Paint {
                                         return;
                                     }
 
-                                    figuresContainer.FiguresList.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, point.X, point.Y, figurePen));
+                                    figuresContainer.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, point.X, point.Y, figurePen));
                                     CloseConstructor();
                                     return;
                                 default:
@@ -297,7 +288,7 @@ namespace OOP_Paint {
                                         return;
                                     }
 
-                                    figuresContainer.FiguresList.Add(new MyCut(figurePen, pointsList[0], point));
+                                    figuresContainer.Add(new MyCut(figurePen, pointsList[0], point));
                                     CloseConstructor();
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Finished, "");
                                     return;
@@ -313,7 +304,7 @@ namespace OOP_Paint {
 
         //!!!MainCode#02: добавить класс-контейнер Figures
         public void SelectFigure(Int32 id) {
-            for (Int32 i = 0; i < figuresContainer.FiguresList.Count; i++) {
+            for (Int32 i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i].Id == id) {
                     figuresContainer[i].IsSelected = true;
                     break;
@@ -321,7 +312,7 @@ namespace OOP_Paint {
             }
         }
         public void UnselectFigure(Int32 id) {
-            for (Int32 i = 0; i < figuresContainer.FiguresList.Count; i++) {
+            for (Int32 i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i].Id == id) {
                     figuresContainer[i].IsSelected = false;
                     break;
@@ -329,7 +320,7 @@ namespace OOP_Paint {
             }
         }
         public Int32 GetFiguresCount() {
-            return figuresContainer.FiguresList.Count;
+            return figuresContainer.Count;
         }
 
 
@@ -393,8 +384,8 @@ namespace OOP_Paint {
         }
 
         /// <summary> Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур. </summary>
-        public PointF FindNearestVertex(PointF target) => FindNearestVertex(new List<MyFigure>(figuresContainer.FiguresList), target);
-        private PointF FindNearestVertex(List<MyFigure> figures, PointF target) {
+        public PointF FindNearestVertex(PointF target) => FindNearestVertex(figuresContainer, target);
+        private PointF FindNearestVertex(MyListContainer<MyFigure> figures, PointF target) {
             if (figures.Count == 0) {
                 throw new Exception();
             }
@@ -518,7 +509,7 @@ namespace OOP_Paint {
         /// </returns>
         private List<Int32> FindFiguresNearPoint(PointF target, Single interval = 5) {
             var outlist = new List<Int32>();
-            for (Int32 i = 0; i < figuresContainer.FiguresList.Count; i++) {
+            for (Int32 i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i] is MyCut) {
                     var cut = figuresContainer[i] as MyCut;
                     PointF[] area = FindCutArea(cut.P1, cut.P2, interval);

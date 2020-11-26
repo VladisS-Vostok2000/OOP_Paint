@@ -93,9 +93,10 @@ namespace OOP_Paint {
                             Int32 x = (Int32)Math.Round(vetrex.X);
                             Int32 y = (Int32)Math.Round(vetrex.Y);
                             Point point = ControlPointToScreen(new Point(x, y), MainFromPctrbxScreen);
-                            //Debugger.Log($"SnapCreating");
-                            //Debugger.Log($"MouseLocation: ({Cursor.Position.X};{Cursor.Position.Y})");
+                            Debugger.Log($"SnapCreating");
+                            Debugger.Log($"MouseLocation: ({Cursor.Position.X};{Cursor.Position.Y})");
                             myCursor.DoSnap(point);
+                            //У кода - координаты реальные. 
                             code.AddSnapPoint(new Point(x, y));
                         }
                     }
@@ -196,7 +197,7 @@ namespace OOP_Paint {
 
         }
         //!!!MainForm#42: исправить в соответствии с возможностью выбрать несколько элементов
-        private void Code_FiguresList_Changed(Object sender, ListChangedEventArgs e) {
+        private void Code_FiguresList_Changed(object sender, EventArgs e) {
             Int32 currListSelectedIndex = MainFormLstbxFigures.SelectedIndex;
             Boolean wasSmnSelected = currListSelectedIndex != -1;
             Int32 currListSelectedItemId = -1;
@@ -206,7 +207,7 @@ namespace OOP_Paint {
 
             MainFormLstbxFigures.Items.Clear();
             var figuresToListboxList = new List<ListBoxFigure>();
-            var figuresList = sender as BindingList<MyFigure>;
+            var figuresList = sender as MyListContainer<MyFigure>;
             for (Int32 i = 0; i < figuresList.Count; i++) {
                 figuresToListboxList.Add(
                     new ListBoxFigure(figuresList[i]));

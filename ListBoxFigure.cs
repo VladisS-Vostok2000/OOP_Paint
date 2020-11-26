@@ -23,7 +23,6 @@ namespace OOP_Paint {
         public ListBoxFigure(MyFigure _object) {
             Id = _object.Id;
             DisplayMember = $"[{_object.X},{_object.Y}]".PadRight(10) + _object.GetDescription();
-
         }
 
     }
