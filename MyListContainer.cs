@@ -39,7 +39,7 @@ namespace OOP_Paint {
 
 
         private void MyListContainer_MyContainerChanged(object sender, EventArgs e) {
-            Count = (sender as MyListContainer<T>).Count;
+            Count = list.Count;
         }
         public IEnumerator<T> GetEnumerator() {
             return list.GetEnumerator();

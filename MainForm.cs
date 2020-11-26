@@ -21,7 +21,7 @@ using System.IO;
 //Projekt#30: добавить полярные линии
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
-//Projekt#08: инкапсулировать лист в контейнере
+//Projekt#32: добавить луч
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
@@ -82,13 +82,16 @@ namespace OOP_Paint {
                 myCursor.ContinueSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen));
             }
             else {
+                Debugger.Log("if (e.Button == MouseButtons.None)");
                 if (e.Button == MouseButtons.None) {
                     Int32 figCount = code.GetFiguresCount();
+                    Debugger.Log("if (figCount != 0)");
                     if (figCount != 0) {
                         PointF vetrex = code.FindNearestVertex(e.Location);
                         //Привязка считается в отображаемых пикселях
                         ConvertRealCoordToPx(vetrex, out Point vetrexPx);
                         Single distance = MyFigure.FindLength(vetrexPx, e.Location);
+                        Debugger.Log("if (distance < snapDistancePx)");
                         if (distance < snapDistancePx) {
                             Int32 x = (Int32)Math.Round(vetrex.X);
                             Int32 y = (Int32)Math.Round(vetrex.Y);
@@ -259,44 +262,44 @@ namespace OOP_Paint {
         }
 
         private void button1_Click(Object sender, EventArgs e) {
-            Point startPoint = new Point(4, 6);
-            Point[] points = {
-                new Point(4,2), //v
-                new Point(5,2), //v
-                new Point(6,3), //d1
-                new Point(7,3), //d1
-                new Point(7,4), //d1
-                new Point(8,5), //h
-                new Point(8,6), //h
-                new Point(8,7), //h
-                new Point(7,8), //d2
-                new Point(7,9), //d2
-                new Point(6,9), //d2
-                new Point(5,10), //v
-                new Point(4,10), //v
-                new Point(3,10), //v
-                new Point(2,9), //d1
-                new Point(1,9), //d1
-                new Point(1,8), //d1
-                new Point(0,7), //h
-                new Point(0,6), //h
-                new Point(0,5), //h
-                new Point(1,4), //d2
-                new Point(1,3), //d2
-                new Point(2,3), //d2
-                new Point(3,2), //v
-            };
-            PointF[] points1 = new PointF[points.Length];
-            for (Int32 i = 0; i < points.Length; i++) {
-                if (i == 1) {
-                    Debugger.Log("");
-                }
-                points1[i] = code.ChoosePolarLine(startPoint, points[i]);
-            }
-            for (Int32 i = 0; i < points1.Length; i++) {
-                points1[i].X -= 4;
-                points1[i].Y -= 6;
-            }
+            //Point startPoint = new Point(4, 6);
+            //Point[] points = {
+            //    new Point(4,2), //v
+            //    new Point(5,2), //v
+            //    new Point(6,3), //d1
+            //    new Point(7,3), //d1
+            //    new Point(7,4), //d1
+            //    new Point(8,5), //h
+            //    new Point(8,6), //h
+            //    new Point(8,7), //h
+            //    new Point(7,8), //d2
+            //    new Point(7,9), //d2
+            //    new Point(6,9), //d2
+            //    new Point(5,10), //v
+            //    new Point(4,10), //v
+            //    new Point(3,10), //v
+            //    new Point(2,9), //d1
+            //    new Point(1,9), //d1
+            //    new Point(1,8), //d1
+            //    new Point(0,7), //h
+            //    new Point(0,6), //h
+            //    new Point(0,5), //h
+            //    new Point(1,4), //d2
+            //    new Point(1,3), //d2
+            //    new Point(2,3), //d2
+            //    new Point(3,2), //v
+            //};
+            //PointF[] points1 = new PointF[points.Length];
+            //for (Int32 i = 0; i < points.Length; i++) {
+            //    if (i == 1) {
+            //        Debugger.Log("");
+            //    }
+            //    points1[i] = code.ChoosePolarLine(startPoint, points[i]);
+            //}
+            //for (Int32 i = 0; i < points1.Length; i++) {
+            //    points1[i].X -= 4;
+            //    points1[i].Y -= 6;
+            //}
             Debugger.Stop();
         }
 

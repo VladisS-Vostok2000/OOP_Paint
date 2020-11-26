@@ -302,7 +302,6 @@ namespace OOP_Paint {
 
 
 
-        //!!!MainCode#02: добавить класс-контейнер Figures
         public void SelectFigure(Int32 id) {
             for (Int32 i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i].Id == id) {
@@ -339,9 +338,8 @@ namespace OOP_Paint {
             }
 
             polarLine.P1 = pointsList[pointsList.Count - 1];
-            checked {
-                //polarLine.P2 = new PointF(p2.X + 1000 * Math.Sign(p2.X), p2.Y + 1000 * Math.Sign(p2.Y));
-            }
+            PointF p2 = ChoosePolarLine(pointsList[0], p1);
+            polar
         }
         /// <summary> По двум точкам находит ближайшую горизонтальную, вертикальную или диагональную прямую, проходящие через первую точку. </summary>
         /// <returns> Точка, лежащая на ближайшей прямой с направлением второй точки. </returns>
@@ -372,7 +370,7 @@ namespace OOP_Paint {
 
             Single sqrt2 = (Single)Math.Sqrt(2);
             var p5 = new PointF(Math.Sign(a) * Math.Abs(c) / sqrt2, Math.Sign(b) * Math.Abs(c) / sqrt2);
-            
+
             Boolean isDiagonalCloser = Math.Abs(a * p4.X + b * p4.Y) <= a * p5.X + b * p5.Y;
             if (isDiagonalCloser) {
                 return new PointF(p1.X + p5.X, p1.Y + p5.Y);
