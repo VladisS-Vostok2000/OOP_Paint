@@ -262,46 +262,26 @@ namespace OOP_Paint {
         }
 
         private void button1_Click(Object sender, EventArgs e) {
-            //Point startPoint = new Point(4, 6);
-            //Point[] points = {
-            //    new Point(4,2), //v
-            //    new Point(5,2), //v
-            //    new Point(6,3), //d1
-            //    new Point(7,3), //d1
-            //    new Point(7,4), //d1
-            //    new Point(8,5), //h
-            //    new Point(8,6), //h
-            //    new Point(8,7), //h
-            //    new Point(7,8), //d2
-            //    new Point(7,9), //d2
-            //    new Point(6,9), //d2
-            //    new Point(5,10), //v
-            //    new Point(4,10), //v
-            //    new Point(3,10), //v
-            //    new Point(2,9), //d1
-            //    new Point(1,9), //d1
-            //    new Point(1,8), //d1
-            //    new Point(0,7), //h
-            //    new Point(0,6), //h
-            //    new Point(0,5), //h
-            //    new Point(1,4), //d2
-            //    new Point(1,3), //d2
-            //    new Point(2,3), //d2
-            //    new Point(3,2), //v
-            //};
-            //PointF[] points1 = new PointF[points.Length];
-            //for (Int32 i = 0; i < points.Length; i++) {
-            //    if (i == 1) {
-            //        Debugger.Log("");
-            //    }
-            //    points1[i] = code.ChoosePolarLine(startPoint, points[i]);
-            //}
-            //for (Int32 i = 0; i < points1.Length; i++) {
-            //    points1[i].X -= 4;
-            //    points1[i].Y -= 6;
-            //}
-            Debugger.Stop();
+            var p2 = new PointF(1, 1);
+            var p3 = new PointF(4, 4);
+            var p1 = new PointF(1, 3);
+            PointF result = MakeProjectionOnPolarLine(p1, p2, p3);
+            //Ожидается: (2, 2)
         }
+        private PointF MakeProjectionOnPolarLine(in PointF p1, in PointF p2, in PointF p3) {
+            Single x1 = p2.X;
+            Single y1 = p2.Y;
+            Single x2 = p3.X;
+            Single y2 = p3.Y;
+            Single x3 = p1.X;
+            Single y3 = p1.Y;
+            Single a = x2 - x1;
+            Single b = y2 - y1;
+            Single x = (a * b * y3 - a * a * x1 + a * x3 - b * y1 + b * b + a * a) / ((b - a) * (b + a));
+            Single y = (y3 * b * b - a * a * y1 + a * b * (x1 - x3)) / ((1 - a) * (1 + a));
+            return new PointF(x, y);
+        }
+
 
     }
 }

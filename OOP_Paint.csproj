@@ -65,6 +65,7 @@
     <Compile Include="MyCircle.cs" />
     <Compile Include="MyListContainer.cs" />
     <Compile Include="MyPoint.cs" />
+    <Compile Include="MyRay.cs" />
     <Compile Include="MyRectangle.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

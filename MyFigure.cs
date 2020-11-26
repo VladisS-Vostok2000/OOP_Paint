@@ -13,12 +13,12 @@ namespace OOP_Paint {
     public abstract class MyFigure : IDisposable {
         //!!!MyFigure#01: рефакторинг конструкторов: изменить порядок параметров и убрать задание через "color".
         public static Int32 FiguresCount = 0;
-        public Int32 Id = 0;
+        public Int32 Id { private set; get; } = 0;
+
         protected Single x;
         public virtual Single X { set; get; }
         protected Single y;
         public virtual Single Y { set; get; }
-
         //!!!MyFigure#20: реализовать сдвиг фигур по локации
         /// <summary> Верхняя левая точка описывающего квадрата. При изменении перемещается вся фигура. </summary>
         public PointF Location {
@@ -32,6 +32,7 @@ namespace OOP_Paint {
                 return new PointF(X, Y);
             }
         }
+
         public Pen Pen { set; get; } = new Pen(Color.Black, 1);
         public Pen SelectedPen { set; get; } = new Pen(Color.White, 2);
         public Pen HightLightedPen { set; get; } = new Pen(Color.BlueViolet, 2);
@@ -41,6 +42,7 @@ namespace OOP_Paint {
         public Boolean IsHide;
         public Color FillColor;
         
+
         public IReadOnlyList<PointF> Vertexes { get; }
         protected readonly PointF[] VertexesArray;
 
@@ -72,7 +74,10 @@ namespace OOP_Paint {
                 return;
             }
 
-            Pen pen;
+            ChoosePen(out Pen pen);
+            DrawFigure(screen, pen);
+        }
+        protected virtual Pen ChoosePen(out Pen pen) {
             if (IsSelected) {
                 pen = SelectedPen;
             }
@@ -83,8 +88,7 @@ namespace OOP_Paint {
             else {
                 pen = Pen;
             }
-
-            DrawFigure(screen, pen);
+            return pen;
         }
         protected abstract void DrawFigure(Graphics screen, Pen pen);
 
@@ -105,6 +109,7 @@ namespace OOP_Paint {
             Single lowY = y1 > y2 ? y2 : y1;
             return new PointF(lowX, lowY);
         }
+        public static PointF FindLeftUpCornerCoord(in PointF p1, in PointF p2) => FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
         /// <summary>
         /// Обрубает координатный прямоугольник до квадрата относительно первой точки
         /// </summary>

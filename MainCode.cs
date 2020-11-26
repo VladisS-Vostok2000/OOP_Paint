@@ -15,7 +15,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static OOP_Paint.FiguresEnum;
 
-//!!!!MainCode#20: переименовать перечисления-названия фигур в инструменты
+//!!MainCode#20: переименовать перечисления-названия фигур в инструменты
 namespace OOP_Paint {
     public sealed class MainCode {
         public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
@@ -77,8 +77,8 @@ namespace OOP_Paint {
 
         private static readonly Pen snapPen = new Pen(Color.Green, 2);
         private static readonly MyRectangle snapPoint = new MyRectangle(0, 0, 6, 6, snapPen) { IsHide = true };
-        private static readonly Pen PolarPen = new Pen(Color.Lime, 1) { DashStyle = DashStyle.Dash };
-        private static readonly MyCut polarLine = new MyCut(PolarPen, new PointF(0, 0), new PointF(0, 0));
+        private static readonly Pen polarPen = new Pen(Color.Lime, 1) { DashStyle = DashStyle.Dash };
+        private static readonly MyRay polarLine = new MyRay(polarPen) { IsHide = true };
 
 
 
@@ -92,7 +92,7 @@ namespace OOP_Paint {
 
         //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationStatus += Continius)
         //!!!MainCode#01: Запретить выделение "линией"
-        public void AddSoftPoint(in PointF point) {
+        public void AddSoftPoint(in PointF softPoint) {
             if (currConstructorStage == 0 && SelectedTool != Figure.None) {
                 return;
             }
@@ -106,7 +106,7 @@ namespace OOP_Paint {
                         figure.IsHightLighed = false;
                     }
 
-                    List<Int32> indexes = FindFiguresNearPoint(point);
+                    List<Int32> indexes = FindFiguresNearPoint(softPoint);
                     for (Int32 i = 0; i < indexes.Count; i++) {
                         figuresContainer[indexes[i]].IsHightLighed = true;
                     }
@@ -116,10 +116,10 @@ namespace OOP_Paint {
                         case BuildingMethod.None:
                             switch (currConstructorStage) {
                                 case 1:
-                                    if (pointsList[0] == point) {
+                                    if (pointsList[0] == softPoint) {
 
                                     }
-                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
+                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, softPoint.X, softPoint.Y);
                                     return;
                                 default: throw new Exception();
                             }
@@ -130,7 +130,7 @@ namespace OOP_Paint {
                         case BuildingMethod.RectangleTwoPoints:
                             switch (currConstructorStage) {
                                 case 1:
-                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
+                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, softPoint.X, softPoint.Y);
                                     return;
                                 default: throw new Exception();
                             }
@@ -141,8 +141,8 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleInRectangleByTwoDots:
                             switch (currConstructorStage) {
                                 case 1:
-                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
-                                    (supportFigures[1] as MyCircle).Resize(pointsList[0].X, pointsList[0].Y, point.X, point.Y);
+                                    (supportFigures[0] as MyRectangle).Resize(pointsList[0].X, pointsList[0].Y, softPoint.X, softPoint.Y);
+                                    (supportFigures[1] as MyCircle).Resize(pointsList[0].X, pointsList[0].Y, softPoint.X, softPoint.Y);
                                     return;
                                 default:
                                     throw new Exception();
@@ -150,8 +150,8 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleCenterRadius:
                             switch (currConstructorStage) {
                                 case 1:
-                                    (supportFigures[0] as MyCut).P2 = point;
-                                    (supportFigures[1] as MyCircle).Radius = MyFigure.FindLength(point, pointsList[0]);
+                                    (supportFigures[0] as MyCut).P2 = softPoint;
+                                    (supportFigures[1] as MyCircle).Radius = MyFigure.FindLength(softPoint, pointsList[0]);
                                     return;
                                 default: throw new Exception();
                             }
@@ -162,7 +162,9 @@ namespace OOP_Paint {
                         case BuildingMethod.CutTwoPoints:
                             switch (currConstructorStage) {
                                 case 1:
-                                    (supportFigures[0] as MyCut).P2 = point;
+                                    AddPolarLine(softPoint);
+                                    PointF temp = MakeProjectionOnPolarLine(softPoint);
+                                    (supportFigures[0] as MyCut).P2 = temp;
                                     return;
                                 default: throw new Exception();
                             }
@@ -301,7 +303,6 @@ namespace OOP_Paint {
         }
 
 
-
         public void SelectFigure(Int32 id) {
             for (Int32 i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i].Id == id) {
@@ -332,14 +333,15 @@ namespace OOP_Paint {
         }
 
         /// <summary> Выстраивает полярную линию с последней точки построения в сторону данной. </summary>
-        public void AddPolarLine(in PointF p1) {
+        public void AddPolarLine(in PointF vector) {
             if (currConstructorStage == 0 || pointsList.Count == 0) {
                 throw new Exception();
             }
 
-            polarLine.P1 = pointsList[pointsList.Count - 1];
-            PointF p2 = ChoosePolarLine(pointsList[0], p1);
-            polar
+            PointF p1 = pointsList[pointsList.Count - 1];
+            PointF p2 = ChoosePolarLine(p1, vector);
+            polarLine.InitializeFigure(p1, p2);
+            polarLine.IsHide = false;
         }
         /// <summary> По двум точкам находит ближайшую горизонтальную, вертикальную или диагональную прямую, проходящие через первую точку. </summary>
         /// <returns> Точка, лежащая на ближайшей прямой с направлением второй точки. </returns>
@@ -379,6 +381,25 @@ namespace OOP_Paint {
                 return new PointF(p1.X + p4.X, p1.Y + p4.Y);
             }
 
+        }
+        /// <summary> Спроецирует точку на текущую полярную линию. </summary>
+        /// <exception cref="Exception"> Полярная линия отсуствует. </exception>
+        private PointF MakeProjectionOnPolarLine(in PointF p1) {
+            if (polarLine.IsHide) {
+                throw new Exception();
+            }
+
+            Single x1 = polarLine.Vertexes[0].X;
+            Single y1 = polarLine.Vertexes[0].Y;
+            Single x2 = polarLine.Vertexes[1].X;
+            Single y2 = polarLine.Vertexes[1].Y;
+            Single x3 = p1.X;
+            Single y3 = p1.Y;
+            Single a = x2 - x1;
+            Single b = y2 - y1;
+            Single x = (a * b * y3 - a * a * x1 + a * x3 - b * y1 + b * b + a * a) / ((b - a) * (b + a));
+            Single y = (y3 * b * b - a * a * y1 + a * b * (x1 - x3)) / ((1 - a) * (1 + a));
+            return new PointF(x, y);
         }
 
         /// <summary> Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур. </summary>
@@ -671,6 +692,7 @@ namespace OOP_Paint {
                 figure.Draw(screen);
             }
             snapPoint.Draw(screen);
+            polarLine.Draw(screen);
         }
 
     }
