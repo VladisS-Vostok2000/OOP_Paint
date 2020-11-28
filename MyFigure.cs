@@ -36,12 +36,12 @@ namespace OOP_Paint {
         public Pen Pen { set; get; } = new Pen(Color.Black, 1);
         public Pen SelectedPen { set; get; } = new Pen(Color.White, 2);
         public Pen HightLightedPen { set; get; } = new Pen(Color.BlueViolet, 2);
-        public Boolean IsSelected;
-        public Boolean IsHightLighed;
-        public Boolean IsFill;
-        public Boolean IsHide;
-        public Color FillColor;
-        
+        public Boolean IsSelected { set; get; }
+        public Boolean IsHightLighed { set; get; }
+        public Boolean IsFill { set; get; }
+        public Boolean IsHide { set; get; }
+        public Color FillColor { set; get; }
+
 
         public IReadOnlyList<PointF> Vertexes { get; }
         protected readonly PointF[] VertexesArray;

@@ -21,7 +21,8 @@ using System.IO;
 //Projekt#30: добавить полярные линии
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
-//Projekt#32: добавить луч
+//!!!Projekt#02: Добавить статический класс MyGeometry
+//!!!Пересмотреть snap: код не должен знать о существовании привязки
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
@@ -49,6 +50,7 @@ namespace OOP_Paint {
             this.code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
             this.code.FiguresListChanged += Code_FiguresList_Changed;
             this.code.ConstructorOperationStatusChanged += MainCode_ConstructorOperationStatus_Changed;
+            this.code.PolarLineEnablingChanged += Code_PolarLineEnabling_Changed;
             myCursor.SnapTorned += MyCursor_SnapTorned;
 
             MainFormCmbbxBuildingVariants.DisplayMember = "DisplayMember";
@@ -59,6 +61,8 @@ namespace OOP_Paint {
         private void MainForm_Load(Object sender, EventArgs e) {
 
         }
+
+
 
 
 
@@ -82,22 +86,17 @@ namespace OOP_Paint {
                 myCursor.ContinueSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen));
             }
             else {
-                Debugger.Log("if (e.Button == MouseButtons.None)");
                 if (e.Button == MouseButtons.None) {
                     Int32 figCount = code.GetFiguresCount();
-                    Debugger.Log("if (figCount != 0)");
                     if (figCount != 0) {
                         PointF vetrex = code.FindNearestVertex(e.Location);
                         //Привязка считается в отображаемых пикселях
                         ConvertRealCoordToPx(vetrex, out Point vetrexPx);
                         Single distance = MyFigure.FindLength(vetrexPx, e.Location);
-                        Debugger.Log("if (distance < snapDistancePx)");
                         if (distance < snapDistancePx) {
                             Int32 x = (Int32)Math.Round(vetrex.X);
                             Int32 y = (Int32)Math.Round(vetrex.Y);
                             Point point = ControlPointToScreen(new Point(x, y), MainFromPctrbxScreen);
-                            Debugger.Log($"SnapCreating");
-                            Debugger.Log($"MouseLocation: ({Cursor.Position.X};{Cursor.Position.Y})");
                             myCursor.DoSnap(point);
                             //У кода - координаты реальные. 
                             code.AddSnapPoint(new Point(x, y));
@@ -235,7 +234,7 @@ namespace OOP_Paint {
         private void MainCode_ConstructorOperationStatus_Changed(ConstructorOperationStatus sender, EventArgs e) {
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Continious) {
                 MainFormSttsstpLblHint.Text = sender.OperationMessage;
-                code.AddPolarLine(ControlPointToScreen(Cursor.Position, MainFromPctrbxScreen));
+                //code.AddPolarLine(ControlPointToScreen(Cursor.Position, MainFromPctrbxScreen));
             }
             else
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Canselled) {
@@ -250,6 +249,16 @@ namespace OOP_Paint {
         private void MyCursor_SnapTorned(Object sender, EventArgs e) {
             code.RemoveSnapPoint();
         }
+        //???Вот в дефолтных ивентах названия PolarLineEnablingChanged или PolarLineEnabling_Changed?
+        //Потому что всегда выдаёт имя ивента в методе без земли.
+        private void Code_PolarLineEnabling_Changed(Object sender, EventArgs e) {
+            if ((sender as MainCode).PolarLineEnabled) {
+                this.MainFormTlstrpSpltbttnPolarLine.Image = global::OOP_Paint.Properties.Resources.PolarLineEnabled;
+            }
+            else {
+                this.MainFormTlstrpSpltbttnPolarLine.Image = global::OOP_Paint.Properties.Resources.PolarLineDisabled;
+            }
+        }
         #endregion
 
 
@@ -262,35 +271,13 @@ namespace OOP_Paint {
         }
 
         private void button1_Click(Object sender, EventArgs e) {
-            var p1 = new PointF(1, 1);
-            var p2 = new PointF(4, 4);
-            var p3 = new PointF(1, 3);
-            PointF result = MakeProjectionOnPolarLine(p1, p2, p3);
-            //Ожидается: (2, 2)
 
-            //p1 = new PointF(2, 9);
-            //p2 = new PointF(1, 2);
-            //p3 = new PointF(7, 4);
-            p1 = new PointF(1, 2);
-            p2 = new PointF(7, 4);
-            p3 = new PointF(2, 9);
-            PointF result2 = MakeProjectionOnPolarLine(p1, p2, p3);
-            //Ожидается: (4, 3)
-
-            Debugger.Stop();
         }
 
-        private PointF MakeProjectionOnPolarLine(in PointF p1, in PointF p2, in PointF p3) {
-            Single a = p2.X - p1.X;
-            Single b = p2.Y - p1.Y;
-            Single denominator = a * a + b * b;
-            Single numerator1 = p3.X * (p3.Y - a) - p3.Y * (b + p3.X);
-            Single numerator2 = p1.X * p2.Y - p1.Y * p2.X;
-            Single x = (b * numerator2 - a * numerator1) / denominator;
-            Single y = (a * numerator2 + b * numerator1) / -denominator;
-            return new PointF(x, y);
-        }
 
+        private void MainFormTlstrpSpltbttnPolarLine_Click(Object sender, EventArgs e) {
+            code.PolarLineEnabled = !code.PolarLineEnabled;
+        }
     }
 }
 //MainForm#46: Поменять таймер на MouseMowe

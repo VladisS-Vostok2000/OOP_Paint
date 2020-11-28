@@ -7,6 +7,7 @@ namespace OOP_Paint {
             None,
             Canselled,
             Continious,
+            Exeption,
             Finished,
 
         }

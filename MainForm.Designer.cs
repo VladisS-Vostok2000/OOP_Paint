@@ -32,6 +32,11 @@
             this.MainFormSttsstpLblMouseX = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormSttsstpLblMouseY = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormSttsstpLblMouseScreenX = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormSttsstpLblMouseScreenY = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormSttsstpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormBttnCircle = new System.Windows.Forms.Button();
             this.MainFormCmbbxBuildingVariants = new System.Windows.Forms.ComboBox();
@@ -40,11 +45,7 @@
             this.MainFormBttnSelect = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.MainFormBttnNothing = new System.Windows.Forms.Button();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.MainFormSttsstpLblMouseScreenX = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.MainFormSttsstpLblMouseScreenY = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormTlstrpSpltbttnPolarLine = new System.Windows.Forms.ToolStripSplitButton();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -91,6 +92,7 @@
             this.MainFormSttsstpLblMouseScreenX,
             this.toolStripStatusLabel5,
             this.MainFormSttsstpLblMouseScreenY,
+            this.MainFormTlstrpSpltbttnPolarLine,
             this.MainFormSttsstpLblHint});
             this.MainFormSttsstp.Location = new System.Drawing.Point(0, 428);
             this.MainFormSttsstp.Name = "MainFormSttsstp";
@@ -128,13 +130,46 @@
             this.MainFormSttsstpLblMouseY.Size = new System.Drawing.Size(29, 17);
             this.MainFormSttsstpLblMouseY.Text = "   ";
             // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
+            this.toolStripStatusLabel2.BorderStyle = System.Windows.Forms.Border3DStyle.Raised;
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(4, 17);
+            // 
+            // toolStripStatusLabel4
+            // 
+            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
+            this.toolStripStatusLabel4.Size = new System.Drawing.Size(17, 17);
+            this.toolStripStatusLabel4.Text = "X:";
+            // 
+            // MainFormSttsstpLblMouseScreenX
+            // 
+            this.MainFormSttsstpLblMouseScreenX.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MainFormSttsstpLblMouseScreenX.Name = "MainFormSttsstpLblMouseScreenX";
+            this.MainFormSttsstpLblMouseScreenX.Size = new System.Drawing.Size(29, 17);
+            this.MainFormSttsstpLblMouseScreenX.Text = "   ";
+            // 
+            // toolStripStatusLabel5
+            // 
+            this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
+            this.toolStripStatusLabel5.Size = new System.Drawing.Size(17, 17);
+            this.toolStripStatusLabel5.Text = "Y:";
+            // 
+            // MainFormSttsstpLblMouseScreenY
+            // 
+            this.MainFormSttsstpLblMouseScreenY.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MainFormSttsstpLblMouseScreenY.Name = "MainFormSttsstpLblMouseScreenY";
+            this.MainFormSttsstpLblMouseScreenY.Size = new System.Drawing.Size(29, 17);
+            this.MainFormSttsstpLblMouseScreenY.Text = "   ";
+            // 
             // MainFormSttsstpLblHint
             // 
             this.MainFormSttsstpLblHint.AutoSize = false;
             this.MainFormSttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.MainFormSttsstpLblHint.Name = "MainFormSttsstpLblHint";
             this.MainFormSttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(566, 17);
+            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(597, 17);
             this.MainFormSttsstpLblHint.Spring = true;
             this.MainFormSttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -208,38 +243,12 @@
             this.MainFormBttnNothing.UseVisualStyleBackColor = true;
             this.MainFormBttnNothing.Click += new System.EventHandler(this.MainFormBttnNothing_Click);
             // 
-            // toolStripStatusLabel2
+            // MainFormTlstrpSpltbttnPolarLine
             // 
-            this.toolStripStatusLabel2.BorderSides = System.Windows.Forms.ToolStripStatusLabelBorderSides.Left;
-            this.toolStripStatusLabel2.BorderStyle = System.Windows.Forms.Border3DStyle.Raised;
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(4, 17);
-            // 
-            // toolStripStatusLabel4
-            // 
-            this.toolStripStatusLabel4.Name = "toolStripStatusLabel4";
-            this.toolStripStatusLabel4.Size = new System.Drawing.Size(17, 17);
-            this.toolStripStatusLabel4.Text = "X:";
-            // 
-            // MainFormSttsstpLblMouseScreenX
-            // 
-            this.MainFormSttsstpLblMouseScreenX.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MainFormSttsstpLblMouseScreenX.Name = "MainFormSttsstpLblMouseScreenX";
-            this.MainFormSttsstpLblMouseScreenX.Size = new System.Drawing.Size(29, 17);
-            this.MainFormSttsstpLblMouseScreenX.Text = "   ";
-            // 
-            // toolStripStatusLabel5
-            // 
-            this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
-            this.toolStripStatusLabel5.Size = new System.Drawing.Size(17, 17);
-            this.toolStripStatusLabel5.Text = "Y:";
-            // 
-            // MainFormSttsstpLblMouseScreenY
-            // 
-            this.MainFormSttsstpLblMouseScreenY.Font = new System.Drawing.Font("Segoe Mono Boot", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.MainFormSttsstpLblMouseScreenY.Name = "MainFormSttsstpLblMouseScreenY";
-            this.MainFormSttsstpLblMouseScreenY.Size = new System.Drawing.Size(29, 17);
-            this.MainFormSttsstpLblMouseScreenY.Text = "   ";
+            this.MainFormTlstrpSpltbttnPolarLine.Image = global::OOP_Paint.Properties.Resources.PolarLineEnabled;
+            this.MainFormTlstrpSpltbttnPolarLine.Name = "MainFormTlstrpSpltbttnPolarLine";
+            this.MainFormTlstrpSpltbttnPolarLine.Size = new System.Drawing.Size(32, 20);
+            this.MainFormTlstrpSpltbttnPolarLine.Click += new System.EventHandler(this.MainFormTlstrpSpltbttnPolarLine_Click);
             // 
             // MainForm
             // 
@@ -291,6 +300,7 @@
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseScreenX;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel5;
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseScreenY;
+        private System.Windows.Forms.ToolStripSplitButton MainFormTlstrpSpltbttnPolarLine;
     }
 }
 

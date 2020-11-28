@@ -27,6 +27,7 @@ namespace OOP_Paint {
         public event BuildingMethodHandler SelectedBuildingVariantChanged;
         public event EventHandler FiguresListChanged;
         public event ConstructorOperationStatusHandler ConstructorOperationStatusChanged;
+        public event EventHandler PolarLineEnablingChanged;
         #endregion
 
         private Figure selectedTool;
@@ -79,7 +80,20 @@ namespace OOP_Paint {
         private static readonly Pen snapPen = new Pen(Color.Green, 2);
         private static readonly MyRectangle snapPoint = new MyRectangle(0, 0, 6, 6, snapPen) { IsHide = true };
         private static readonly Pen polarPen = new Pen(Color.Lime, 1) { DashStyle = DashStyle.Dash };
-        private static readonly MyRay polarLine = new MyRay(polarPen) { IsHide = true };
+        private static readonly MyRay polarLine = new MyRay(polarPen);
+
+        public bool polarLineEnabled = true;
+        public bool PolarLineEnabled {
+            set {
+                if (value != polarLineEnabled) {
+                    polarLineEnabled = value;
+                    PolarLineEnablingChanged.Invoke(this, EventArgs.Empty);
+                }
+            } 
+            get {
+                return polarLineEnabled;
+            }
+        }
 
 
 
@@ -87,13 +101,15 @@ namespace OOP_Paint {
             figuresContainer.ContainerChanged += FiguresContainer_ContainerChanged;
         }
 
+
+
         private void FiguresContainer_ContainerChanged(object sender, EventArgs e) => FiguresListChanged?.Invoke(sender, e);
-
-
+        
 
         //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationStatus += Continius)
         //!!!MainCode#01: Запретить выделение "линией"
-        public void AddSoftPoint(in PointF softPoint) {
+        /// <param name="pointOnPolar"> Должна ли точка быть спроецирована на полярной прямую </param>
+        public void AddSoftPoint(in PointF softPoint, bool pointOnPolar = true) {
             if (currConstructorStage == 0 && SelectedTool != Figure.None) {
                 return;
             }
@@ -163,8 +179,15 @@ namespace OOP_Paint {
                         case BuildingMethod.CutTwoPoints:
                             switch (currConstructorStage) {
                                 case 1:
-                                    AddPolarLine(softPoint);
-                                    (supportFigures[0] as MyCut).P2 = MakeProjectionOnPolarLine(softPoint);
+                                    PointF target = softPoint;
+                                    if (PolarLineEnabled) {
+                                        AddPolarLine(softPoint);
+                                        if (pointOnPolar) {
+                                            target = MakeProjectionOnPolarLine(softPoint);
+                                        }
+                                    }
+
+                                    (supportFigures[0] as MyCut).P2 = target;
                                     return;
                                 default: throw new Exception();
                             }
@@ -173,7 +196,9 @@ namespace OOP_Paint {
                 default: throw new NotImplementedException($"Фигура {SelectedTool} не реализована.");
             }
         }
-        public void SetPoint(Point point) {
+        /// <summary> Задаст следующую точку построения. </summary>
+        /// <param name="pointOnPolar"> Должна ли точка быть спроецирована на полярной прямую </param>
+        public void SetPoint(Point target, bool pointOnPolar = true) {
             //currSelectedFigure -> Выбор фигуры построения
             //currBuildingVariant -> Выбор варианта построения фигуры
             //currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
@@ -185,17 +210,17 @@ namespace OOP_Paint {
                         case BuildingMethod.None:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyRectangle(point.X, point.Y, point.X, point.Y, selectPen) { IsFill = true, FillColor = Color.FromArgb(50, Color.Blue) });
-                                    pointsList.Add(point);
+                                    supportFigures.Add(new MyRectangle(target.X, target.Y, target.X, target.Y, selectPen) { IsFill = true, FillColor = Color.FromArgb(50, Color.Blue) });
+                                    pointsList.Add(target);
                                     currConstructorStage++;
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                     return;
                                 case 1:
-                                    if (pointsList[0] == point) {
+                                    if (pointsList[0] == target) {
                                         return;
                                     }
 
-                                    List<MyFigure> myFigures = FindFiguresTouchesRect(pointsList[0], point);
+                                    List<MyFigure> myFigures = FindFiguresTouchesRect(pointsList[0], target);
                                     foreach (var figure in myFigures) {
                                         figure.IsSelected = true;
                                     }
@@ -212,18 +237,18 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleInRectangleByTwoDots:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyRectangle(point.X, point.Y, point.X, point.Y, supportPen));
-                                    supportFigures.Add(new MyCircle(point.X, point.Y, point.X, point.Y, supportFigurePen));
-                                    pointsList.Add(point);
+                                    supportFigures.Add(new MyRectangle(target.X, target.Y, target.X, target.Y, supportPen));
+                                    supportFigures.Add(new MyCircle(target.X, target.Y, target.X, target.Y, supportFigurePen));
+                                    pointsList.Add(target);
                                     currConstructorStage++;
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                     return;
                                 case 1:
-                                    if (pointsList[0].X == point.X || pointsList[0].Y == point.Y) {
+                                    if (pointsList[0].X == target.X || pointsList[0].Y == target.Y) {
                                         return;
                                     }
 
-                                    figuresContainer.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, point.X, point.Y, figurePen));
+                                    figuresContainer.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, target.X, target.Y, figurePen));
                                     CloseConstructor();
                                     return;
                                 default:
@@ -232,14 +257,14 @@ namespace OOP_Paint {
                         case BuildingMethod.CircleCenterRadius:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyCut(supportPen, point, point));
-                                    supportFigures.Add(new MyCircle(supportFigurePen, point, 0));
-                                    pointsList.Add(point);
+                                    supportFigures.Add(new MyCut(supportPen, target, target));
+                                    supportFigures.Add(new MyCircle(supportFigurePen, target, 0));
+                                    pointsList.Add(target);
                                     currConstructorStage++;
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
                                     return;
                                 case 1:
-                                    Single radius = MyFigure.FindLength(point, pointsList[0]);
+                                    Single radius = MyFigure.FindLength(target, pointsList[0]);
                                     if (radius == 0) {
                                         return;
                                     }
@@ -257,17 +282,17 @@ namespace OOP_Paint {
                         case BuildingMethod.RectangleTwoPoints:
                             switch (currConstructorStage) {
                                 case 0:
-                                    supportFigures.Add(new MyRectangle(point.X, point.Y, point.X, point.Y, supportPen));
-                                    pointsList.Add(point);
+                                    supportFigures.Add(new MyRectangle(target.X, target.Y, target.X, target.Y, supportPen));
+                                    pointsList.Add(target);
                                     currConstructorStage++;
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                     return;
                                 case 1:
-                                    if (pointsList[0].X == point.X || pointsList[0].Y == point.Y) {
+                                    if (pointsList[0].X == target.X || pointsList[0].Y == target.Y) {
                                         return;
                                     }
 
-                                    figuresContainer.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, point.X, point.Y, figurePen));
+                                    figuresContainer.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, target.X, target.Y, figurePen));
                                     CloseConstructor();
                                     return;
                                 default:
@@ -280,17 +305,25 @@ namespace OOP_Paint {
                         case BuildingMethod.CutTwoPoints:
                             switch (currConstructorStage) {
                                 case 0:
-                                    pointsList.Add(point);
+                                    pointsList.Add(target);
                                     supportFigures.Add(new MyCut(supportFigurePen, pointsList[0], pointsList[0]));
                                     currConstructorStage++;
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                     return;
                                 case 1:
-                                    if (pointsList[0] == point) {
+                                    if (pointsList[0] == target) {
+                                        ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Exeption, $"Предыдущая точка простроения совпадает с заданной: ({pointsList[0].X};{pointsList[1].Y}).");
                                         return;
                                     }
 
-                                    figuresContainer.Add(new MyCut(figurePen, pointsList[0], point));
+                                    PointF setPoint = target;
+                                    if (PolarLineEnabled) {
+                                        if (pointOnPolar) {
+                                        setPoint = MakeProjectionOnPolarLine(target);
+                                        }
+                                    }
+
+                                    figuresContainer.Add(new MyCut(figurePen, pointsList[0], setPoint));
                                     CloseConstructor();
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Finished, "");
                                     return;
@@ -333,7 +366,7 @@ namespace OOP_Paint {
         }
 
         /// <summary> Выстраивает полярную линию с последней точки построения в сторону данной. </summary>
-        public void AddPolarLine(in PointF vector) {
+        private void AddPolarLine(in PointF vector) {
             if (currConstructorStage == 0 || pointsList.Count == 0) {
                 throw new Exception();
             }
@@ -345,7 +378,7 @@ namespace OOP_Paint {
         }
         /// <summary> По двум точкам находит ближайшую горизонтальную, вертикальную или диагональную прямую, проходящие через первую точку. </summary>
         /// <returns> Точка, лежащая на ближайшей прямой с направлением второй точки. </returns>
-        public PointF ChoosePolarLine(in PointF p1, in PointF p2) {
+        private PointF ChoosePolarLine(in PointF p1, in PointF p2) {
             Single a = p2.X - p1.X;
             Single b = p2.Y - p1.Y;
             Single k = b / a;
@@ -392,6 +425,7 @@ namespace OOP_Paint {
 
             return MyFigure.MakePointProjectionOnLine(polarLine.Vertexes[0], polarLine.Vertexes[1], p3);
         }
+
 
         /// <summary> Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур. </summary>
         public PointF FindNearestVertex(PointF target) => FindNearestVertex(figuresContainer, target);
