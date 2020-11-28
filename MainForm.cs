@@ -22,7 +22,6 @@ using System.IO;
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
 //Projekt#32: добавить луч
-//
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
