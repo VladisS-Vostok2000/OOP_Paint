@@ -133,6 +133,21 @@ namespace OOP_Paint {
         public static Single FindLength(PointF p1, PointF p2) {
             return (Single)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
         }
+        /// <summary> Вернёт точку пересечения перпендикулярных прямых. </summary>
+        /// <param name="p1"> Первая точка первой прямой </param>
+        /// <param name="p2"> Вторая точка первой прямой </param>
+        /// <param name="p3"> Первая точка второй прямой </param>
+        /// <returns></returns>
+        public static PointF MakePointProjectionOnLine(in PointF p1, in PointF p2, in PointF p3) {
+            Single a = p2.X - p1.X;
+            Single b = p2.Y - p1.Y;
+            Single denominator = a * a + b * b;
+            Single numerator1 = p3.X * (p3.Y - a) - p3.Y * (b + p3.X);
+            Single numerator2 = p1.X * p2.Y - p1.Y * p2.X;
+            Single x = (b * numerator2 - a * numerator1) / denominator;
+            Single y = (a * numerator2 + b * numerator1) / -denominator;
+            return new PointF(x, y);
+        }
 
     }
 }

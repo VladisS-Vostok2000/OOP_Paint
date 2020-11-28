@@ -22,6 +22,7 @@ using System.IO;
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
 //Projekt#32: добавить луч
+//
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
@@ -262,26 +263,34 @@ namespace OOP_Paint {
         }
 
         private void button1_Click(Object sender, EventArgs e) {
-            var p2 = new PointF(1, 1);
-            var p3 = new PointF(4, 4);
-            var p1 = new PointF(1, 3);
+            var p1 = new PointF(1, 1);
+            var p2 = new PointF(4, 4);
+            var p3 = new PointF(1, 3);
             PointF result = MakeProjectionOnPolarLine(p1, p2, p3);
             //Ожидается: (2, 2)
-        }
-        private PointF MakeProjectionOnPolarLine(in PointF p1, in PointF p2, in PointF p3) {
-            Single x1 = p2.X;
-            Single y1 = p2.Y;
-            Single x2 = p3.X;
-            Single y2 = p3.Y;
-            Single x3 = p1.X;
-            Single y3 = p1.Y;
-            Single a = x2 - x1;
-            Single b = y2 - y1;
-            Single x = (a * b * y3 - a * a * x1 + a * x3 - b * y1 + b * b + a * a) / ((b - a) * (b + a));
-            Single y = (y3 * b * b - a * a * y1 + a * b * (x1 - x3)) / ((1 - a) * (1 + a));
-            return new PointF(x, y);
+
+            //p1 = new PointF(2, 9);
+            //p2 = new PointF(1, 2);
+            //p3 = new PointF(7, 4);
+            p1 = new PointF(1, 2);
+            p2 = new PointF(7, 4);
+            p3 = new PointF(2, 9);
+            PointF result2 = MakeProjectionOnPolarLine(p1, p2, p3);
+            //Ожидается: (4, 3)
+
+            Debugger.Stop();
         }
 
+        private PointF MakeProjectionOnPolarLine(in PointF p1, in PointF p2, in PointF p3) {
+            Single a = p2.X - p1.X;
+            Single b = p2.Y - p1.Y;
+            Single denominator = a * a + b * b;
+            Single numerator1 = p3.X * (p3.Y - a) - p3.Y * (b + p3.X);
+            Single numerator2 = p1.X * p2.Y - p1.Y * p2.X;
+            Single x = (b * numerator2 - a * numerator1) / denominator;
+            Single y = (a * numerator2 + b * numerator1) / -denominator;
+            return new PointF(x, y);
+        }
 
     }
 }

@@ -70,8 +70,9 @@ namespace OOP_Paint {
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 
+
         private static readonly Pen supportPen = new Pen(Color.Gray) { Width = 1, DashStyle = DashStyle.Dash };
-        private static readonly Pen supportFigurePen = new Pen(Color.White, 1);
+        private static readonly Pen supportFigurePen = new Pen(Color.White, 2);
         private static readonly Pen figurePen = new Pen(Color.Black);
         private static readonly Pen selectPen = new Pen(Color.White) { Width = 1, DashStyle = DashStyle.Dash };
 
@@ -163,8 +164,7 @@ namespace OOP_Paint {
                             switch (currConstructorStage) {
                                 case 1:
                                     AddPolarLine(softPoint);
-                                    PointF temp = MakeProjectionOnPolarLine(softPoint);
-                                    (supportFigures[0] as MyCut).P2 = temp;
+                                    (supportFigures[0] as MyCut).P2 = MakeProjectionOnPolarLine(softPoint);
                                     return;
                                 default: throw new Exception();
                             }
@@ -382,24 +382,15 @@ namespace OOP_Paint {
             }
 
         }
-        /// <summary> Спроецирует точку на текущую полярную линию. </summary>
-        /// <exception cref="Exception"> Полярная линия отсуствует. </exception>
-        private PointF MakeProjectionOnPolarLine(in PointF p1) {
+        /// <summary> Вернёт спроецированную точку на текущую полярную линию. </summary>
+        /// <exception cref="Exception"> Полярная линия отсуствует </exception>
+        /// <param name="p3"> Точка, выпускающая перпендикуляр </param>
+        private PointF MakeProjectionOnPolarLine(in PointF p3) {
             if (polarLine.IsHide) {
                 throw new Exception();
             }
 
-            Single x1 = polarLine.Vertexes[0].X;
-            Single y1 = polarLine.Vertexes[0].Y;
-            Single x2 = polarLine.Vertexes[1].X;
-            Single y2 = polarLine.Vertexes[1].Y;
-            Single x3 = p1.X;
-            Single y3 = p1.Y;
-            Single a = x2 - x1;
-            Single b = y2 - y1;
-            Single x = (a * b * y3 - a * a * x1 + a * x3 - b * y1 + b * b + a * a) / ((b - a) * (b + a));
-            Single y = (y3 * b * b - a * a * y1 + a * b * (x1 - x3)) / ((1 - a) * (1 + a));
-            return new PointF(x, y);
+            return MyFigure.MakePointProjectionOnLine(polarLine.Vertexes[0], polarLine.Vertexes[1], p3);
         }
 
         /// <summary> Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур. </summary>
@@ -560,9 +551,7 @@ namespace OOP_Paint {
             return rect;
         }
 
-        /// <summary>
-        /// Возвращает false, если точка лежит за пределами области
-        /// </summary>
+        /// <summary> Возвращает false, если точка лежит за пределами области. </summary>
         /// <param name="area">Замкнутый выпуклый полигон с последовательными вершинами</param>
         private Boolean IsPointInArea(PointF point, PointF[] area) {
             if (area.Length < 2) {
@@ -680,6 +669,7 @@ namespace OOP_Paint {
             currConstructorStage = 0;
             supportFigures.Clear();
             pointsList.Clear();
+            polarLine.IsHide = true;
         }
 
 
