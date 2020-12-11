@@ -7,9 +7,8 @@ namespace OOP_Paint {
             None,
             Canselled,
             Continious,
-            Exeption,
+            Exception,
             Finished,
-
         }
 
         public readonly OperationStatus Result;

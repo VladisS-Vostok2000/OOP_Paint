@@ -58,10 +58,10 @@ namespace OOP_Paint {
         /// Инициализирует вписанную в прямоугольник окружность в угол первой точки
         /// </summary>
         public void InitializeFigure(Single _x1, Single _y1, Single _x2, Single _y2) {
-            (PointF p1, PointF p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
+            (PointF p1, PointF p2) = MyGeometry.CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
             {
                 Radius = Math.Abs(p1.X - p2.X) / 2;
-                Location = FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
+                Location = MyGeometry.FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
             }
         }
         protected void InitializeFigure(PointF _center, Single _radius) {

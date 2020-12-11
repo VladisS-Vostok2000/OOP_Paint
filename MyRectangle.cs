@@ -25,7 +25,7 @@ namespace OOP_Paint {
 
         }
         public void InitializeFigure(Single _x1, Single _y1, Single _x2, Single _y2) {
-            Location = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
+            Location = MyGeometry.FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
             Width = Math.Abs(_x1 - _x2);
             Height = Math.Abs(_y1 - _y2);
         }

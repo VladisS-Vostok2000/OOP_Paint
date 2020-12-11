@@ -168,7 +168,7 @@ namespace OOP_Paint {
                             switch (currConstructorStage) {
                                 case 1:
                                     (supportFigures[0] as MyCut).P2 = softPoint;
-                                    (supportFigures[1] as MyCircle).Radius = MyFigure.FindLength(softPoint, pointsList[0]);
+                                    (supportFigures[1] as MyCircle).Radius = MyGeometry.FindLength(softPoint, pointsList[0]);
                                     return;
                                 default: throw new Exception();
                             }
@@ -264,7 +264,7 @@ namespace OOP_Paint {
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Центр: ({pointsList[0].X}, {pointsList[0].Y}). Задайте радиус.");
                                     return;
                                 case 1:
-                                    Single radius = MyFigure.FindLength(target, pointsList[0]);
+                                    Single radius = MyGeometry.FindLength(target, pointsList[0]);
                                     if (radius == 0) {
                                         return;
                                     }
@@ -312,7 +312,7 @@ namespace OOP_Paint {
                                     return;
                                 case 1:
                                     if (pointsList[0] == target) {
-                                        ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Exeption, $"Предыдущая точка простроения совпадает с заданной: ({pointsList[0].X};{pointsList[1].Y}).");
+                                        ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Exception, $"Предыдущая точка простроения совпадает с заданной: ({pointsList[0].X};{pointsList[1].Y}).");
                                         return;
                                     }
 
@@ -423,7 +423,7 @@ namespace OOP_Paint {
                 throw new Exception();
             }
 
-            return MyFigure.MakePointProjectionOnLine(polarLine.Vertexes[0], polarLine.Vertexes[1], p3);
+            return MyGeometry.MakePointProjectionOnLine(polarLine.Vertexes[0], polarLine.Vertexes[1], p3);
         }
 
 
@@ -439,7 +439,7 @@ namespace OOP_Paint {
             Boolean isOk = false;
             foreach (var figure in figures) {
                 foreach (var vetrex in figure.Vertexes) {
-                    Single distance = MyFigure.FindLength(vetrex, target);
+                    Single distance = MyGeometry.FindLength(vetrex, target);
                     if (distance <= minDistance) {
                         isOk = true;
                         minDistance = distance;
@@ -572,7 +572,7 @@ namespace OOP_Paint {
         /// в обе стороны.
         /// </summary>
         private PointF[] FindCutArea(PointF p1, PointF p2, Single interval) {
-            Single cutLength = MyFigure.FindLength(p1, p2);
+            Single cutLength = MyGeometry.FindLength(p1, p2);
             Single z = (p2.X - p1.X) * interval / cutLength;
             Single a = (p2.Y - p1.Y) * interval / cutLength;
             PointF[] rect = {

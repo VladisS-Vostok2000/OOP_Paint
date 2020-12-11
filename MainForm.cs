@@ -20,7 +20,7 @@ using System.IO;
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
-//!!!Projekt#02: Добавить статический класс MyGeometry
+//Projekt#02: Добавить статический класс MyGeometry
 //!!!Пересмотреть snap: код не должен знать о существовании привязки
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
@@ -89,7 +89,7 @@ namespace OOP_Paint {
                         PointF vetrex = code.FindNearestVertex(e.Location);
                         //Привязка считается в отображаемых пикселях
                         ConvertRealCoordToPx(vetrex, out Point vetrexPx);
-                        Single distance = MyFigure.FindLength(vetrexPx, e.Location);
+                        Single distance = MyGeometry.FindLength(vetrexPx, e.Location);
                         if (distance < snapDistancePx) {
                             Int32 x = (Int32)Math.Round(vetrex.X);
                             Int32 y = (Int32)Math.Round(vetrex.Y);
