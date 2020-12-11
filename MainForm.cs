@@ -18,7 +18,6 @@ using static OOP_Paint.Debugger;
 using System.IO;
 
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
-//Projekt#30: добавить полярные линии
 //!!!Projekt#50: добавить масштаб
 //!!!Projekt#07: добавить модификаторы in
 //!!!Projekt#02: Добавить статический класс MyGeometry
@@ -61,8 +60,6 @@ namespace OOP_Paint {
         private void MainForm_Load(Object sender, EventArgs e) {
 
         }
-
-
 
 
 
