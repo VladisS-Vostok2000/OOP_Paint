@@ -43,40 +43,32 @@ namespace OOP_Paint {
 
 
 
-        public MyCut(Color color, PointF p1, PointF p2) : base(color, VetrexesCount) {
+        public MyCut(Color color, in PointF p1, in PointF p2) : base(color, VetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(p1, p2);
         }
-        public MyCut(Pen pen, PointF p1, PointF p2) : base (pen, VetrexesCount) {
+        public MyCut(Pen pen, in PointF p1, in PointF p2) : base (pen, VetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(p1, p2);
         }
-        private void InitializeFigure(PointF p1, PointF p2) {
+        private void InitializeFigure(in PointF p1, in PointF p2) {
             this.p1 = p1;
             this.p2 = p2;
             VertexesArray[0] = p1;
             VertexesArray[1] = p2;
-            Length = FindLength(p1, p2);
+            Length = MyGeometry.FindLength(p1, p2);
             ResetLocation();
         }
 
 
 
         protected void ResetLocation() {
-            PointF location = FindLeftUpCornerCoord(P1.X, P1.Y, P2.X, P2.Y);
+            PointF location = MyGeometry.FindLeftUpCornerCoord(P1.X, P1.Y, P2.X, P2.Y);
             x = location.X;
             y = location.Y;
         }
         protected override void DrawFigure(Graphics screen, Pen pen) {
             screen.DrawLine(pen, P1, P2);
-        }
-
-
-        public void Resize(PointF p1, PointF p2) {
-            InitializeFigure(p1, p2);
-        }
-        public void Resize(Single x1, Single y1, Single x2, Single y2) {
-            InitializeFigure(new PointF(x1, y1), new PointF(x2, y2));
         }
 
     }

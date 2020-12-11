@@ -119,16 +119,16 @@ namespace OOP_Paint {
             Display();
             //Debugger.Log("Display");
         }
-        private void Display() {
-            MainFromPctrbxScreen.Image = bitmap;
-        }
-
         private void ConvertRealCoordToPx(PointF location, out Point pxLocation) {
             pxLocation = new Point {
                 X = (Int32)Math.Round(location.X),
                 Y = (Int32)Math.Round(location.Y)
             };
         }
+        private void Display() {
+            MainFromPctrbxScreen.Image = bitmap;
+        }
+
 
         private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
             Figure firgureToSelect = Figure.Circle;
@@ -153,6 +153,10 @@ namespace OOP_Paint {
         }
         private void MainFormBttnNothing_Click(Object sender, EventArgs e) {
             code.SelectedTool = Figure.None;
+        }
+
+        private void MainFormTlstrpSpltbttnPolarLine_Click(Object sender, EventArgs e) {
+            code.PolarLineEnabled = !code.PolarLineEnabled;
         }
 
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
@@ -266,14 +270,11 @@ namespace OOP_Paint {
             return out_point;
         }
 
+
         private void button1_Click(Object sender, EventArgs e) {
 
         }
 
-
-        private void MainFormTlstrpSpltbttnPolarLine_Click(Object sender, EventArgs e) {
-            code.PolarLineEnabled = !code.PolarLineEnabled;
-        }
     }
 }
 //MainForm#46: Поменять таймер на MouseMowe

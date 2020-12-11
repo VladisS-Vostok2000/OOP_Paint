@@ -92,5 +92,6 @@ namespace OOP_Paint {
 
             return out_list;
         }
+
     }
 }
