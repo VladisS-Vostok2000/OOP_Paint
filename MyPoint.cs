@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace OOP_Paint {
     public class MyPoint : MyFigure {
         private const Int32 vetrexesCount = 1;
-        public MyPoint(Single _x, Single _y, Color _color) : base(_color, vetrexesCount) {
+        public MyPoint(in Single _x, in Single _y, Color _color) : base(_color, vetrexesCount) {
             X = _x;
             Y = _y;
 

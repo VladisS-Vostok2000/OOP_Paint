@@ -48,18 +48,18 @@ namespace OOP_Paint {
 
 
 
-        protected MyFigure(Int32 vertexesCount) {
+        protected MyFigure(in Int32 vertexesCount) {
             VertexesArray = new PointF[vertexesCount];
             Vertexes = Array.AsReadOnly(VertexesArray);
 
         }
-        protected MyFigure(Pen pen, Int32 vertexesCount) : this(vertexesCount) {
+        protected MyFigure(Pen pen, in Int32 vertexesCount) : this(vertexesCount) {
             Pen = pen;
             FiguresCount++;
             Id = FiguresCount;
 
         }
-        protected MyFigure(Color color, Int32 vertexesCount) : this(new Pen(color, 1), vertexesCount) {
+        protected MyFigure(Color color, in Int32 vertexesCount) : this(new Pen(color, 1), vertexesCount) {
 
         }
 

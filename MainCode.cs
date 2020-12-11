@@ -198,7 +198,7 @@ namespace OOP_Paint {
         }
         /// <summary> Задаст следующую точку построения. </summary>
         /// <param name="pointOnPolar"> Должна ли точка быть спроецирована на полярной прямую </param>
-        public void SetPoint(Point target, bool pointOnPolar = true) {
+        public void SetPoint(in Point target, bool pointOnPolar = true) {
             //currSelectedFigure -> Выбор фигуры построения
             //currBuildingVariant -> Выбор варианта построения фигуры
             //currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
@@ -336,7 +336,7 @@ namespace OOP_Paint {
         }
 
 
-        public void SelectFigure(Int32 id) {
+        public void SelectFigure(in Int32 id) {
             for (Int32 i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i].Id == id) {
                     figuresContainer[i].IsSelected = true;
@@ -344,7 +344,7 @@ namespace OOP_Paint {
                 }
             }
         }
-        public void UnselectFigure(Int32 id) {
+        public void UnselectFigure(in Int32 id) {
             for (Int32 i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i].Id == id) {
                     figuresContainer[i].IsSelected = false;
@@ -357,7 +357,8 @@ namespace OOP_Paint {
         }
 
 
-        public void AddSnapPoint(Point location) {
+        //!!!MainCode#1:Удалить snap из кода. Он существует только для формы.
+        public void AddSnapPoint(in Point location) {
             snapPoint.Location = new Point(location.X - 3, location.Y - 3);
             snapPoint.IsHide = false;
         }
@@ -372,49 +373,11 @@ namespace OOP_Paint {
             }
 
             PointF p1 = pointsList[pointsList.Count - 1];
-            PointF p2 = ChoosePolarLine(p1, vector);
+            PointF p2 = MyGeometry.ChoosePolarLine(p1, vector);
             polarLine.InitializeFigure(p1, p2);
             polarLine.IsHide = false;
         }
-        /// <summary> По двум точкам находит ближайшую горизонтальную, вертикальную или диагональную прямую, проходящие через первую точку. </summary>
-        /// <returns> Точка, лежащая на ближайшей прямой с направлением второй точки. </returns>
-        private PointF ChoosePolarLine(in PointF p1, in PointF p2) {
-            Single a = p2.X - p1.X;
-            Single b = p2.Y - p1.Y;
-            Single k = b / a;
 
-            //Вторая точка уже лежит на прямой
-            if (k == 0 || Math.Abs(k) == 1 || Single.IsInfinity(k)) {
-                return new PointF(p1.X + a, p1.Y + b);
-            }
-
-            var p3 = new PointF(a, b);
-            Single c;
-            PointF p4;
-            //Выясняем, с какой прямой будем сравнивать
-            if (Math.Abs(k) < 1) {
-                //С горизонтальной
-                p4 = new PointF(a, 0);
-                c = p3.X;
-            }
-            else {
-                //С вертикальной
-                p4 = new PointF(0, b);
-                c = p3.Y;
-            }
-
-            Single sqrt2 = (Single)Math.Sqrt(2);
-            var p5 = new PointF(Math.Sign(a) * Math.Abs(c) / sqrt2, Math.Sign(b) * Math.Abs(c) / sqrt2);
-
-            Boolean isDiagonalCloser = Math.Abs(a * p4.X + b * p4.Y) <= a * p5.X + b * p5.Y;
-            if (isDiagonalCloser) {
-                return new PointF(p1.X + p5.X, p1.Y + p5.Y);
-            }
-            else {
-                return new PointF(p1.X + p4.X, p1.Y + p4.Y);
-            }
-
-        }
         /// <summary> Вернёт спроецированную точку на текущую полярную линию. </summary>
         /// <exception cref="Exception"> Полярная линия отсуствует </exception>
         /// <param name="p3"> Точка, выпускающая перпендикуляр </param>
@@ -428,8 +391,8 @@ namespace OOP_Paint {
 
 
         /// <summary> Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур. </summary>
-        public PointF FindNearestVertex(PointF target) => FindNearestVertex(figuresContainer, target);
-        private PointF FindNearestVertex(MyListContainer<MyFigure> figures, PointF target) {
+        public PointF FindNearestVertex(in PointF target) => FindNearestVertex(figuresContainer, target);
+        private PointF FindNearestVertex(MyListContainer<MyFigure> figures, in PointF target) {
             if (figures.Count == 0) {
                 throw new Exception();
             }
@@ -458,7 +421,7 @@ namespace OOP_Paint {
 
 
         //!!!MainCode#45: добавить выделение прямоугольника и круга
-        private List<MyFigure> FindFiguresTouchesRect(Point p1, Point p2) {
+        private List<MyFigure> FindFiguresTouchesRect(in Point p1, in Point p2) {
             var outlist = new List<MyFigure>();
 
             //Все грани выделяющего прямоугольника
@@ -473,14 +436,14 @@ namespace OOP_Paint {
                 if (figure is MyCut) {
                     var myCut = figure as MyCut;
                     for (Int32 i = 0; i < selectRectLinePoints.GetLength(0); i++) {
-                        Boolean isParallel = IsParallel(myCut.P1, myCut.P2, selectRectLinePoints[i, 0], selectRectLinePoints[i, 1]);
+                        Boolean isParallel = MyGeometry.AreLinesParallel(myCut.P1, myCut.P2, selectRectLinePoints[i, 0], selectRectLinePoints[i, 1]);
                         if (isParallel) {
                             continue;
                         }
 
-                        PointF crossPoint = FindCross(myCut.P1, myCut.P2, selectRectLinePoints[i, 0], selectRectLinePoints[i, 1]);
+                        PointF crossPoint = MyGeometry.FindCross(myCut.P1, myCut.P2, selectRectLinePoints[i, 0], selectRectLinePoints[i, 1]);
                         //Отрезки пересекаются, если точка пересечения прямых, чрез них проходящих, принадлежит им обоим.
-                        Boolean isTouches = CheckIsPointInCut(myCut.P1, myCut.P2, crossPoint) && CheckIsPointInCut(selectRectLinePoints[i, 0], selectRectLinePoints[i, 1], crossPoint);
+                        Boolean isTouches = MyGeometry.CheckIsPointOnCut(myCut.P1, myCut.P2, crossPoint) && MyGeometry.CheckIsPointOnCut(selectRectLinePoints[i, 0], selectRectLinePoints[i, 1], crossPoint);
                         if (isTouches) {
                             outlist.Add(figure);
                             break;
@@ -491,73 +454,19 @@ namespace OOP_Paint {
 
             return outlist;
         }
-        private PointF FindCross(PointF p1, PointF p2, PointF p3, PointF p4) {
-            //параллельны/что-то совпадает
-            Boolean isParallel = IsParallel(p1, p2, p3, p4);
-            if (isParallel) {
-                throw new Exception();
-            }
-
-            Single y = ((p4.X * p3.Y - p3.X * p4.Y) * (p1.Y - p2.Y) - (p3.Y - p4.Y) * (p2.X * p1.Y - p1.X * p2.Y)) / ((p3.Y - p4.Y) * (p1.X - p2.X) + (p4.X - p3.X) * (p1.Y - p2.Y));
-            Single x;
-            if (p1.Y - p2.Y == 0) {
-                x = (y * (p3.X - p4.X) + (p4.X * p3.Y - p3.X * p4.Y)) / (p3.Y - p4.Y);
-            }
-            else {
-                x = (y * (p1.X - p2.X) + (p2.X * p1.Y - p1.X * p2.Y)) / (p1.Y - p2.Y);
-            }
-
-            return new PointF(x, y);
-        }
-
-        /// <summary> Определяет параллельность/коллинеарность отрезков </summary>
-        private Boolean IsParallel(PointF p1, PointF p2, PointF p3, PointF p4) {
-            //Если отношения смещений на клетку х и у двух отрезков по модулю равны, то они параллельны (k коэфф один)
-            //И по свойству пропорции:
-            if (Math.Abs((p1.X - p2.X) * (p3.Y - p4.Y)) == Math.Abs((p1.Y - p2.Y) * (p3.X - p4.X))) {
-                return true;
-            }
-
-            return false;
-        }
-        private Boolean CheckIsPointInCut(PointF cutP1, PointF cutP2, PointF target) {
-            Boolean isInLine = CheckIsPointInLine(cutP1, cutP2, target);
-            if (!isInLine) {
-                return false;
-            }
-
-            return target.X <= Math.Max(cutP1.X, cutP2.X) && target.X >= Math.Min(cutP1.X, cutP2.X);
-        }
-        private Boolean CheckIsPointInLine(PointF cutP1, PointF cutP2, PointF target) {
-            #region Человеческий вид
-            //float a = p2.X - p1.X;
-            //float b = p2.Y - p1.Y;
-            //float c = target.X - p1.X;
-            //float d = target.X - p1.X;
-
-            //int e = Math.Sign(a * d - b * c);
-            //if (e != 0) {
-            //    return false;
-            //}
-            #endregion
-
-            return ((cutP2.X - cutP1.X) * (target.Y - cutP1.Y) - (cutP2.Y - cutP1.Y) * (target.X - cutP1.X)) == 0;
-        }
-
-
         /// <summary>
         /// Находит все фигуры на заданном от цели расстоянии
         /// </summary>
         /// <returns>
         /// Целочисленный массив с индексами figures
         /// </returns>
-        private List<Int32> FindFiguresNearPoint(PointF target, Single interval = 5) {
+        private List<Int32> FindFiguresNearPoint(in PointF target, in Single interval = 5) {
             var outlist = new List<Int32>();
             for (Int32 i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i] is MyCut) {
                     var cut = figuresContainer[i] as MyCut;
-                    PointF[] area = FindCutArea(cut.P1, cut.P2, interval);
-                    Boolean isInArea = IsPointInArea(target, area);
+                    PointF[] area = MyGeometry.FindCutArea(cut.P1, cut.P2, interval);
+                    Boolean isInArea = MyGeometry.IsPointInArea(target, area);
                     if (isInArea) {
                         outlist.Add(i);
                     }
@@ -565,136 +474,6 @@ namespace OOP_Paint {
             }
 
             return outlist;
-        }
-
-        /// <summary>
-        /// Возвращает последовательные вершины прямоугольника, образованного "перпендикулярным" сдвигом отрезка на интервал
-        /// в обе стороны.
-        /// </summary>
-        private PointF[] FindCutArea(PointF p1, PointF p2, Single interval) {
-            Single cutLength = MyGeometry.FindLength(p1, p2);
-            Single z = (p2.X - p1.X) * interval / cutLength;
-            Single a = (p2.Y - p1.Y) * interval / cutLength;
-            PointF[] rect = {
-                new PointF(p1.X - a, p1.Y + z),
-                new PointF(p1.X + a, p1.Y - z),
-                new PointF(p2.X + a, p2.Y - z),
-                new PointF(p2.X - a, p2.Y + z),
-            };
-
-            return rect;
-        }
-
-        /// <summary> Возвращает false, если точка лежит за пределами области. </summary>
-        /// <param name="area">Замкнутый выпуклый полигон с последовательными вершинами</param>
-        private Boolean IsPointInArea(PointF point, PointF[] area) {
-            if (area.Length < 2) {
-                throw new Exception();
-            }
-            //Такое уже включает в себя проверка
-            foreach (var apex in area) {
-                if (apex == point) {
-                    return true;
-                }
-            }
-
-            //Здесь можно проще: как-то через бинарный поиск
-            //По-моему, тут цикл на 2 можно увеличить и подключить процентик
-            Int32 last = area.Length - 1;
-            Int32 prelast = area.Length - 2;
-            Single a = area[last].X - area[prelast].X;
-            Single b = area[last].Y - area[prelast].Y;
-
-            Single c = area[0].X - area[prelast].X;
-            Single d = area[0].Y - area[prelast].Y;
-
-            Single e = point.X - area[prelast].X;
-            Single f = point.Y - area[prelast].Y;
-
-            Boolean isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
-            if (!isOk) {
-                return false;
-            }
-
-            a = area[0].X - area[last].X;
-            b = area[0].Y - area[last].Y;
-
-            c = area[1].X - area[last].X;
-            d = area[1].Y - area[last].Y;
-
-            e = point.X - area[last].X;
-            f = point.Y - area[last].Y;
-
-            isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
-            if (!isOk) {
-                return false;
-            }
-
-            for (Int32 i = 0; i < area.Length - 2; i++) {
-                //Основная сторона
-                a = area[i + 1].X - area[i].X;
-                b = area[i + 1].Y - area[i].Y;
-                //Внутренняя сторона
-                c = area[i + 2].X - area[i].X;
-                d = area[i + 2].Y - area[i].Y;
-                //Вектор от стороны к точке
-                e = point.X - area[i].X;
-                f = point.Y - area[i].Y;
-
-                //Вращение стороны к следующей стороне (всегда вовнутрь) должно быть равно этому же вращению стороны к вектору
-                isOk = Math.Sign(a * d - b * c) == Math.Sign(a * f - b * e);
-                if (!isOk) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
-        /// Находит, выше (1) точка прямой, лежит на ней (0) или ниже (-1). Если прямая вертикальна или координаты её точек идентичны - exeption.
-        /// </summary>
-        /// <param name="p1">
-        /// Координаты первой точки прямой
-        /// </param>
-        /// <param name="p2">
-        /// Коордианы второй точки прямой</param>
-        /// <param name="p3">
-        /// Координаты точки
-        /// </param>
-        private Int32 IsPointOverLine(in PointF p1, in PointF p2, in PointF p3) {
-            #region Неоптимальный способ
-            //return point.Y > ((point.X - p1.X) * (p2.Y - p1.Y) + point.Y * (p2.X - p1.X))/(p2.X - p1.X);
-            #endregion
-
-            //Если точки совпадают или прямая вертикальна
-            if (p1.X == p2.X) {
-                throw new Exception();
-            }
-
-            #region Человеческий вид
-            //Single a = p2.X - p1.X;
-            //Single b = -p2.Y - -p1.Y;
-            //Single c = p3.X - p1.X;
-            //Single d = -p3.Y - -p1.Y;
-
-            //Int32 e = Math.Sign(a * d - b * c);
-
-            //if (a > 0) {
-            //    return e;
-            //}
-            //else {
-            //    return -e;
-            //}
-            #endregion
-
-            Single a = p2.X - p1.X;
-            if (a > 0) {
-                return Math.Sign((-a * (p3.Y - p1.Y)) + (p2.Y - p1.Y) * (p3.X - p1.X));
-            }
-            else {
-                return -Math.Sign((-a * (p3.Y - p1.Y)) + (p2.Y - p1.Y) * (p3.X - p1.X));
-            }
         }
 
 
