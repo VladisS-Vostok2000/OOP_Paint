@@ -8,17 +8,18 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyPoint : MyFigure {
-        private const int vetrexesCount = 1;
-        public MyPoint(float _x, float _y, Color _color) : base(_color, vetrexesCount) {
-            X = _x;
-            Y = _y;
 
+
+
+        public MyPoint(float x, float y, Color color) : base(color) {
+            X = x;
+            Y = y;
         }
 
 
 
-        protected override void DrawFigure(Graphics _screen, Pen _pen) {
-            _screen.DrawEllipse(_pen, X, Y, 2, 2);
+        protected override void DrawFigure(Graphics screen, Pen pen) {
+            screen.DrawEllipse(pen, X, Y, 2, 2);
         }
 
     }

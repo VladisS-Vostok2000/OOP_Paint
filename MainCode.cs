@@ -89,7 +89,7 @@ namespace OOP_Paint {
                     polarLineEnabled = value;
                     PolarLineEnablingChanged.Invoke(this, EventArgs.Empty);
                 }
-            } 
+            }
             get {
                 return polarLineEnabled;
             }
@@ -104,7 +104,7 @@ namespace OOP_Paint {
 
 
         private void FiguresContainer_ContainerChanged(object sender, EventArgs e) => FiguresListChanged?.Invoke(sender, e);
-        
+
 
         //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationStatus += Continius)
         //!!!MainCode#01: Запретить выделение "линией"
@@ -319,7 +319,7 @@ namespace OOP_Paint {
                                     PointF setPoint = target;
                                     if (PolarLineEnabled) {
                                         if (pointOnPolar) {
-                                        setPoint = MakeProjectionOnPolarLine(target);
+                                            setPoint = MakeProjectionOnPolarLine(target);
                                         }
                                     }
 
@@ -385,7 +385,7 @@ namespace OOP_Paint {
                 throw new Exception();
             }
 
-            return MyGeometry.MakePointProjectionOnLine(polarLine.Vertexes[0], polarLine.Vertexes[1], p3);
+            return MyGeometry.MakePointProjectionOnLine(polarLine.P1, polarLine.P2, p3);
         }
 
 
@@ -400,12 +400,14 @@ namespace OOP_Paint {
             PointF outvertex = new PointF(0, 0);
             bool isOk = false;
             foreach (var figure in figures) {
-                foreach (var vetrex in figure.Vertexes) {
-                    float distance = MyGeometry.FindLengthBetweenPoints(vetrex, target);
-                    if (distance <= minDistance) {
-                        isOk = true;
-                        minDistance = distance;
-                        outvertex = vetrex;
+                if (figure is MyPoligon polygon) {
+                    foreach (var vetrex in polygon.Vertexes) {
+                        float distance = MyGeometry.FindLengthBetweenPoints(vetrex, target);
+                        if (distance <= minDistance) {
+                            isOk = true;
+                            minDistance = distance;
+                            outvertex = vetrex;
+                        }
                     }
                 }
             }
