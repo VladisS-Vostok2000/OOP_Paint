@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using static OOP_Paint.FiguresEnum;
 namespace OOP_Paint {
     public abstract class MyFigure : IDisposable {
-        //!!!MyFigure#01: рефакторинг конструкторов: изменить порядок параметров и убрать задание через "color".
         public static int FiguresCount = 0;
         public int Id { private set; get; } = 0;
 

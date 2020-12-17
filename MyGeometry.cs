@@ -18,7 +18,6 @@ using static OOP_Paint.Debugger;
 using System.IO;
 
 namespace OOP_Paint {
-    //MyGeometry#01: инкапсулировать FindArea в MyPoligon : MyFigure
     public static class MyGeometry {
         /// <summary> По двум точкам находит ближайшую горизонтальную, вертикальную или диагональную прямую, проходящие через первую точку. </summary>
         /// <returns> Точка, лежащая на ближайшей прямой с направлением второй точки. </returns>
