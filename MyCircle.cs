@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyCircle : MyFigure {
-        private const Int32 vetrexesCount = 0;
-        protected Single radius;
-        public Single Radius {
+        private const int vetrexesCount = 0;
+        protected float radius;
+        public float Radius {
             set {
                 if (value != radius) {
                     X += Radius - value;
@@ -37,44 +37,44 @@ namespace OOP_Paint {
         /// <summary>
         /// Ограничивающий прямоугольник
         /// </summary>
-        public MyCircle(Single _x1, Single _y1, Single _x2, Single _y2, Pen _pen) : base(_pen, vetrexesCount) {
+        public MyCircle(float _x1, float _y1, float _x2, float _y2, Pen _pen) : base(_pen, vetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
         }
         /// <summary>
         /// Ограничивающий прямоугольник
         /// </summary>
-        public MyCircle(Single _x1, Single _y1, Single _x2, Single _y2, Color _color) : base(_color, vetrexesCount) {
+        public MyCircle(float _x1, float _y1, float _x2, float _y2, Color _color) : base(_color, vetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
         }
         /// <summary>
         /// Центр, радиус
         /// </summary>
-        public MyCircle(Pen _pen, Point _center, Single _radius) : base(_pen, vetrexesCount) {
+        public MyCircle(Pen _pen, Point _center, float _radius) : base(_pen, vetrexesCount) {
             InitializeFigure(_center, _radius);
         }
         /// <summary>
         /// Инициализирует вписанную в прямоугольник окружность в угол первой точки
         /// </summary>
-        public void InitializeFigure(Single _x1, Single _y1, Single _x2, Single _y2) {
-            (PointF p1, PointF p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
+        public void InitializeFigure(float _x1, float _y1, float _x2, float _y2) {
+            (PointF p1, PointF p2) = MyGeometry.CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
             {
                 Radius = Math.Abs(p1.X - p2.X) / 2;
-                Location = FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
+                Location = MyGeometry.FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
             }
         }
-        protected void InitializeFigure(PointF _center, Single _radius) {
+        protected void InitializeFigure(PointF _center, float _radius) {
             Radius = _radius;
             Center = _center;
         }
 
 
-        public void Resize(Single _x1, Single _y1, Single _x2, Single _y2) {
+        public void Resize(float _x1, float _y1, float _x2, float _y2) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
         }
-        public void Resize(PointF _center, Single _radius) {
+        public void Resize(PointF _center, float _radius) {
             //???Повторяющийся код
             InitializeFigure(
                 _center,

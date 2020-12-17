@@ -27,12 +27,11 @@ namespace OOP_Paint {
             CircleCenterRadius,
             RectangleTwoPoints,
             CutTwoPoints
-
         }
 
 
 
-        public static String GetDescription(this BuildingMethod _bm) {
+        public static string GetDescription(this BuildingMethod _bm) {
             switch (_bm) {
                 case BuildingMethod.None: return "";
                 case BuildingMethod.CircleCenterRadius: return "Центр, радиус.";
@@ -43,7 +42,7 @@ namespace OOP_Paint {
             }
 
         }
-        public static String GetDescription(this Figure _figure) {
+        public static string GetDescription(this Figure _figure) {
             switch (_figure) {
                 case Figure.None: return "";
                 case Figure.Circle: return "Окружность";
@@ -53,7 +52,7 @@ namespace OOP_Paint {
             }
 
         }
-        public static String GetDescription(MyFigure _myFigure) {
+        public static string GetDescription(MyFigure _myFigure) {
             //???Всё-таки мне пригодился конвертер. Смотрится не очень. Стоит ли внедрить
             //FiguresEnum в MyFigure?
             if (_myFigure is MyCircle) {

@@ -19,7 +19,7 @@ namespace OOP_Paint {
     public class MyListContainer<T> {
         private readonly List<T> list = new List<T>();
 
-        public Int32 Count { private set; get; } = 0;
+        public int Count { private set; get; } = 0;
 
         public event EventHandler ContainerChanged;
 
@@ -31,7 +31,7 @@ namespace OOP_Paint {
 
 
 
-        public T this[Int32 index] {
+        public T this[int index] {
             set => list[index] = value;
             get => list[index];
         }
@@ -57,10 +57,10 @@ namespace OOP_Paint {
 
 
         #region xml
-        public void ToXml(String filename) {
+        public void ToXml(string filename) {
             XmlWriter writer = XmlWriter.Create(filename);
         }
-        public void FromXml(String filename) {
+        public void FromXml(string filename) {
             XmlReader reader = XmlReader.Create(filename);
         }
         #endregion

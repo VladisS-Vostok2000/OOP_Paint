@@ -15,8 +15,8 @@ using static OOP_Paint.FiguresEnum;
 
 namespace OOP_Paint {
     public sealed class ListBoxFigure {
-        public String DisplayMember { get; }
-        public Int32 Id { get; }
+        public string DisplayMember { get; }
+        public int Id { get; }
 
 
 

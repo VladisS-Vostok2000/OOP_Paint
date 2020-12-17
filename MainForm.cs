@@ -26,8 +26,8 @@ using System.IO;
 namespace OOP_Paint {
     //!!!MainForm#20: добавить плавающие контролы
     public sealed partial class MainForm : Form {
-        private Int32 scale = 1;
-        private readonly Int32 snapDistancePx = 10;
+        private int scale = 1;
+        private readonly int snapDistancePx = 10;
 
         private readonly Bitmap bitmap;
         private readonly Graphics screen;
@@ -58,15 +58,13 @@ namespace OOP_Paint {
             MainFormLstbxFigures.DisplayMember = "DisplayMember";
             MainFormLstbxFigures.ValueMember = "Id";
         }
-        private void MainForm_Load(Object sender, EventArgs e) {
+        private void MainForm_Load(object sender, EventArgs e) {
 
         }
 
 
 
-
-
-        private void MainFromPctrbxScreen_MouseDown(Object sender, MouseEventArgs e) {
+        private void MainFromPctrbxScreen_MouseDown(object sender, MouseEventArgs e) {
             //MainFormTmr.Stop();
             if (code.SelectedTool == Figure.Select) {
                 //MainFormTmr.Enabled = true;
@@ -74,7 +72,7 @@ namespace OOP_Paint {
             }
             //MainFormTmr.Start();
         }
-        private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
+        private void MainFormPctrbxScreen_MouseMove(object sender, MouseEventArgs e) {
             Point mouseLocation = e.Location;
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
@@ -87,15 +85,15 @@ namespace OOP_Paint {
             }
             else {
                 if (e.Button == MouseButtons.None) {
-                    Int32 figCount = code.GetFiguresCount();
+                    int figCount = code.GetFiguresCount();
                     if (figCount != 0) {
                         PointF vetrex = code.FindNearestVertex(e.Location);
                         //Привязка считается в отображаемых пикселях
                         ConvertRealCoordToPx(vetrex, out Point vetrexPx);
-                        Single distance = MyFigure.FindLength(vetrexPx, e.Location);
+                        float distance = MyGeometry.FindLengthBetweenPoints(vetrexPx, e.Location);
                         if (distance < snapDistancePx) {
-                            Int32 x = (Int32)Math.Round(vetrex.X);
-                            Int32 y = (Int32)Math.Round(vetrex.Y);
+                            int x = (int)Math.Round(vetrex.X);
+                            int y = (int)Math.Round(vetrex.Y);
                             Point point = ControlPointToScreen(new Point(x, y), MainFromPctrbxScreen);
                             myCursor.DoSnap(point);
                             //У кода - координаты реальные. 
@@ -109,7 +107,7 @@ namespace OOP_Paint {
 
 
         }
-        private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
+        private void MainFromPctrbxScreen_MouseUp(object sender, MouseEventArgs e) {
             //За пределами экрана
             if (e.X > (sender as PictureBox).Width || e.X < 0 ||
                 e.Y > (sender as PictureBox).Height || e.Y < 0) {
@@ -118,7 +116,7 @@ namespace OOP_Paint {
 
             code.SetPoint(e.Location);
         }
-        private void MainFormTmr_Tick(Object sender, EventArgs e) {
+        private void MainFormTmr_Tick(object sender, EventArgs e) {
             code.DrawFigures(screen);
             Display();
             //Debugger.Log("Display");
@@ -127,14 +125,14 @@ namespace OOP_Paint {
             MainFromPctrbxScreen.Image = bitmap;
         }
 
-        private void ConvertRealCoordToPx(PointF location, out Point pxLocation) {
+        private void ConvertRealCoordToPx(in PointF location, out Point pxLocation) {
             pxLocation = new Point {
-                X = (Int32)Math.Round(location.X),
-                Y = (Int32)Math.Round(location.Y)
+                X = (int)Math.Round(location.X),
+                Y = (int)Math.Round(location.Y)
             };
         }
 
-        private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
+        private void MainFormBttnCircle_Click(object sender, EventArgs e) {
             Figure firgureToSelect = Figure.Circle;
             code.SelectedTool = firgureToSelect;
 
@@ -144,33 +142,33 @@ namespace OOP_Paint {
             MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
 
         }
-        private void MainFormBttnRectangle_Click(Object sender, EventArgs e) {
+        private void MainFormBttnRectangle_Click(object sender, EventArgs e) {
             code.SelectedTool = Figure.Rectangle;
             MainFormSttsstpLblHint.Text = "Прямоугольник. Выберете первую точку";
         }
-        private void MainFormBttnCut_Click(Object sender, EventArgs e) {
+        private void MainFormBttnCut_Click(object sender, EventArgs e) {
             code.SelectedTool = Figure.Cut;
             MainFormSttsstpLblHint.Text = "Отрезок. Выберете первую точку";
         }
-        private void MainFormBttnSelect_Click(Object sender, EventArgs e) {
+        private void MainFormBttnSelect_Click(object sender, EventArgs e) {
             code.SelectedTool = Figure.Select;
         }
-        private void MainFormBttnNothing_Click(Object sender, EventArgs e) {
+        private void MainFormBttnNothing_Click(object sender, EventArgs e) {
             code.SelectedTool = Figure.None;
         }
 
-        private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
+        private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(object sender, EventArgs e) {
             code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
         }
-        private void MainFormLstbxFigures_SelectedIndexChanged(Object sender, EventArgs e) {
+        private void MainFormLstbxFigures_SelectedIndexChanged(object sender, EventArgs e) {
             //Мы не можем знать, снялось выделение или появилось, таким образом нужно снять выделения
             //со всех фигур и задать их заново
-            Int32 figuresCount = code.GetFiguresCount();
-            for (Int32 i = 0; i < figuresCount; i++) {
+            int figuresCount = code.GetFiguresCount();
+            for (int i = 0; i < figuresCount; i++) {
                 code.UnselectFigure(((sender as ListBox).Items[0] as ListBoxFigure).Id);
             }
 
-            foreach (Int32 index in (sender as ListBox).SelectedIndices) {
+            foreach (int index in (sender as ListBox).SelectedIndices) {
                 code.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
             }
 
@@ -183,14 +181,14 @@ namespace OOP_Paint {
             List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(value);
             MainFormCmbbxBuildingVariants.Items.Clear();
             var cbm = new ComboboxBuildingMethod[pbm.Count];
-            for (Int32 i = 0; i < pbm.Count; i++) {
+            for (int i = 0; i < pbm.Count; i++) {
                 cbm[i] = new ComboboxBuildingMethod(pbm[i]);
             }
             MainFormCmbbxBuildingVariants.Items.AddRange(cbm);
         }
         //!!!MainForm#42.1: выделение нескольких элементов некорректно работает
         private void Code_SelectedBuildingMethod_Changed(BuildingMethod value, EventArgs e) {
-            for (Int32 i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
+            for (int i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
                 if ((MainFormCmbbxBuildingVariants.Items[i] as ComboboxBuildingMethod).BuildingMethod == value) {
                     MainFormCmbbxBuildingVariants.SelectedIndex = i;
                     break;
@@ -200,9 +198,9 @@ namespace OOP_Paint {
         }
         //!!!MainForm#42: исправить в соответствии с возможностью выбрать несколько элементов
         private void Code_FiguresList_Changed(object sender, EventArgs e) {
-            Int32 currListSelectedIndex = MainFormLstbxFigures.SelectedIndex;
-            Boolean wasSmnSelected = currListSelectedIndex != -1;
-            Int32 currListSelectedItemId = -1;
+            int currListSelectedIndex = MainFormLstbxFigures.SelectedIndex;
+            bool wasSmnSelected = currListSelectedIndex != -1;
+            int currListSelectedItemId = -1;
             if (wasSmnSelected) {
                 currListSelectedItemId = (MainFormLstbxFigures.SelectedItem as ListBoxFigure).Id;
             }
@@ -210,15 +208,15 @@ namespace OOP_Paint {
             MainFormLstbxFigures.Items.Clear();
             var figuresToListboxList = new List<ListBoxFigure>();
             var figuresList = sender as MyListContainer<MyFigure>;
-            for (Int32 i = 0; i < figuresList.Count; i++) {
+            for (int i = 0; i < figuresList.Count; i++) {
                 figuresToListboxList.Add(
                     new ListBoxFigure(figuresList[i]));
             }
             MainFormLstbxFigures.Items.AddRange(figuresToListboxList.ToArray());
 
             if (wasSmnSelected) {
-                Int32 listBoxItemToSelectIndex = -1;
-                for (Int32 i = 0; i < MainFormLstbxFigures.Items.Count; i++) {
+                int listBoxItemToSelectIndex = -1;
+                for (int i = 0; i < MainFormLstbxFigures.Items.Count; i++) {
                     if ((MainFormLstbxFigures.Items[i] as ListBoxFigure).Id == currListSelectedItemId) {
                         listBoxItemToSelectIndex = i;
                         break;
@@ -246,12 +244,12 @@ namespace OOP_Paint {
                 MainFormSttsstpLblHint.Text = "Успешно.";
             }
         }
-        private void MyCursor_SnapTorned(Object sender, EventArgs e) {
+        private void MyCursor_SnapTorned(object sender, EventArgs e) {
             code.RemoveSnapPoint();
         }
         //???Вот в дефолтных ивентах названия PolarLineEnablingChanged или PolarLineEnabling_Changed?
         //Потому что всегда выдаёт имя ивента в методе без земли.
-        private void Code_PolarLineEnabling_Changed(Object sender, EventArgs e) {
+        private void Code_PolarLineEnabling_Changed(object sender, EventArgs e) {
             if ((sender as MainCode).PolarLineEnabled) {
                 this.MainFormTlstrpSpltbttnPolarLine.Image = global::OOP_Paint.Properties.Resources.PolarLineEnabled;
             }
@@ -270,12 +268,12 @@ namespace OOP_Paint {
             return out_point;
         }
 
-        private void button1_Click(Object sender, EventArgs e) {
+        private void button1_Click(object sender, EventArgs e) {
 
         }
 
 
-        private void MainFormTlstrpSpltbttnPolarLine_Click(Object sender, EventArgs e) {
+        private void MainFormTlstrpSpltbttnPolarLine_Click(object sender, EventArgs e) {
             code.PolarLineEnabled = !code.PolarLineEnabled;
         }
     }

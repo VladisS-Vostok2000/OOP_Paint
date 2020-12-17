@@ -8,30 +8,30 @@ using System.Threading.Tasks;
 
 namespace OOP_Paint {
     public class MyRectangle : MyFigure {
-        private const Int32 vetrexesCount = 4;
-        public Single Width { set; get; }
-        public Single Height { set; get; }
+        private const int vetrexesCount = 4;
+        public float Width { set; get; }
+        public float Height { set; get; }
 
 
 
-        public MyRectangle(Single _x1, Single _y1, Single _x2, Single _y2, Pen _pen) : base(_pen, vetrexesCount) {
+        public MyRectangle(in float _x1, in float _y1, in float _x2, in float _y2, Pen _pen) : base(_pen, vetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
-        public MyRectangle(Single _x1, Single _y1, Single _x2, Single _y2, Color _color) : base(_color, vetrexesCount) {
+        public MyRectangle(in float _x1, in float _y1, in float _x2, in float _y2, Color _color) : base(_color, vetrexesCount) {
             //???Повторяющийся код
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }
-        public void InitializeFigure(Single _x1, Single _y1, Single _x2, Single _y2) {
-            Location = FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
+        public void InitializeFigure(in float _x1, in float _y1, in float _x2, in float _y2) {
+            Location = MyGeometry.FindLeftUpCornerCoord(_x1, _y1, _x2, _y2);
             Width = Math.Abs(_x1 - _x2);
             Height = Math.Abs(_y1 - _y2);
         }
 
 
-        public void Resize(Single _x1, Single _y1, Single _x2, Single _y2) {
+        public void Resize(in float _x1, in float _y1, in float _x2, in float _y2) {
             InitializeFigure(_x1, _y1, _x2, _y2);
 
         }

@@ -24,7 +24,7 @@ namespace OOP_Paint {
 
 
 
-        public static void Log(String log) {
+        public static void Log(string log) {
             streamWriter.Write(log + "\r\n");
         }
         public static void Stop() {

@@ -8,15 +8,15 @@ using System.Windows.Forms;
 
 namespace OOP_Paint {
     public sealed class MyCursor {
-        public Boolean IsSnapped { get; set; }
+        public bool IsSnapped { get; set; }
         private Point SnapLocation;
-        public Int32 SnapDistance { get; set; }
-        private Int32 cumulateX;
-        private Int32 cumulateY;
+        public int SnapDistance { get; set; }
+        private int cumulateX;
+        private int cumulateY;
 
 
 
-        public MyCursor(Int32 snapDistance) {
+        public MyCursor(int snapDistance) {
             SnapDistance = snapDistance;
         }
 

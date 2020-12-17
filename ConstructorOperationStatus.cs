@@ -13,26 +13,26 @@ namespace OOP_Paint {
         }
 
         public readonly OperationStatus Result;
-        public readonly String OperationMessage;
+        public readonly string OperationMessage;
 
 
 
-        public static Boolean operator ==(ConstructorOperationStatus c1, ConstructorOperationStatus c2) {
+        public static bool operator ==(ConstructorOperationStatus c1, ConstructorOperationStatus c2) {
             return c1.Result == c2.Result && c1.OperationMessage == c2.OperationMessage;
         }
-        public static Boolean operator !=(ConstructorOperationStatus c1, ConstructorOperationStatus c2) {
+        public static bool operator !=(ConstructorOperationStatus c1, ConstructorOperationStatus c2) {
             return c1.Result != c2.Result || c1.OperationMessage != c2.OperationMessage;
         }
-        public override Boolean Equals(Object obj) {
+        public override bool Equals(object obj) {
             return obj != null && GetType().Equals(obj.GetType()) && this == (ConstructorOperationStatus)obj;
         }
-        public override Int32 GetHashCode() {
+        public override int GetHashCode() {
             return base.GetHashCode();
         }
 
 
 
-        public ConstructorOperationStatus(OperationStatus _result, String _message) {
+        public ConstructorOperationStatus(OperationStatus _result, string _message) {
             Result = _result;
             OperationMessage = _message;
         }
