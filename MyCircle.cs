@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Paint {
+namespace CAD_Client {
     public class MyCircle : MyFigure {
         private const int vetrexesCount = 0;
         protected float radius;

@@ -8,8 +8,8 @@ using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using static OOP_Paint.FiguresEnum;
-namespace OOP_Paint {
+using static CAD_Client.ToolEnum;
+namespace CAD_Client {
     public abstract class MyFigure : IDisposable {
         public static int FiguresCount = 0;
         public int Id { private set; get; } = 0;
@@ -82,7 +82,7 @@ namespace OOP_Paint {
 
 
         public string GetDescription() {
-            return FiguresEnum.GetDescription(this);
+            return ToolEnum.GetDescription(this);
         }
 
     }

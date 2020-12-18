@@ -13,36 +13,40 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
-using static OOP_Paint.Debugger;
+using static CAD_Client.ToolEnum;
+using static CAD_Client.Debugger;
 using System.IO;
 
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
 //!!!Projekt#50: добавить масштаб
 //Projekt#40: добавить перемещение
 //!!!Пересмотреть snap: код не должен знать о существовании привязки
-namespace OOP_Paint {
+namespace CAD_Client {
     //!!!MainForm#20: добавить плавающие контролы
-    public sealed partial class MainForm : Form {
+    public sealed partial class GUI_Form : Form {
         private int scale = 1;
         private readonly int snapDistancePx = 10;
+        private readonly int gridSizePx = 25;
+        private int screenX;
+        private int screenY;
+        private readonly Pen gridPen = new Pen(Color.DarkGray, 1);
 
         private readonly Bitmap bitmap;
         private readonly Graphics screen;
-        private readonly MainCode code;
+        private readonly MyClient code;
         private readonly MyCursor myCursor;
 
 
 
-        public MainForm(MainCode code) {
-            Debugger.Log("Start");
-            this.code = code;
-
+        public GUI_Form(MyClient code) {
             InitializeComponent();
 
+            this.code = code;
             bitmap = new Bitmap(496, 290);
             screen = Graphics.FromImage(bitmap);
-            myCursor = new MyCursor(snapDistancePx);
+            myCursor = new MyCursor();
+            screenX = bitmap.Size.Width / 2;
+            screenY = bitmap.Size.Height / 2;
 
             this.code.SelectedToolChanged += Code_SelectedTool_Changed;
             this.code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
@@ -62,24 +66,28 @@ namespace OOP_Paint {
 
 
 
+        #region Работа с экраном
         private void MainFromPctrbxScreen_MouseDown(object sender, MouseEventArgs e) {
-            //MainFormTmr.Stop();
-            if (code.SelectedTool == Figure.Select) {
-                //MainFormTmr.Enabled = true;
+            if (code.SelectedTool == Tool.Select) {
                 code.SetPoint(e.Location);
             }
-            //MainFormTmr.Start();
+            else
+            if (code.SelectedTool == Tool.Moving && e.Button == MouseButtons.Middle) {
+                myCursor.DoSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen), int.MaxValue);
+            }
         }
         private void MainFormPctrbxScreen_MouseMove(object sender, MouseEventArgs e) {
             Point mouseLocation = e.Location;
-            MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
-            MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
 
             code.AddSoftPoint(e.Location);
 
             #region Snap
             if (myCursor.IsSnapped) {
                 myCursor.ContinueSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen));
+                if (code.SelectedTool == Tool.Moving) {
+                    screenX += myCursor.Cumulate.X;
+                    screenY += myCursor.Cumulate.Y;
+                }
             }
             else {
                 if (e.Button == MouseButtons.None) {
@@ -93,7 +101,7 @@ namespace OOP_Paint {
                             int x = (int)Math.Round(vetrex.X);
                             int y = (int)Math.Round(vetrex.Y);
                             Point point = ControlPointToScreen(new Point(x, y), MainFromPctrbxScreen);
-                            myCursor.DoSnap(point);
+                            myCursor.DoSnap(point, snapDistancePx);
                             //У кода - координаты реальные. 
                             code.AddSnapPoint(new Point(x, y));
                         }
@@ -103,7 +111,8 @@ namespace OOP_Paint {
             }
             #endregion
 
-
+            MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
+            MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
         }
         private void MainFromPctrbxScreen_MouseUp(object sender, MouseEventArgs e) {
             //За пределами экрана
@@ -112,12 +121,33 @@ namespace OOP_Paint {
                 return;
             }
 
+            if (code.SelectedTool == Tool.Moving) {
+                myCursor.StopSnap();
+            }
+
             code.SetPoint(e.Location);
         }
+
         private void MainFormTmr_Tick(object sender, EventArgs e) {
             code.DrawFigures(screen);
+            DrawGrid();
             Display();
             //Debugger.Log("Display");
+        }
+        /// <summary>
+        /// Нарисует сетку на экране с центром координат в (0; 0).
+        /// </summary>
+        private void DrawGrid() {
+            //Вертикальные
+            Point delta = new Point(screenX % gridSizePx, screenY % gridSizePx);
+            for (int i = gridSizePx - delta.X; i < bitmap.Width; i+=gridSizePx) {
+                screen.DrawLine(gridPen, i, 0, i, bitmap.Height);
+            }
+
+            //Горизонтальные
+            for (int i = gridSizePx - delta.Y; i < bitmap.Height; i+=gridSizePx) {
+                screen.DrawLine(gridPen, 0, i, bitmap.Width, i);
+            }
         }
         private void Display() {
             MainFromPctrbxScreen.Image = bitmap;
@@ -129,9 +159,11 @@ namespace OOP_Paint {
                 Y = (int)Math.Round(location.Y)
             };
         }
+        #endregion
 
+        #region Кнопки
         private void MainFormBttnCircle_Click(object sender, EventArgs e) {
-            Figure firgureToSelect = Figure.Circle;
+            Tool firgureToSelect = Tool.Circle;
             code.SelectedTool = firgureToSelect;
 
             //Это, наверное, всё же лучше запихуть в Code в этой реализации, т.к.
@@ -141,18 +173,18 @@ namespace OOP_Paint {
 
         }
         private void MainFormBttnRectangle_Click(object sender, EventArgs e) {
-            code.SelectedTool = Figure.Rectangle;
+            code.SelectedTool = Tool.Rectangle;
             MainFormSttsstpLblHint.Text = "Прямоугольник. Выберете первую точку";
         }
         private void MainFormBttnCut_Click(object sender, EventArgs e) {
-            code.SelectedTool = Figure.Cut;
+            code.SelectedTool = Tool.Cut;
             MainFormSttsstpLblHint.Text = "Отрезок. Выберете первую точку";
         }
         private void MainFormBttnSelect_Click(object sender, EventArgs e) {
-            code.SelectedTool = Figure.Select;
+            code.SelectedTool = Tool.Select;
         }
         private void MainFormBttnNothing_Click(object sender, EventArgs e) {
-            code.SelectedTool = Figure.None;
+            code.SelectedTool = Tool.None;
         }
 
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(object sender, EventArgs e) {
@@ -172,10 +204,14 @@ namespace OOP_Paint {
 
             code.DrawFigures(screen);
         }
-
+        
+        private void MainFormTlstrpSpltbttnPolarLine_Click(object sender, EventArgs e) {
+            code.PolarLineEnabled = !code.PolarLineEnabled;
+        }
+        #endregion
 
         #region API
-        private void Code_SelectedTool_Changed(Figure value, EventArgs e) {
+        private void Code_SelectedTool_Changed(Tool value, EventArgs e) {
             List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(value);
             MainFormCmbbxBuildingVariants.Items.Clear();
             var cbm = new ComboboxBuildingMethod[pbm.Count];
@@ -248,11 +284,11 @@ namespace OOP_Paint {
         //???Вот в дефолтных ивентах названия PolarLineEnablingChanged или PolarLineEnabling_Changed?
         //Потому что всегда выдаёт имя ивента в методе без земли.
         private void Code_PolarLineEnabling_Changed(object sender, EventArgs e) {
-            if ((sender as MainCode).PolarLineEnabled) {
-                this.MainFormTlstrpSpltbttnPolarLine.Image = global::OOP_Paint.Properties.Resources.PolarLineEnabled;
+            if ((sender as MyClient).PolarLineEnabled) {
+                this.MainFormTlstrpSpltbttnPolarLine.Image = global::CAD_Client.Properties.Resources.PolarLineEnabled;
             }
             else {
-                this.MainFormTlstrpSpltbttnPolarLine.Image = global::OOP_Paint.Properties.Resources.PolarLineDisabled;
+                this.MainFormTlstrpSpltbttnPolarLine.Image = global::CAD_Client.Properties.Resources.PolarLineDisabled;
             }
         }
         #endregion
@@ -266,13 +302,14 @@ namespace OOP_Paint {
             return out_point;
         }
 
-        private void button1_Click(object sender, EventArgs e) {
 
+        private void button1_Click(object sender, EventArgs e) {
+            screenX += 2;
+            screenY += 2;
         }
 
-
-        private void MainFormTlstrpSpltbttnPolarLine_Click(object sender, EventArgs e) {
-            code.PolarLineEnabled = !code.PolarLineEnabled;
+        private void MainFormBttnMove_Click(object sender, EventArgs e) {
+            code.SelectedTool = Tool.Moving;
         }
     }
 }

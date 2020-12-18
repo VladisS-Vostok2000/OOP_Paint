@@ -13,11 +13,11 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
-using static OOP_Paint.Debugger;
+using static CAD_Client.ToolEnum;
+using static CAD_Client.Debugger;
 using System.IO;
 
-namespace OOP_Paint {
+namespace CAD_Client {
     public static class Debugger {
         private static FileStream fileStream = new FileStream(@"C:\OOP_PaintLog.log", FileMode.Create);
         private static StreamWriter streamWriter = new StreamWriter(fileStream);

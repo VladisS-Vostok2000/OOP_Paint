@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Paint {
+namespace CAD_Client {
     public class MyRectangle : MyPoligon {
         private const int vetrexesCount = 4;
         public float Width { set; get; }

@@ -11,8 +11,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
-namespace OOP_Paint {
+using static CAD_Client.ToolEnum;
+namespace CAD_Client {
     public sealed class ComboboxBuildingMethod {
         public readonly BuildingMethod BuildingMethod;
         public string DisplayMember { get; }

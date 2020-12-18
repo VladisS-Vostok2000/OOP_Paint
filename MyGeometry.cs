@@ -13,11 +13,11 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
-using static OOP_Paint.Debugger;
+using static CAD_Client.ToolEnum;
+using static CAD_Client.Debugger;
 using System.IO;
 
-namespace OOP_Paint {
+namespace CAD_Client {
     public static class MyGeometry {
         /// <summary> По двум точкам находит ближайшую горизонтальную, вертикальную или диагональную прямую, проходящие через первую точку. </summary>
         /// <returns> Точка, лежащая на ближайшей прямой с направлением второй точки. </returns>

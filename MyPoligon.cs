@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Paint {
+namespace CAD_Client {
     public class MyPoligon : MyFigure {
         public IReadOnlyList<PointF> Vertexes { get; }
         protected readonly PointF[] VertexesArray;

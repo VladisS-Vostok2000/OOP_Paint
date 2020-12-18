@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace OOP_Paint.Properties {
+namespace CAD_Client.Properties {
     using System;
     
     

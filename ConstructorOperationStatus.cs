@@ -1,7 +1,7 @@
 ﻿using System;
 
 
-namespace OOP_Paint {
+namespace CAD_Client {
     public readonly struct ConstructorOperationStatus {
         public enum OperationStatus {
             None,

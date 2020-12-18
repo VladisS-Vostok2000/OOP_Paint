@@ -11,9 +11,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
+using static CAD_Client.ToolEnum;
 
-namespace OOP_Paint {
+namespace CAD_Client {
     public sealed class ListBoxFigure {
         public string DisplayMember { get; }
         public int Id { get; }

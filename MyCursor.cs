@@ -6,60 +6,66 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace OOP_Paint {
+namespace CAD_Client {
     public sealed class MyCursor {
-        public bool IsSnapped { get; set; }
-        private Point SnapLocation;
-        public int SnapDistance { get; set; }
-        private int cumulateX;
-        private int cumulateY;
-
-
-
-        public MyCursor(int snapDistance) {
-            SnapDistance = snapDistance;
-        }
+        public bool IsSnapped { private set; get; }
+        public Point SnapLocation { private set; get; }
+        public int SnapDistance { private set; get; }
+        public Point Cumulate { private set; get; }
 
 
 
         public event EventHandler SnapTorned;
 
 
+        /// <summary>
+        /// Привязывает курсор к заданной экранной координате.
+        /// </summary>
+        /// <param name="target"></param>
+        public void DoSnap(Point target, int snapDistance) {
+            if (IsSnapped) {
+                StopSnap();
+            } else {
+                IsSnapped = true;
+            }
 
-        public void DoSnap(Point target) {
-            IsSnapped = true;
             SnapLocation = target;
+            SnapDistance = snapDistance;
             Cursor.Position = target;
-            Debugger.Log($"SnapCreated: ({target.X};{target.Y})");
-            Debugger.Log($"Mouse new Location: ({Cursor.Position.X};{Cursor.Position.Y})");
         }
+        /// <summary>
+        /// Вернёт курсор на <see cref="SnapLocation"/>. Смещение мыши будет записано в <see cref="Cumulate"/>.
+        /// </summary>
+        /// <param name="target"></param>
         public void ContinueSnap(Point target) {
             if (!IsSnapped) {
                 throw new Exception();
             }
-            Debugger.Log("SnapContinue");
-            Debugger.Log($"Snap cumulateX: {cumulateX}");
-            Debugger.Log($"Snap cumulateY: {cumulateY}");
-            Debugger.Log($"MouseLocation: ({Cursor.Position.X};{Cursor.Position.Y})");
-            cumulateX += SnapLocation.X - target.X;
-            cumulateY += SnapLocation.Y - target.Y;
-            Debugger.Log($"Snap cumulateX now: {cumulateX}");
-            Debugger.Log($"Snap cumulateY now: {cumulateY}");
-            Cursor.Position = SnapLocation;
-            Debugger.Log($"Mouse new Location: ({Cursor.Position.X};{Cursor.Position.Y})");
 
-            if (Math.Abs(cumulateX) > SnapDistance || Math.Abs(cumulateY) > SnapDistance) {
+            //???Попался на Structure - evil. Если мы изменяем поле структуры, она неявно создаётся и присваивается сама себе с новым полем?
+            Cumulate = new Point(Cumulate.X + SnapLocation.X - target.X, Cumulate.Y + SnapLocation.Y - target.Y);
+            Cursor.Position = SnapLocation;
+
+            if (Math.Abs(Cumulate.X) > SnapDistance || Math.Abs(Cumulate.Y) > SnapDistance) {
                 StopSnap();
             }
         }
-
-
-        public void StopSnap() {
+        /// <summary>
+        /// Очистит данные от предыдущей привязки.
+        /// </summary>
+        private void ClearSnap() {
+            Cumulate = new Point();
+        }
+        /// <summary>
+        /// Разрывает привязку курсора.
+        /// </summary>
+        /// <param name="jumpCumulate"> Следует ли курсору переместиться на накопленные координаты смещения. </param>
+        public void StopSnap(bool jumpCumulate = true) {
             IsSnapped = false;
-            Cursor.Position = new Point(Cursor.Position.X - cumulateX, Cursor.Position.Y - cumulateY);
-            cumulateX = 0;
-            cumulateY = 0;
-            Debugger.Log($"Snap torned\r\n");
+            if (jumpCumulate == true) {
+                Cursor.Position = new Point(Cursor.Position.X - Cumulate.X, Cursor.Position.Y - Cumulate.Y);
+            }
+            ClearSnap();
             SnapTorned.Invoke(this, EventArgs.Empty);
         }
 

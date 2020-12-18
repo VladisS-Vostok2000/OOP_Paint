@@ -13,9 +13,9 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
+using static CAD_Client.ToolEnum;
 
-namespace OOP_Paint {
+namespace CAD_Client {
     public class MyListContainer<T> {
         private readonly List<T> list = new List<T>();
 

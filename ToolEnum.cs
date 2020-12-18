@@ -8,10 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace OOP_Paint {
-    public static class FiguresEnum {
-        public enum Figure {
+namespace CAD_Client {
+    public static class ToolEnum {
+        public enum Tool {
             None,
+            Moving,
             Select,
             Cut,
             Circle,
@@ -42,12 +43,12 @@ namespace OOP_Paint {
             }
 
         }
-        public static string GetDescription(this Figure _figure) {
+        public static string GetDescription(this Tool _figure) {
             switch (_figure) {
-                case Figure.None: return "";
-                case Figure.Circle: return "Окружность";
-                case Figure.Rectangle: return "Прямоугольник";
-                case Figure.Cut: return "Отрезок";
+                case Tool.None: return "";
+                case Tool.Circle: return "Окружность";
+                case Tool.Rectangle: return "Прямоугольник";
+                case Tool.Cut: return "Отрезок";
                 default: throw new Exception($"Для фигуры {_figure} не реализовано описание.");
             }
 
@@ -56,34 +57,33 @@ namespace OOP_Paint {
             //???Всё-таки мне пригодился конвертер. Смотрится не очень. Стоит ли внедрить
             //FiguresEnum в MyFigure?
             if (_myFigure is MyCircle) {
-                return Figure.Circle.GetDescription();
+                return Tool.Circle.GetDescription();
             }
             else
             if (_myFigure is MyRectangle) {
-                return Figure.Rectangle.GetDescription();
+                return Tool.Rectangle.GetDescription();
             }
             else if (_myFigure is MyCut) {
-                return Figure.Cut.GetDescription();
+                return Tool.Cut.GetDescription();
             }
             else throw new Exception($"Для фигуры {_myFigure} не реализовано описание");
         }
-        public static List<BuildingMethod> ReturnPossibleBuildingVariants(Figure _figure) {
+        public static List<BuildingMethod> ReturnPossibleBuildingVariants(Tool _figure) {
             var out_list = new List<BuildingMethod>();
             switch (_figure) {
-                case Figure.None:
+                case Tool.None:
+                case Tool.Select:
+                case Tool.Moving:
                     out_list.Add(BuildingMethod.None);
                     break;
-                case Figure.Select:
-                    out_list.Add(BuildingMethod.None);
-                    break;
-                case Figure.Circle:
+                case Tool.Circle:
                     out_list.Add(BuildingMethod.CircleInRectangleByTwoDots);
                     out_list.Add(BuildingMethod.CircleCenterRadius);
                     break;
-                case Figure.Rectangle:
+                case Tool.Rectangle:
                     out_list.Add(BuildingMethod.RectangleTwoPoints);
                     break;
-                case Figure.Cut:
+                case Tool.Cut:
                     out_list.Add(BuildingMethod.CutTwoPoints);
                     break;
                 default: throw new Exception($"Для фигуры {_figure} не реализованы варианты построения.");

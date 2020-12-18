@@ -13,13 +13,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
+using static CAD_Client.ToolEnum;
 
-//!!MainCode#20: переименовать перечисления-названия фигур в инструменты
-namespace OOP_Paint {
-    public sealed class MainCode {
+//!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
+namespace CAD_Client {
+    
+    public sealed class MyClient {
         public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
-        public delegate void FigureHandler(Figure figure, EventArgs e);
+        public delegate void FigureHandler(Tool figure, EventArgs e);
         public delegate void ConstructorOperationStatusHandler(ConstructorOperationStatus ConstructorOperationStatus, EventArgs e);
 
         #region API
@@ -30,8 +31,8 @@ namespace OOP_Paint {
         public event EventHandler PolarLineEnablingChanged;
         #endregion
 
-        private Figure selectedTool;
-        public Figure SelectedTool {
+        private Tool selectedTool;
+        public Tool SelectedTool {
             set {
                 if (selectedTool != value) {
                     CloseConstructor();
@@ -97,7 +98,7 @@ namespace OOP_Paint {
 
 
 
-        public MainCode() {
+        public MyClient() {
             figuresContainer.ContainerChanged += FiguresContainer_ContainerChanged;
         }
 
@@ -106,11 +107,11 @@ namespace OOP_Paint {
         private void FiguresContainer_ContainerChanged(object sender, EventArgs e) => FiguresListChanged?.Invoke(sender, e);
 
 
-        //!!!MainCode#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationStatus += Continius)
-        //!!!MainCode#01: Запретить выделение "линией"
-        /// <param name="pointOnPolar"> Должна ли точка быть спроецирована на полярной прямую </param>
+        //!!!MyClient#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationStatus += Continius)
+        //!!!MyClient#01: Запретить выделение "линией"
+        /// <param name="pointOnPolar"> Должна ли введённая точка быть спроецирована на ближайщую полярной прямую. </param>
         public void AddSoftPoint(in PointF softPoint, bool pointOnPolar = true) {
-            if (currConstructorStage == 0 && SelectedTool != Figure.None) {
+            if (currConstructorStage == 0 && SelectedTool != Tool.None) {
                 return;
             }
 
@@ -118,7 +119,7 @@ namespace OOP_Paint {
             ///currBuildingVariant -> Выбор варианта построения фигуры
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             switch (SelectedTool) {
-                case Figure.None:
+                case Tool.None:
                     foreach (var figure in figuresContainer) {
                         figure.IsHightLighed = false;
                     }
@@ -128,7 +129,7 @@ namespace OOP_Paint {
                         figuresContainer[indexes[i]].IsHightLighed = true;
                     }
                     return;
-                case Figure.Select:
+                case Tool.Select:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.None:
                             switch (currConstructorStage) {
@@ -142,7 +143,7 @@ namespace OOP_Paint {
                             }
                         default: throw new Exception($"Фигура {SelectedTool} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
                     }
-                case Figure.Rectangle:
+                case Tool.Rectangle:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.RectangleTwoPoints:
                             switch (currConstructorStage) {
@@ -153,7 +154,7 @@ namespace OOP_Paint {
                             }
                         default: throw new Exception($"Фигура {SelectedTool} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
                     }
-                case Figure.Circle:
+                case Tool.Circle:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.CircleInRectangleByTwoDots:
                             switch (currConstructorStage) {
@@ -174,7 +175,7 @@ namespace OOP_Paint {
                             }
                         default: throw new Exception($"Фигура {SelectedTool} выбрана, но вариант построения {SelectedBuildingMethod} не реализован.");
                     }
-                case Figure.Cut:
+                case Tool.Cut:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.CutTwoPoints:
                             switch (currConstructorStage) {
@@ -203,9 +204,9 @@ namespace OOP_Paint {
             //currBuildingVariant -> Выбор варианта построения фигуры
             //currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             switch (SelectedTool) {
-                case Figure.None:
+                case Tool.None:
                     return;
-                case Figure.Select:
+                case Tool.Select:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.None:
                             switch (currConstructorStage) {
@@ -232,7 +233,7 @@ namespace OOP_Paint {
                             }
                         default: throw new Exception($"Фигура {SelectedTool} выбрана, но не задан вариант построения.");
                     }
-                case Figure.Circle:
+                case Tool.Circle:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.CircleInRectangleByTwoDots:
                             switch (currConstructorStage) {
@@ -277,7 +278,7 @@ namespace OOP_Paint {
                             }
                         default: throw new Exception($"Фигура {SelectedTool} выбрана, но не задан вариант построения.");
                     }
-                case Figure.Rectangle:
+                case Tool.Rectangle:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.RectangleTwoPoints:
                             switch (currConstructorStage) {
@@ -300,7 +301,7 @@ namespace OOP_Paint {
                             }
                         default: throw new Exception($"Фигура {SelectedTool} выбрана, но не задан вариант построения.");
                     }
-                case Figure.Cut:
+                case Tool.Cut:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.CutTwoPoints:
                             switch (currConstructorStage) {
@@ -331,7 +332,17 @@ namespace OOP_Paint {
                             }
                         default: throw new Exception($"Фигура {SelectedTool} выбрана, но не задан вариант построения.");
                     }
-                default: throw new NotImplementedException($"Фигура {SelectedTool} не реализована.");
+                case Tool.Moving:
+                    switch (SelectedBuildingMethod) {
+                        case BuildingMethod.None:
+                            switch(currConstructorStage) {
+                                case 0:
+                                    return;
+                                default: throw new Exception();
+                            }
+                        default: throw new Exception($"Фигура {SelectedTool} выбрана, но не задан вариант построения.");
+                    }
+                default: throw new NotImplementedException($"Для фигуры {SelectedTool} нет построения.");
             }
         }
 
@@ -356,7 +367,7 @@ namespace OOP_Paint {
             return figuresContainer.Count;
         }
 
-
+        //MyClient#41: вычленить SnapPoint из MainCode
         public void AddSnapPoint(in Point location) {
             snapPoint.Location = new Point(location.X - 3, location.Y - 3);
             snapPoint.IsHide = false;
@@ -400,6 +411,10 @@ namespace OOP_Paint {
             PointF outvertex = new PointF(0, 0);
             bool isOk = false;
             foreach (var figure in figures) {
+                if (figure is MyCut cut) {
+
+                }
+                else
                 if (figure is MyPoligon polygon) {
                     foreach (var vetrex in polygon.Vertexes) {
                         float distance = MyGeometry.FindLengthBetweenPoints(vetrex, target);
@@ -421,8 +436,8 @@ namespace OOP_Paint {
         }
 
 
-        //!!!MainCode#45: добавить выделение прямоугольника и круга
-        //!!!MainCode#07: расчленить FindFiguresTouchesRect на MyGeomtry и MainCode
+        //!!!MyClient#45: добавить выделение прямоугольника и круга
+        //!!!MyClient#07: расчленить FindFiguresTouchesRect на MyGeomtry и MainCode
         private List<MyFigure> FindFiguresTouchesRect(in Point p1, in Point p2) {
             var outlist = new List<MyFigure>();
 
@@ -504,5 +519,5 @@ namespace OOP_Paint {
 
     }
 }
-//MainCode#84: сделать static многие из методов
+//MyClient#84: сделать static многие из методов
 //[Closed]: нет причин для этого, метод примет слишком много параметров. Класс по определению подходит здесь.

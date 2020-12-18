@@ -12,9 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
+using static CAD_Client.ToolEnum;
 
-namespace OOP_Paint {
+namespace CAD_Client {
     public class MyCut : MyFigure{
         private const int VetrexesCount = 2;
         private PointF p1;
@@ -43,19 +43,17 @@ namespace OOP_Paint {
 
 
 
-        public MyCut(Color color, PointF p1, PointF p2) : base(color, VetrexesCount) {
+        public MyCut(Color color, PointF p1, PointF p2) : base(color) {
             //???Повторяющийся код
             InitializeFigure(p1, p2);
         }
-        public MyCut(Pen pen, PointF p1, PointF p2) : base (pen, VetrexesCount) {
+        public MyCut(Pen pen, PointF p1, PointF p2) : base (pen) {
             //???Повторяющийся код
             InitializeFigure(p1, p2);
         }
         private void InitializeFigure(PointF p1, PointF p2) {
             this.p1 = p1;
             this.p2 = p2;
-            VertexesArray[0] = p1;
-            VertexesArray[1] = p2;
             Length = MyGeometry.FindLengthBetweenPoints(p1, p2);
             ResetLocation();
         }
