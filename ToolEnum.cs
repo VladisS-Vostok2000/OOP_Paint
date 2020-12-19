@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CAD_Client {
-    public static class ToolEnum {
-        public enum Tool {
+    internal static class ToolEnum {
+        internal enum Tool {
             None,
             Moving,
             Select,
@@ -21,7 +21,7 @@ namespace CAD_Client {
 
         //???Если у меня неизбежно фигуры и методы отделены, зачем дифференцировать 
         //методы построения по фигурам?
-        public enum BuildingMethod {
+        internal enum BuildingMethod {
             None,
             Point,
             CircleInRectangleByTwoDots,
@@ -32,7 +32,7 @@ namespace CAD_Client {
 
 
 
-        public static string GetDescription(this BuildingMethod _bm) {
+        internal static string GetDescription(this BuildingMethod _bm) {
             switch (_bm) {
                 case BuildingMethod.None: return "";
                 case BuildingMethod.CircleCenterRadius: return "Центр, радиус.";
@@ -43,7 +43,7 @@ namespace CAD_Client {
             }
 
         }
-        public static string GetDescription(this Tool _figure) {
+        internal static string GetDescription(this Tool _figure) {
             switch (_figure) {
                 case Tool.None: return "";
                 case Tool.Circle: return "Окружность";
@@ -53,7 +53,7 @@ namespace CAD_Client {
             }
 
         }
-        public static string GetDescription(MyFigure _myFigure) {
+        internal static string GetDescription(MyFigure _myFigure) {
             //???Всё-таки мне пригодился конвертер. Смотрится не очень. Стоит ли внедрить
             //FiguresEnum в MyFigure?
             if (_myFigure is MyCircle) {
@@ -68,7 +68,7 @@ namespace CAD_Client {
             }
             else throw new Exception($"Для фигуры {_myFigure} не реализовано описание");
         }
-        public static List<BuildingMethod> ReturnPossibleBuildingVariants(Tool _figure) {
+        internal static List<BuildingMethod> ReturnPossibleBuildingVariants(Tool _figure) {
             var out_list = new List<BuildingMethod>();
             switch (_figure) {
                 case Tool.None:

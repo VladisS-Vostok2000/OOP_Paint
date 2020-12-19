@@ -18,20 +18,20 @@ using static CAD_Client.ToolEnum;
 //!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
 namespace CAD_Client {
 
-    public sealed class MyClient {
-        public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
-        public delegate void FigureHandler(Tool figure, EventArgs e);
-        public delegate void ConstructorOperationStatusHandler(ConstructorOperationStatus ConstructorOperationStatus, EventArgs e);
+    internal sealed class MyClient {
+        internal delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
+        internal delegate void FigureHandler(Tool figure, EventArgs e);
+        internal delegate void ConstructorOperationStatusHandler(ConstructorOperationStatus ConstructorOperationStatus, EventArgs e);
         #region API
-        public event FigureHandler SelectedToolChanged;
-        public event BuildingMethodHandler SelectedBuildingVariantChanged;
-        public event EventHandler FiguresListChanged;
-        public event ConstructorOperationStatusHandler ConstructorOperationStatusChanged;
-        public event EventHandler PolarLineEnablingChanged;
+        internal event FigureHandler SelectedToolChanged;
+        internal event BuildingMethodHandler SelectedBuildingVariantChanged;
+        internal event EventHandler FiguresListChanged;
+        internal event ConstructorOperationStatusHandler ConstructorOperationStatusChanged;
+        internal event EventHandler PolarLineEnablingChanged;
         #endregion
 
         private Tool selectedTool;
-        public Tool SelectedTool {
+        internal Tool SelectedTool {
             set {
                 if (selectedTool != value) {
                     CloseConstructor();
@@ -44,7 +44,7 @@ namespace CAD_Client {
             get => selectedTool;
         }
         private BuildingMethod selectedBuildingMethod;
-        public BuildingMethod SelectedBuildingMethod {
+        internal BuildingMethod SelectedBuildingMethod {
             set {
                 if (selectedBuildingMethod != value) {
                     selectedBuildingMethod = value;
@@ -55,7 +55,7 @@ namespace CAD_Client {
             get => selectedBuildingMethod;
         }
         private ConstructorOperationStatus constructorOperationStatus;
-        public ConstructorOperationStatus ConstructorOperationStatus {
+        internal ConstructorOperationStatus ConstructorOperationStatus {
             set {
                 if (constructorOperationStatus != value) {
                     constructorOperationStatus = value;
@@ -67,7 +67,7 @@ namespace CAD_Client {
         private int currConstructorStage = 0;
 
 
-        public readonly MyListContainer<MyFigure> figuresContainer = new MyListContainer<MyFigure>();
+        internal readonly MyListContainer<MyFigure> figuresContainer = new MyListContainer<MyFigure>();
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 
@@ -82,8 +82,8 @@ namespace CAD_Client {
         private static readonly Pen polarPen = new Pen(Color.Lime, 1) { DashStyle = DashStyle.Dash };
         private static readonly MyRay polarLine = new MyRay(polarPen);
 
-        public bool polarLineEnabled = true;
-        public bool PolarLineEnabled {
+        internal bool polarLineEnabled = true;
+        internal bool PolarLineEnabled {
             set {
                 if (value != polarLineEnabled) {
                     polarLineEnabled = value;
@@ -97,7 +97,7 @@ namespace CAD_Client {
 
 
 
-        public MyClient() {
+        internal MyClient() {
             figuresContainer.ContainerChanged += FiguresContainer_ContainerChanged;
         }
 
@@ -109,7 +109,7 @@ namespace CAD_Client {
         //!!!MyClient#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationStatus += Continius)
         //!!!MyClient#01: Запретить выделение "линией"
         /// <param name="pointOnPolar"> Должна ли введённая точка быть спроецирована на ближайщую полярной прямую. </param>
-        public void AddSoftPoint(in PointF softPoint, bool pointOnPolar = true) {
+        internal void AddSoftPoint(in PointF softPoint, bool pointOnPolar = true) {
             if (currConstructorStage == 0 && SelectedTool != Tool.None) {
                 return;
             }
@@ -198,7 +198,7 @@ namespace CAD_Client {
         }
         /// <summary> Задаст следующую точку построения. </summary>
         /// <param name="pointOnPolar"> Должна ли точка быть спроецирована на полярной прямую </param>
-        public void SetPoint(in Point target, bool pointOnPolar = true) {
+        internal void SetPoint(in Point target, bool pointOnPolar = true) {
             //currSelectedFigure -> Выбор фигуры построения
             //currBuildingVariant -> Выбор варианта построения фигуры
             //currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
@@ -346,7 +346,7 @@ namespace CAD_Client {
         }
 
 
-        public void SelectFigure(in int id) {
+        internal void SelectFigure(in int id) {
             for (int i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i].Id == id) {
                     figuresContainer[i].IsSelected = true;
@@ -354,7 +354,7 @@ namespace CAD_Client {
                 }
             }
         }
-        public void UnselectFigure(in int id) {
+        internal void UnselectFigure(in int id) {
             for (int i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i].Id == id) {
                     figuresContainer[i].IsSelected = false;
@@ -362,16 +362,16 @@ namespace CAD_Client {
                 }
             }
         }
-        public int GetFiguresCount() {
+        internal int GetFiguresCount() {
             return figuresContainer.Count;
         }
 
         ////MyClient#41: вычленить SnapPoint из MainCode
-        //public void AddSnapPoint(in Point location) {
+        //internal void AddSnapPoint(in Point location) {
         //    snapPoint.Location = new Point(location.X - 3, location.Y - 3);
         //    snapPoint.IsHide = false;
         //}
-        //public void RemoveSnapPoint() {
+        //internal void RemoveSnapPoint() {
         //    snapPoint.IsHide = true;
         //}
 
@@ -404,13 +404,13 @@ namespace CAD_Client {
         /// </summary>
         /// <exception cref="Exception"> Лист пуст. </exception>
         /// <exception cref="ArgumentNullException"> Лист null. </exception>
-        public PointF FindNearestVertex(in PointF target) => FindNearestVertex(figuresContainer, target);
+        internal PointF FindNearestVertex(in PointF target) => FindNearestVertex(figuresContainer, target);
         /// <summary>
         /// Вернёт координаты ближайшей к точке вершины фигуры.
         /// </summary>
         /// <exception cref="Exception"> Лист пуст. </exception>
         /// <exception cref="ArgumentNullException"> Лист null. </exception>
-        public PointF FindNearestVertex(MyListContainer<MyFigure> figures, PointF target) {
+        internal PointF FindNearestVertex(MyListContainer<MyFigure> figures, PointF target) {
             if (figures == null) {
                 throw new ArgumentNullException();
             }
@@ -541,19 +541,6 @@ namespace CAD_Client {
             supportFigures.Clear();
             pointsList.Clear();
             polarLine.IsHide = true;
-        }
-
-        //MyClient#42: инкапсулировать прорисовку в "MyScreen"
-        public void DrawFigures(Graphics screen) {
-            screen.Clear(Color.FromArgb(250, 64, 64, 64));
-            foreach (var figure in figuresContainer) {
-                figure.Draw(screen);
-            }
-            foreach (var figure in supportFigures) {
-                figure.Draw(screen);
-            }
-            //snapPoint.Draw(screen);
-            polarLine.Draw(screen);
         }
 
     }

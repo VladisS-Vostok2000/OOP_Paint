@@ -18,10 +18,10 @@ using static CAD_Client.Debugger;
 using System.IO;
 
 namespace CAD_Client {
-    public static class MyGeometry {
+    internal static class MyGeometry {
         /// <summary> По двум точкам находит ближайшую горизонтальную, вертикальную или диагональную прямую, проходящие через первую точку. </summary>
         /// <returns> Точка, лежащая на ближайшей прямой с направлением второй точки. </returns>
-        public static PointF DirectToPolarLine(in PointF p1, in PointF p2) {
+        internal static PointF DirectToPolarLine(in PointF p1, in PointF p2) {
             float a = p2.X - p1.X;
             float b = p2.Y - p1.Y;
             float k = b / a;
@@ -61,7 +61,7 @@ namespace CAD_Client {
         /// <summary>
         /// True, если два отрезка параллельны/коллинеарны.
         /// </summary>
-        public static bool IsLinesParallel(in PointF p1, in PointF p2, in PointF p3, in PointF p4) {
+        internal static bool IsLinesParallel(in PointF p1, in PointF p2, in PointF p3, in PointF p4) {
             //Если отношения смещений на клетку х и у двух отрезков по модулю равны, то они параллельны (k коэфф один)
             //И по свойству пропорции:
             if (Math.Abs((p1.X - p2.X) * (p3.Y - p4.Y)) == Math.Abs((p1.Y - p2.Y) * (p3.X - p4.X))) {
@@ -73,7 +73,7 @@ namespace CAD_Client {
         /// <summary>
         /// Вернёт true, если точка лежит в заданном отрезке.
         /// </summary>
-        public static bool IsPointInCut(in PointF cutP1, in PointF cutP2, in PointF target) {
+        internal static bool IsPointInCut(in PointF cutP1, in PointF cutP2, in PointF target) {
             bool isInLine = IsPointOnLine(cutP1, cutP2, target);
             if (!isInLine) {
                 return false;
@@ -84,7 +84,7 @@ namespace CAD_Client {
         /// <summary>
         /// Вернёт true, если точка лежит на заданной прямой.
         /// </summary>
-        public static bool IsPointOnLine(in PointF cutP1, in PointF cutP2, in PointF target) {
+        internal static bool IsPointOnLine(in PointF cutP1, in PointF cutP2, in PointF target) {
             #region Человеческий вид
             //float a = p2.X - p1.X;
             //float b = p2.Y - p1.Y;
@@ -103,7 +103,7 @@ namespace CAD_Client {
         /// Возвращает последовательные вершины прямоугольника, образованного "перпендикулярным" сдвигом отрезка на интервал
         /// в обе стороны.
         /// </summary>
-        public static PointF[] FindCutArea(in PointF p1, in PointF p2, in float interval) {
+        internal static PointF[] FindCutArea(in PointF p1, in PointF p2, in float interval) {
             float cutLength = MyGeometry.FindLengthBetweenPoints(p1, p2);
             float z = (p2.X - p1.X) * interval / cutLength;
             float a = (p2.Y - p1.Y) * interval / cutLength;
@@ -118,7 +118,7 @@ namespace CAD_Client {
         }
         /// <summary> Возвращает false, если точка лежит за пределами области. </summary>
         /// <param name="area">Замкнутый выпуклый полигон с последовательными вершинами</param>
-        public static bool IsPointInArea(in PointF point, PointF[] area) {
+        internal static bool IsPointInArea(in PointF point, PointF[] area) {
             if (area.Length < 2) {
                 throw new Exception();
             }
@@ -192,7 +192,7 @@ namespace CAD_Client {
         /// <param name="p3">
         /// Координаты точки
         /// </param>
-        public static int IsPointOverLine(in PointF p1, in PointF p2, in PointF p3) {
+        internal static int IsPointOverLine(in PointF p1, in PointF p2, in PointF p3) {
             #region Неоптимальный способ
             //return point.Y > ((point.X - p1.X) * (p2.Y - p1.Y) + point.Y * (p2.X - p1.X))/(p2.X - p1.X);
             #endregion
@@ -231,11 +231,11 @@ namespace CAD_Client {
         /// </summary>
         /// <param name="p1">Первая точка</param>
         /// <param name="p2">Вторая точка</param>
-        public static PointF FindLeftUpCornerCoord(in PointF p1, in PointF p2) => FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
+        internal static PointF FindLeftUpCornerCoord(in PointF p1, in PointF p2) => FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
         /// <summary>
         /// Возвращает левый верхний угол прямоугольника с горизональной гранью по координатам двух точек
         /// </summary>
-        public static PointF FindLeftUpCornerCoord(in float x1, in float y1, in float x2, in float y2) {
+        internal static PointF FindLeftUpCornerCoord(in float x1, in float y1, in float x2, in float y2) {
             float lowX = x1 > x2 ? x2 : x1;
             float lowY = y1 > y2 ? y2 : y1;
             return new PointF(lowX, lowY);
@@ -243,7 +243,7 @@ namespace CAD_Client {
         /// <summary>
         /// Обрубает координатный прямоугольник до квадрата относительно первой точки
         /// </summary>
-        public static (PointF, PointF) CutCoordinatesRectangleToSquare(in float x1, in float y1, in float x2, in float y2) {
+        internal static (PointF, PointF) CutCoordinatesRectangleToSquare(in float x1, in float y1, in float x2, in float y2) {
             var p1 = new PointF(x1, y1);
             var p2 = new PointF(x2, y2);
 
@@ -260,7 +260,7 @@ namespace CAD_Client {
         /// <summary>
         /// Находит расстояние между двумя точками.
         /// </summary>
-        public static float FindLengthBetweenPoints(in PointF p1, in PointF p2) {
+        internal static float FindLengthBetweenPoints(in PointF p1, in PointF p2) {
             return (float)Math.Sqrt(Math.Pow(p1.X - p2.X, 2) + Math.Pow(p1.Y - p2.Y, 2));
         }
         /// <summary> Вернёт точку пересечения перпендикулярных прямых. </summary>
@@ -268,7 +268,7 @@ namespace CAD_Client {
         /// <param name="p2"> Вторая точка первой прямой </param>
         /// <param name="p3"> Первая точка второй прямой </param>
         /// <returns></returns>
-        public static PointF MakePointProjectionOnLine(in PointF p1, in PointF p2, in PointF p3) {
+        internal static PointF MakePointProjectionOnLine(in PointF p1, in PointF p2, in PointF p3) {
             float a = p2.X - p1.X;
             float b = p2.Y - p1.Y;
             float denominator = a * a + b * b;
@@ -281,7 +281,7 @@ namespace CAD_Client {
         /// <summary> 
         /// Находит точку пересечения прямых. Exception, если они параллельны.
         /// </summary>
-        public static PointF FindCross(in PointF p1, in PointF p2, in PointF p3, in PointF p4) {
+        internal static PointF FindCross(in PointF p1, in PointF p2, in PointF p3, in PointF p4) {
             //параллельны/что-то совпадает
             bool isParallel = MyGeometry.IsLinesParallel(p1, p2, p3, p4);
             if (isParallel) {

@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CAD_Client {
-    public sealed class MyCursor {
-        public bool IsSnapped { private set; get; }
-        public Point SnapLocation { private set; get; }
-        public int SnapDistance { private set; get; }
-        public Point Cumulate { private set; get; }
+    internal sealed class MyCursor {
+        internal bool IsSnapped { private set; get; }
+        internal Point SnapLocation { private set; get; }
+        internal int SnapDistance { private set; get; }
+        internal Point Cumulate { private set; get; }
 
-        public event EventHandler SnapTorned;
+        internal event EventHandler SnapTorned;
 
 
 
@@ -21,7 +21,7 @@ namespace CAD_Client {
         /// Привязывает курсор к заданной экранной координате.
         /// </summary>
         /// <param name="target"></param>
-        public void DoSnap(Point target, int snapDistance) {
+        internal void DoSnap(Point target, int snapDistance) {
             if (IsSnapped) {
                 StopSnap();
             } else {
@@ -36,7 +36,7 @@ namespace CAD_Client {
         /// Вернёт курсор на <see cref="SnapLocation"/>. Смещение мыши будет записано в <see cref="Cumulate"/>.
         /// </summary>
         /// <param name="target"></param>
-        public void ContinueSnap(Point target) {
+        internal void ContinueSnap(Point target) {
             if (!IsSnapped) {
                 throw new Exception();
             }
@@ -59,7 +59,7 @@ namespace CAD_Client {
         /// Разрывает привязку курсора.
         /// </summary>
         /// <param name="jumpCumulate"> Следует ли курсору переместиться на накопленные координаты смещения. </param>
-        public void StopSnap(bool jumpCumulate = true) {
+        internal void StopSnap(bool jumpCumulate = true) {
             IsSnapped = false;
             if (jumpCumulate == true) {
                 Cursor.Position = new Point(Cursor.Position.X - Cumulate.X, Cursor.Position.Y - Cumulate.Y);

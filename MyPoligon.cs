@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CAD_Client {
-    public class MyPoligon : MyFigure {
-        public IReadOnlyList<PointF> Vertexes { get; }
+    internal class MyPoligon : MyFigure {
+        internal IReadOnlyList<PointF> Vertexes { get; }
         protected readonly PointF[] VertexesArray;
 
 

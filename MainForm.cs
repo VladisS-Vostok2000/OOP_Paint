@@ -21,9 +21,11 @@ using System.IO;
 //!!!Projekt#50: добавить масштаб
 //Projekt#40: добавить перемещение
 //!!!Пересмотреть snap: код не должен знать о существовании привязки
+//MyProjekt#43: убрать Color, Pen из конструкторов вспомогательных фигур. Добавить в фигуры реализацию Pen по умолчанию. Инкапсулировать реализацию графических составляющих в MyScreen.
+
 namespace CAD_Client {
     //!!!MainForm#20: добавить плавающие контролы
-    public sealed partial class GUI_Form : Form {
+    internal sealed partial class GUI_Form : Form {
         private int scale = 1;
         private readonly int snapDistancePx = 10;
         private readonly int gridSizePx = 25;
@@ -31,19 +33,17 @@ namespace CAD_Client {
         private int screenY;
         private readonly Pen gridPen = new Pen(Color.DarkGray, 1);
 
-        private readonly Bitmap bitmap;
-        private readonly Graphics screen;
         private readonly MyClient code;
         private readonly MyCursor myCursor;
 
 
 
-        public GUI_Form(MyClient code) {
+        internal GUI_Form(MyClient code) {
             InitializeComponent();
 
             this.code = code;
             bitmap = new Bitmap(496, 290);
-            screen = Graphics.FromImage(bitmap);
+            screen = 
             myCursor = new MyCursor();
             screenX = bitmap.Size.Width / 2;
             screenY = bitmap.Size.Height / 2;
@@ -101,7 +101,7 @@ namespace CAD_Client {
 
 
         private void MainFormTmr_Tick(object sender, EventArgs e) {
-            code.DrawFigures(screen);
+            MyScreen code.DrawFigures(screen);
             DrawGrid();
             Display();
             //Debugger.Log("Display");
