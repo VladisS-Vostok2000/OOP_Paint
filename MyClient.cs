@@ -17,12 +17,11 @@ using static CAD_Client.ToolEnum;
 
 //!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
 namespace CAD_Client {
-    
+
     public sealed class MyClient {
         public delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
         public delegate void FigureHandler(Tool figure, EventArgs e);
         public delegate void ConstructorOperationStatusHandler(ConstructorOperationStatus ConstructorOperationStatus, EventArgs e);
-
         #region API
         public event FigureHandler SelectedToolChanged;
         public event BuildingMethodHandler SelectedBuildingVariantChanged;
@@ -78,8 +77,8 @@ namespace CAD_Client {
         private static readonly Pen figurePen = new Pen(Color.Black);
         private static readonly Pen selectPen = new Pen(Color.White) { Width = 1, DashStyle = DashStyle.Dash };
 
-        private static readonly Pen snapPen = new Pen(Color.Green, 2);
-        private static readonly MyRectangle snapPoint = new MyRectangle(0, 0, 6, 6, snapPen) { IsHide = true };
+        //private static readonly Pen snapPen = new Pen(Color.Green, 2);
+        //private static readonly MyRectangle snapPoint = new MyRectangle(0, 0, 6, 6, snapPen) { IsHide = true };
         private static readonly Pen polarPen = new Pen(Color.Lime, 1) { DashStyle = DashStyle.Dash };
         private static readonly MyRay polarLine = new MyRay(polarPen);
 
@@ -335,7 +334,7 @@ namespace CAD_Client {
                 case Tool.Moving:
                     switch (SelectedBuildingMethod) {
                         case BuildingMethod.None:
-                            switch(currConstructorStage) {
+                            switch (currConstructorStage) {
                                 case 0:
                                     return;
                                 default: throw new Exception();
@@ -367,14 +366,14 @@ namespace CAD_Client {
             return figuresContainer.Count;
         }
 
-        //MyClient#41: вычленить SnapPoint из MainCode
-        public void AddSnapPoint(in Point location) {
-            snapPoint.Location = new Point(location.X - 3, location.Y - 3);
-            snapPoint.IsHide = false;
-        }
-        public void RemoveSnapPoint() {
-            snapPoint.IsHide = true;
-        }
+        ////MyClient#41: вычленить SnapPoint из MainCode
+        //public void AddSnapPoint(in Point location) {
+        //    snapPoint.Location = new Point(location.X - 3, location.Y - 3);
+        //    snapPoint.IsHide = false;
+        //}
+        //public void RemoveSnapPoint() {
+        //    snapPoint.IsHide = true;
+        //}
 
         /// <summary> Выстраивает полярную линию с последней точки построения в сторону данной. </summary>
         private void AddPolarLine(in PointF vector) {
@@ -400,39 +399,79 @@ namespace CAD_Client {
         }
 
 
-        /// <summary> Находит координаты ближайшей к точке вершины фигуры для непустого списка фигур. </summary>
+        /// <summary>
+        /// Вернёт координаты ближайшей к точке вершины фигуры.
+        /// </summary>
+        /// <exception cref="Exception"> Лист пуст. </exception>
+        /// <exception cref="ArgumentNullException"> Лист null. </exception>
         public PointF FindNearestVertex(in PointF target) => FindNearestVertex(figuresContainer, target);
-        private PointF FindNearestVertex(MyListContainer<MyFigure> figures, PointF target) {
+        /// <summary>
+        /// Вернёт координаты ближайшей к точке вершины фигуры.
+        /// </summary>
+        /// <exception cref="Exception"> Лист пуст. </exception>
+        /// <exception cref="ArgumentNullException"> Лист null. </exception>
+        public PointF FindNearestVertex(MyListContainer<MyFigure> figures, PointF target) {
+            if (figures == null) {
+                throw new ArgumentNullException();
+            }
             if (figures.Count == 0) {
                 throw new Exception();
             }
 
             float minDistance = float.MaxValue;
-            PointF outvertex = new PointF(0, 0);
+            PointF out_vertex = new PointF(0, 0);
             bool isOk = false;
             foreach (var figure in figures) {
-                if (figure is MyCut cut) {
-
-                }
-                else
-                if (figure is MyPoligon polygon) {
-                    foreach (var vetrex in polygon.Vertexes) {
-                        float distance = MyGeometry.FindLengthBetweenPoints(vetrex, target);
-                        if (distance <= minDistance) {
-                            isOk = true;
-                            minDistance = distance;
-                            outvertex = vetrex;
+                switch (figure) {
+                    case MyPoligon myPoligon:
+                        foreach (var vertex in myPoligon.Vertexes) {
+                            float distance = MyGeometry.FindLengthBetweenPoints(vertex, target);
+                            bool isNewLower = CompareDistance(ref minDistance, in distance);
+                            if (isNewLower) {
+                                isOk = true;
+                                out_vertex = vertex;
+                            }
                         }
-                    }
+                        break;
+                    case MyCut myCut:
+                        float p1L = MyGeometry.FindLengthBetweenPoints(myCut.P1, target);
+                        float p2L = MyGeometry.FindLengthBetweenPoints(myCut.P2, target);
+                        if (p1L < p2L) {
+                            bool isNewLower = CompareDistance(ref minDistance, in p1L);
+                            if (isNewLower) {
+                                isOk = true;
+                                out_vertex = myCut.P1;
+                            }
+                        }
+                        else {
+                            bool isNewLower = CompareDistance(ref minDistance, in p1L);
+                            if (isNewLower) {
+                                isOk = true;
+                                out_vertex = myCut.P2;
+                            }
+                        }
+                        break;
+                    default: throw new Exception($"Для фигуры {figure} не реализован поиск ближайшей вершины.");
                 }
             }
-
             if (isOk) {
-                return outvertex;
+                return out_vertex;
             }
             else {
-                throw new Exception();
+                throw new Exception("Вершина не найдена, хотя список фигур не пустой.");
             }
+        }
+        /// <summary>
+        /// Вернёт true и присвоит сравниваемому числу новое, если новое меньше.
+        /// </summary>
+        /// <param name="minDistance"> Сравниваемое число. </param>
+        /// <param name="newDistance"> Новое число. </param>
+        private bool CompareDistance(ref float minDistance, in float newDistance) {
+            if (newDistance <= minDistance) {
+                minDistance = newDistance;
+                return true;
+            }
+            return false;
         }
 
 
@@ -504,7 +543,7 @@ namespace CAD_Client {
             polarLine.IsHide = true;
         }
 
-
+        //MyClient#42: инкапсулировать прорисовку в "MyScreen"
         public void DrawFigures(Graphics screen) {
             screen.Clear(Color.FromArgb(250, 64, 64, 64));
             foreach (var figure in figuresContainer) {
@@ -513,7 +552,7 @@ namespace CAD_Client {
             foreach (var figure in supportFigures) {
                 figure.Draw(screen);
             }
-            snapPoint.Draw(screen);
+            //snapPoint.Draw(screen);
             polarLine.Draw(screen);
         }
 

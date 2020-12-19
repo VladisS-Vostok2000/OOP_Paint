@@ -53,7 +53,6 @@ namespace CAD_Client {
             this.code.FiguresListChanged += Code_FiguresList_Changed;
             this.code.ConstructorOperationStatusChanged += MainCode_ConstructorOperationStatus_Changed;
             this.code.PolarLineEnablingChanged += Code_PolarLineEnabling_Changed;
-            myCursor.SnapTorned += MyCursor_SnapTorned;
 
             MainFormCmbbxBuildingVariants.DisplayMember = "DisplayMember";
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
@@ -81,35 +80,7 @@ namespace CAD_Client {
 
             code.AddSoftPoint(e.Location);
 
-            #region Snap
-            if (myCursor.IsSnapped) {
-                myCursor.ContinueSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen));
-                if (code.SelectedTool == Tool.Moving) {
-                    screenX += myCursor.Cumulate.X;
-                    screenY += myCursor.Cumulate.Y;
-                }
-            }
-            else {
-                if (e.Button == MouseButtons.None) {
-                    int figCount = code.GetFiguresCount();
-                    if (figCount != 0) {
-                        PointF vetrex = code.FindNearestVertex(e.Location);
-                        //Привязка считается в отображаемых пикселях
-                        ConvertRealCoordToPx(vetrex, out Point vetrexPx);
-                        float distance = MyGeometry.FindLengthBetweenPoints(vetrexPx, e.Location);
-                        if (distance < snapDistancePx) {
-                            int x = (int)Math.Round(vetrex.X);
-                            int y = (int)Math.Round(vetrex.Y);
-                            Point point = ControlPointToScreen(new Point(x, y), MainFromPctrbxScreen);
-                            myCursor.DoSnap(point, snapDistancePx);
-                            //У кода - координаты реальные. 
-                            code.AddSnapPoint(new Point(x, y));
-                        }
-                    }
-                }
-
-            }
-            #endregion
+            CheckSnap(e.Location);
 
             MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
             MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
@@ -128,6 +99,7 @@ namespace CAD_Client {
             code.SetPoint(e.Location);
         }
 
+
         private void MainFormTmr_Tick(object sender, EventArgs e) {
             code.DrawFigures(screen);
             DrawGrid();
@@ -140,12 +112,12 @@ namespace CAD_Client {
         private void DrawGrid() {
             //Вертикальные
             Point delta = new Point(screenX % gridSizePx, screenY % gridSizePx);
-            for (int i = gridSizePx - delta.X; i < bitmap.Width; i+=gridSizePx) {
+            for (int i = gridSizePx - delta.X; i < bitmap.Width; i += gridSizePx) {
                 screen.DrawLine(gridPen, i, 0, i, bitmap.Height);
             }
 
             //Горизонтальные
-            for (int i = gridSizePx - delta.Y; i < bitmap.Height; i+=gridSizePx) {
+            for (int i = gridSizePx - delta.Y; i < bitmap.Height; i += gridSizePx) {
                 screen.DrawLine(gridPen, 0, i, bitmap.Width, i);
             }
         }
@@ -153,12 +125,52 @@ namespace CAD_Client {
             MainFromPctrbxScreen.Image = bitmap;
         }
 
+
+        /// <summary>
+        /// Создаст, продолжит или прервёт привязку при соответствущих условиях.
+        /// </summary>
+        /// <param name="newPoint"> Новое положение курсора мыши относительно <see cref=""/>. </param>
+        private void CheckSnap(Point newPoint) {
+            if (myCursor.IsSnapped) {
+                Point newPointScreenLocation = PointToScreen(newPoint);
+                myCursor.ContinueSnap(newPointScreenLocation);
+                if (code.SelectedTool == Tool.Moving) {
+                    screenX += myCursor.Cumulate.X;
+                    screenY += myCursor.Cumulate.Y;
+                }
+            }
+            else {
+                //if (e.Button == MouseButtons.None) {
+                int figCount = code.GetFiguresCount();
+                if (figCount != 0) {
+                    PointF vertex = code.FindNearestVertex(newPoint);
+                    //Привязка считается в отображаемых пикселях
+                    ConvertRealCoordToPx(vertex, out Point vertexPx);
+                    bool isNearlyVertex = IsPxInSquare(newPoint, vertexPx, snapDistancePx);
+                    if (isNearlyVertex) {
+                        //Snap выполняется для экранных координат.
+                        Point vertexScreenLocation = PointToScreen(vertexPx);
+                        myCursor.DoSnap(vertexScreenLocation, snapDistancePx);
+                    }
+                }
+                //}
+            }
+        }
+        /// <summary>
+        /// Возвращает реальное расположение точки в отображаемое пиксельное экранное.
+        /// </summary>
         private void ConvertRealCoordToPx(in PointF location, out Point pxLocation) {
             pxLocation = new Point {
                 X = (int)Math.Round(location.X),
                 Y = (int)Math.Round(location.Y)
             };
         }
+        /// <summary>
+        /// Определит, лежит ли пиксель в квадрате (или на его грани) с заданным центром и половиной стороны.
+        /// </summary>
+        private bool IsPxInSquare(Point px, Point center, int interval) =>
+            Math.Abs(px.X - center.X) <= interval && Math.Abs(px.Y - center.Y) <= interval;
+
         #endregion
 
         #region Кнопки
@@ -204,7 +216,7 @@ namespace CAD_Client {
 
             code.DrawFigures(screen);
         }
-        
+
         private void MainFormTlstrpSpltbttnPolarLine_Click(object sender, EventArgs e) {
             code.PolarLineEnabled = !code.PolarLineEnabled;
         }
@@ -277,9 +289,6 @@ namespace CAD_Client {
                 code.DrawFigures(screen);
                 MainFormSttsstpLblHint.Text = "Успешно.";
             }
-        }
-        private void MyCursor_SnapTorned(object sender, EventArgs e) {
-            code.RemoveSnapPoint();
         }
         //???Вот в дефолтных ивентах названия PolarLineEnablingChanged или PolarLineEnabling_Changed?
         //Потому что всегда выдаёт имя ивента в методе без земли.

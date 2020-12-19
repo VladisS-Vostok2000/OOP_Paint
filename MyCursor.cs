@@ -13,9 +13,8 @@ namespace CAD_Client {
         public int SnapDistance { private set; get; }
         public Point Cumulate { private set; get; }
 
-
-
         public event EventHandler SnapTorned;
+
 
 
         /// <summary>
