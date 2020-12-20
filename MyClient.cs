@@ -77,8 +77,7 @@ namespace CAD_Client {
         private static readonly Pen figurePen = new Pen(Color.Black);
         private static readonly Pen selectPen = new Pen(Color.White) { Width = 1, DashStyle = DashStyle.Dash };
 
-        //private static readonly Pen snapPen = new Pen(Color.Green, 2);
-        //private static readonly MyRectangle snapPoint = new MyRectangle(0, 0, 6, 6, snapPen) { IsHide = true };
+
         private static readonly Pen polarPen = new Pen(Color.Lime, 1) { DashStyle = DashStyle.Dash };
         private static readonly MyRay polarLine = new MyRay(polarPen);
 
@@ -95,7 +94,17 @@ namespace CAD_Client {
             }
         }
 
+        internal MyRay GetPolarLine() {
+            throw new NotImplementedException();
+        }
 
+        internal MyListContainer<MyFigure> GetSupportFiguresList() {
+            throw new NotImplementedException();
+        }
+
+        internal MyListContainer<MyFigure> GetFiguresList() {
+            throw new NotImplementedException();
+        }
 
         internal MyClient() {
             figuresContainer.ContainerChanged += FiguresContainer_ContainerChanged;
@@ -409,8 +418,10 @@ namespace CAD_Client {
         /// Вернёт координаты ближайшей к точке вершины фигуры.
         /// </summary>
         /// <exception cref="Exception"> Лист пуст. </exception>
+        /// <exception cref="Exception"> Вершина не найдена при непустом листе. </exception>
         /// <exception cref="ArgumentNullException"> Лист null. </exception>
         internal PointF FindNearestVertex(MyListContainer<MyFigure> figures, PointF target) {
+            //???Почему-то методу очень плохо.
             if (figures == null) {
                 throw new ArgumentNullException();
             }
@@ -418,9 +429,8 @@ namespace CAD_Client {
                 throw new Exception();
             }
 
-            float minDistance = float.MaxValue;
+            float minDistance = float.PositiveInfinity;
             PointF out_vertex = new PointF(0, 0);
-            bool isOk = false;
             foreach (var figure in figures) {
                 switch (figure) {
                     case MyPoligon myPoligon:
@@ -428,7 +438,6 @@ namespace CAD_Client {
                             float distance = MyGeometry.FindLengthBetweenPoints(vertex, target);
                             bool isNewLower = CompareDistance(ref minDistance, in distance);
                             if (isNewLower) {
-                                isOk = true;
                                 out_vertex = vertex;
                             }
                         }
@@ -439,14 +448,12 @@ namespace CAD_Client {
                         if (p1L < p2L) {
                             bool isNewLower = CompareDistance(ref minDistance, in p1L);
                             if (isNewLower) {
-                                isOk = true;
                                 out_vertex = myCut.P1;
                             }
                         }
                         else {
                             bool isNewLower = CompareDistance(ref minDistance, in p1L);
                             if (isNewLower) {
-                                isOk = true;
                                 out_vertex = myCut.P2;
                             }
                         }
@@ -454,11 +461,12 @@ namespace CAD_Client {
                     default: throw new Exception($"Для фигуры {figure} не реализован поиск ближайшей вершины.");
                 }
             }
-            if (isOk) {
-                return out_vertex;
+
+            if (minDistance == float.PositiveInfinity) {
+                throw new Exception("Вершина не найдена, хотя список фигур не пустой.");
             }
             else {
-                throw new Exception("Вершина не найдена, хотя список фигур не пустой.");
+                return out_vertex;
             }
         }
         /// <summary>

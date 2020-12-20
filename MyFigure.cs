@@ -43,7 +43,7 @@ namespace CAD_Client {
 
 
 
-        protected MyFigure() { }
+        protected MyFigure() : this(Color.Black) { }
         protected MyFigure(Pen pen) {
             Pen = pen;
             FiguresCount++;
@@ -54,7 +54,7 @@ namespace CAD_Client {
 
 
         //MyFigure#81: реализовать удаление фигуры и присваивание ID.
-        public void Dispose() { }
+        internal void Dispose() { }
 
 
         internal virtual void Draw(Graphics screen) {

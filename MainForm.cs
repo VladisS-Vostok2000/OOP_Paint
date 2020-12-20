@@ -21,20 +21,17 @@ using System.IO;
 //!!!Projekt#50: добавить масштаб
 //Projekt#40: добавить перемещение
 //!!!Пересмотреть snap: код не должен знать о существовании привязки
-//MyProjekt#43: убрать Color, Pen из конструкторов вспомогательных фигур. Добавить в фигуры реализацию Pen по умолчанию. Инкапсулировать реализацию графических составляющих в MyScreen.
 
 namespace CAD_Client {
     //!!!MainForm#20: добавить плавающие контролы
     internal sealed partial class GUI_Form : Form {
         private int scale = 1;
-        private readonly int snapDistancePx = 10;
-        private readonly int gridSizePx = 25;
         private int screenX;
         private int screenY;
-        private readonly Pen gridPen = new Pen(Color.DarkGray, 1);
 
         private readonly MyClient code;
         private readonly MyCursor myCursor;
+        private readonly MyScreen myScreen;
 
 
 
@@ -42,11 +39,8 @@ namespace CAD_Client {
             InitializeComponent();
 
             this.code = code;
-            bitmap = new Bitmap(496, 290);
-            screen = 
             myCursor = new MyCursor();
-            screenX = bitmap.Size.Width / 2;
-            screenY = bitmap.Size.Height / 2;
+            myScreen = new MyScreen(new Bitmap(496, 290), myCursor);
 
             this.code.SelectedToolChanged += Code_SelectedTool_Changed;
             this.code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
@@ -73,17 +67,27 @@ namespace CAD_Client {
             else
             if (code.SelectedTool == Tool.Moving && e.Button == MouseButtons.Middle) {
                 myCursor.DoSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen), int.MaxValue);
+                PointToScreen(new Point(1, 1));
             }
         }
         private void MainFormPctrbxScreen_MouseMove(object sender, MouseEventArgs e) {
-            Point mouseLocation = e.Location;
-
             code.AddSoftPoint(e.Location);
 
-            CheckSnap(e.Location);
+            //int figCount = code.GetFiguresCount();
+            //if (figCount != 0) {
+            //    PointF vertex = code.FindNearestVertex(cursor);
+            //    //Привязка считается в отображаемых пикселях
+            //    ConvertRealCoordToPx(vertex, out Point vertexPx);
+            //    bool isNearlyVertex = IsPxInSquare(cursor, vertexPx, snapDistancePx);
+            //    if (isNearlyVertex) {
+            //        //Snap выполняется для экранных координат.
+            //        Point vertexScreenLocation = PointToScreen(vertexPx);
+            //        myCursor.DoSnap(vertexScreenLocation, snapDistancePx);
+            //    }
+            //}
 
-            MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
-            MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
+            MainFormSttsstpLblMouseX.Text = e.Location.X.ToString().PadLeft(3);
+            MainFormSttsstpLblMouseY.Text = e.Location.Y.ToString().PadLeft(3);
         }
         private void MainFromPctrbxScreen_MouseUp(object sender, MouseEventArgs e) {
             //За пределами экрана
@@ -99,77 +103,39 @@ namespace CAD_Client {
             code.SetPoint(e.Location);
         }
 
-
+        /// <summary>
+        /// Создаст, продолжит или прервёт привязку на экране при соответствущих условиях.
+        /// </summary>
+        private void Snap() {
+            //????
+            //if (code.SelectedTool == Tool.Moving) {
+            //    screenX += myCursor.Cumulate.X;
+            //    screenY += myCursor.Cumulate.Y;
+            //}
+            //????
+            //if (e.Button == MouseButtons.None)
+            {
+                bool nearVertex = IsPointInSquare(cursor, vertex, snapDistancePx);
+                if (nearVertex) {
+                    //Snap выполняется для экранных координат.
+                    Point vertexScreenLocation = System.Windows.Forms.Control.PointToScreen(vertexPx);
+                    myCursor.DoSnap(vertexScreenLocation, snapDistancePx);
+                }
+            }
+            //Snap выполняется для экранных координат.
+            Point vertexScreenLocation = System.Windows.Forms.Control.PointToScreen(vertexPx);
+            myCursor.DoSnap(vertexScreenLocation, snapDistancePx);
+        }
         private void MainFormTmr_Tick(object sender, EventArgs e) {
-            MyScreen code.DrawFigures(screen);
-            DrawGrid();
-            Display();
-            //Debugger.Log("Display");
+            MainFromPctrbxScreen.Image = myScreen.RedrawFigures(code.GetFiguresList(), code.GetSupportFiguresList(), code.GetPolarLine());
         }
         /// <summary>
         /// Нарисует сетку на экране с центром координат в (0; 0).
         /// </summary>
-        private void DrawGrid() {
-            //Вертикальные
-            Point delta = new Point(screenX % gridSizePx, screenY % gridSizePx);
-            for (int i = gridSizePx - delta.X; i < bitmap.Width; i += gridSizePx) {
-                screen.DrawLine(gridPen, i, 0, i, bitmap.Height);
-            }
-
-            //Горизонтальные
-            for (int i = gridSizePx - delta.Y; i < bitmap.Height; i += gridSizePx) {
-                screen.DrawLine(gridPen, 0, i, bitmap.Width, i);
-            }
-        }
-        private void Display() {
-            MainFromPctrbxScreen.Image = bitmap;
-        }
+        
 
 
-        /// <summary>
-        /// Создаст, продолжит или прервёт привязку при соответствущих условиях.
-        /// </summary>
-        /// <param name="newPoint"> Новое положение курсора мыши относительно <see cref=""/>. </param>
-        private void CheckSnap(Point newPoint) {
-            if (myCursor.IsSnapped) {
-                Point newPointScreenLocation = PointToScreen(newPoint);
-                myCursor.ContinueSnap(newPointScreenLocation);
-                if (code.SelectedTool == Tool.Moving) {
-                    screenX += myCursor.Cumulate.X;
-                    screenY += myCursor.Cumulate.Y;
-                }
-            }
-            else {
-                //if (e.Button == MouseButtons.None) {
-                int figCount = code.GetFiguresCount();
-                if (figCount != 0) {
-                    PointF vertex = code.FindNearestVertex(newPoint);
-                    //Привязка считается в отображаемых пикселях
-                    ConvertRealCoordToPx(vertex, out Point vertexPx);
-                    bool isNearlyVertex = IsPxInSquare(newPoint, vertexPx, snapDistancePx);
-                    if (isNearlyVertex) {
-                        //Snap выполняется для экранных координат.
-                        Point vertexScreenLocation = PointToScreen(vertexPx);
-                        myCursor.DoSnap(vertexScreenLocation, snapDistancePx);
-                    }
-                }
-                //}
-            }
-        }
-        /// <summary>
-        /// Возвращает реальное расположение точки в отображаемое пиксельное экранное.
-        /// </summary>
-        private void ConvertRealCoordToPx(in PointF location, out Point pxLocation) {
-            pxLocation = new Point {
-                X = (int)Math.Round(location.X),
-                Y = (int)Math.Round(location.Y)
-            };
-        }
-        /// <summary>
-        /// Определит, лежит ли пиксель в квадрате (или на его грани) с заданным центром и половиной стороны.
-        /// </summary>
-        private bool IsPxInSquare(Point px, Point center, int interval) =>
-            Math.Abs(px.X - center.X) <= interval && Math.Abs(px.Y - center.Y) <= interval;
+
 
         #endregion
 

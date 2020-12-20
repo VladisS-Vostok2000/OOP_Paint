@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace CAD_Client {
     internal sealed class MyCursor {
-        internal bool IsSnapped { private set; get; }
+        internal bool Snapped { private set; get; }
         internal Point SnapLocation { private set; get; }
         internal int SnapDistance { private set; get; }
         internal Point Cumulate { private set; get; }
@@ -22,10 +22,10 @@ namespace CAD_Client {
         /// </summary>
         /// <param name="target"></param>
         internal void DoSnap(Point target, int snapDistance) {
-            if (IsSnapped) {
+            if (Snapped) {
                 StopSnap();
             } else {
-                IsSnapped = true;
+                Snapped = true;
             }
 
             SnapLocation = target;
@@ -37,7 +37,7 @@ namespace CAD_Client {
         /// </summary>
         /// <param name="target"></param>
         internal void ContinueSnap(Point target) {
-            if (!IsSnapped) {
+            if (!Snapped) {
                 throw new Exception();
             }
 
@@ -60,7 +60,7 @@ namespace CAD_Client {
         /// </summary>
         /// <param name="jumpCumulate"> Следует ли курсору переместиться на накопленные координаты смещения. </param>
         internal void StopSnap(bool jumpCumulate = true) {
-            IsSnapped = false;
+            Snapped = false;
             if (jumpCumulate == true) {
                 Cursor.Position = new Point(Cursor.Position.X - Cumulate.X, Cursor.Position.Y - Cumulate.Y);
             }

@@ -12,8 +12,9 @@ namespace CAD_Client {
 
 
 
-        protected MyPoligon(int vertexesCount) {
+        internal MyPoligon(int vertexesCount) {
             //???Повторяющийся код
+            //???Не могу определять read-only поля в методе
             if (vertexesCount < 2) {
                 throw new ArgumentException();
             }
@@ -21,8 +22,9 @@ namespace CAD_Client {
             VertexesArray = new PointF[vertexesCount];
             Vertexes = Array.AsReadOnly(VertexesArray);
         }
-        protected MyPoligon(int vertexesCount, Color color) : base(color) {
+        internal MyPoligon(int vertexesCount, Color color) : base(color) {
             //???Повторяющийся код
+            //???Не могу определять read-only поля в методе
             if (vertexesCount < 2) {
                 throw new ArgumentException();
             }
@@ -30,8 +32,9 @@ namespace CAD_Client {
             VertexesArray = new PointF[vertexesCount];
             Vertexes = Array.AsReadOnly(VertexesArray);
         }
-        protected MyPoligon(int vertexesCount, Pen pen) : base(pen) {
+        internal MyPoligon(int vertexesCount, Pen pen) : base(pen) {
             //???Повторяющийся код
+            //???Не могу определять read-only поля в методе
             if (vertexesCount < 2) {
                 throw new ArgumentException();
             }
@@ -41,7 +44,7 @@ namespace CAD_Client {
         }
 
 
-
+        
         protected override void DrawFigure(Graphics screen, Pen pen) {
             throw new NotImplementedException();
         }
