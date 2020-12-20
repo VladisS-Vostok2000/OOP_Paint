@@ -52,7 +52,6 @@ namespace CAD_Client {
 
 
 
-
         internal MyScreen(Bitmap bitmap, MyCursor myCursor) {
             this.bitmap = bitmap;
             screen = Graphics.FromImage(bitmap);
@@ -102,10 +101,13 @@ namespace CAD_Client {
         /// <summary>
         /// Визуализирует точку привязки.
         /// </summary>
-        private void DrawSnap() {
-            if (!Snapped) {
+        private void DrawSnapPoint() {
+            if (!myCursor.Snapped) {
                 return;
             }
+
+            snap.Move(myCursor.SnapLocation.X - snapDistancePx, myC
+
 
 
 

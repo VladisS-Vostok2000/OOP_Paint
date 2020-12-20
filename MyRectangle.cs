@@ -36,7 +36,13 @@ namespace CAD_Client {
         internal void Resize(in float x1, in float y1, in float x2, in float y2) {
             InitializeFigure(x1, y1, x2, y2);
         }
-
+        /// <summary>
+        /// Перенесёт верхний левый угол фигуры в заданную точку.
+        /// </summary>
+        internal void Move(PointF newPoint) {
+            x = newPoint.X;
+            y = newPoint.Y;
+        }
 
         protected override void DrawFigure(Graphics screen, Pen pen) {
             if (Width != 0 && Height != 0) {

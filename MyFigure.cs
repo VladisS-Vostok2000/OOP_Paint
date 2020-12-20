@@ -18,7 +18,7 @@ namespace CAD_Client {
         internal virtual float X { set; get; }
         protected float y;
         internal virtual float Y { set; get; }
-        //!!!MyFigure#20: реализовать сдвиг фигур по локации
+        //MyFigure#20: реализовать сдвиг фигур по локации
         /// <summary> Верхняя левая точка описывающего квадрата. При изменении перемещается вся фигура. </summary>
         internal PointF Location {
             set {

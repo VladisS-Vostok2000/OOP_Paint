@@ -16,7 +16,6 @@ using static CAD_Client.ToolEnum;
 
 namespace CAD_Client {
     internal class MyCut : MyFigure{
-        private const int VetrexesCount = 2;
         private PointF p1;
         internal PointF P1 { 
             set {
@@ -40,6 +39,7 @@ namespace CAD_Client {
             }
         }
         internal float Length { private set; get; }
+
 
 
         internal MyCut(PointF p1, PointF p2) {
