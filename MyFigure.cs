@@ -10,16 +10,21 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using static CAD_Client.ToolEnum;
 namespace CAD_Client {
+    /// <summary>
+    /// Представляет класс отображающихся фигур. Содержат в себе все необходимые геометрические параметры и характеристики
+    /// цветопредставления. Локация содержит верхнюю левую точку описывающего горизонтального прямоугольника фигуру. При
+    /// задании локации все соответствующие геометрические параметры сдвигаются, т.к. считаются не относительно локации.
+    /// </summary>
+    //MyFigure#20: реализовать сдвиг фигур по локации
     internal abstract class MyFigure : IDisposable {
-        internal static int FiguresCount = 0;
-        internal int Id { private set; get; } = 0;
+        internal static int FiguresCount { private set; get; }
+        internal int Id { private set; get; }
 
-        protected float x;
-        internal virtual float X { set; get; }
-        protected float y;
-        internal virtual float Y { set; get; }
-        //MyFigure#20: реализовать сдвиг фигур по локации
-        /// <summary> Верхняя левая точка описывающего квадрата. При изменении перемещается вся фигура. </summary>
+        internal float X { private protected set; get; }
+        internal float Y { private protected set; get; }
+        /// <summary>
+        /// Верхняя левая точка описывающего квадрата. При изменении перемещается вся фигура.
+        /// </summary>
         internal PointF Location {
             set {
                 if (value.X != X || value.Y != Y) {
@@ -32,7 +37,21 @@ namespace CAD_Client {
             }
         }
 
-        internal Pen Pen { set; get; } = new Pen(Color.Black, 1);
+        private protected Pen pen;
+        internal Pen Pen {
+            set {
+                if (value == null) {
+                    throw new ArgumentNullException();
+                }
+                if (value != pen) {
+                    pen = value;
+                }
+            }
+            //??? pen имеет модификатор доступности блока set private, хотя по факту общедоступен.
+            //Решено: pen можно менять как угодно, но присвоить ему null невозможно, так что ошибки исключены.
+            get => pen;
+        }
+        //!!!MyFigure#05: проверять все свойства-классы на null
         internal Pen SelectedPen { set; get; } = new Pen(Color.White, 2);
         internal Pen HightLightedPen { set; get; } = new Pen(Color.BlueViolet, 2);
         internal bool IsSelected { set; get; }
@@ -43,18 +62,28 @@ namespace CAD_Client {
 
 
 
-        protected MyFigure() : this(Color.Black) { }
-        protected MyFigure(Pen pen) {
+        private protected MyFigure() : this(Color.Black) { }
+        private protected MyFigure(Pen pen) {
+            if (pen == null) {
+                throw new ArgumentNullException();
+            }
+
             Pen = pen;
             FiguresCount++;
             Id = FiguresCount;
         }
-        protected MyFigure(Color color) : this(new Pen(color, 1)) { }
+        private protected MyFigure(Color color) : this(new Pen(color, 1)) { }
 
 
 
         //MyFigure#81: реализовать удаление фигуры и присваивание ID.
-        internal void Dispose() { }
+        public void Dispose() { }
+
+
+        /// <summary>
+        /// Переместит все геометрическе параметры в новое положение относительно <see cref="Location"/>.
+        /// </summary>
+        internal abstract void Move(PointF newLocation);
 
 
         internal virtual void Draw(Graphics screen) {
@@ -63,9 +92,9 @@ namespace CAD_Client {
             }
 
             ChoosePen(out Pen pen);
-            DrawFigure(screen, pen);
+            Display(screen, pen);
         }
-        protected virtual Pen ChoosePen(out Pen pen) {
+        private protected virtual Pen ChoosePen(out Pen pen) {
             if (IsSelected) {
                 pen = SelectedPen;
             }
@@ -78,7 +107,7 @@ namespace CAD_Client {
             }
             return pen;
         }
-        protected abstract void DrawFigure(Graphics screen, Pen pen);
+        private protected abstract void Display(Graphics screen, Pen pen);
 
 
         internal string GetDescription() {

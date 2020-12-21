@@ -7,20 +7,24 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CAD_Client {
-    public class MyPoint : MyFigure {
+    [Obsolete("Тяжело поддерживать много фигур", false)]
+    internal class MyPoint : MyFigure {
 
 
 
-        public MyPoint(float x, float y, Color color) : base(color) {
+        internal MyPoint(float x, float y, Color color) : base(color) {
             X = x;
             Y = y;
         }
 
 
 
-        protected override void DrawFigure(Graphics screen, Pen pen) {
+        protected override void Display(Graphics screen, Pen pen) {
             screen.DrawEllipse(pen, X, Y, 2, 2);
         }
 
+        internal override void Move(PointF newLocation) {
+            throw new NotImplementedException();
+        }
     }
 }

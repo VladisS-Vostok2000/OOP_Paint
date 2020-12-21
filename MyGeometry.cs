@@ -299,6 +299,18 @@ namespace CAD_Client {
 
             return new PointF(x, y);
         }
+        /// <summary>
+        /// Вычитает из экземпляра соответствующие координаты заданной <see cref="PointF"/>.
+        /// </summary>
+        internal static PointF Substract(this PointF p1, in PointF p2) => new PointF(p1.X - p2.X, p1.Y - p2.Y);
+        /// <summary>
+        /// Складывает из экземпляра и заданной <see cref="PointF"/> соответствующие координаты.
+        /// </summary>
+        internal static PointF Sum(this PointF p1, in PointF p2) => new PointF(p1.X + p2.X, p1.Y + p2.Y);
+        /// <summary>
+        /// Вернёт точку с помноженными координатами на заданное число.
+        /// </summary>
+        internal static PointF Multiply(this PointF p1,in float factor) => new PointF(p1.X * factor, p1.Y * factor);
 
     }
 }

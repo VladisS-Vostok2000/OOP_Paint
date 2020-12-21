@@ -80,6 +80,7 @@ namespace CAD_Client {
                 figure.Draw(screen);
             }
             DrawSnapPoint();
+            DrawGrid();
             polarLine.Draw(screen);
             return bitmap;
         }
@@ -106,11 +107,8 @@ namespace CAD_Client {
                 return;
             }
 
-            snap.Move(myCursor.SnapLocation.X - snapDistancePx, myC
-
-
-
-
+            snap.Location = new PointF(myCursor.SnapLocation.X - snapDistancePx, myCursor.SnapLocation.Y - snapDistancePx);
+            snap.Draw(screen);
         }
         #endregion
 

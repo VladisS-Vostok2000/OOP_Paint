@@ -15,10 +15,10 @@ using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
 
 namespace CAD_Client {
-    internal class MyCut : MyFigure{
-        private PointF p1;
+    internal class MyCut : MyFigure {
+        private protected PointF p1;
         internal PointF P1 { 
-            set {
+            private protected set {
                 if (value != p1) {
                     InitializeFigure(value, P2);
                 }
@@ -27,11 +27,12 @@ namespace CAD_Client {
                 return p1;
             }
         }
-        private PointF p2;
+        private protected PointF p2;
         internal PointF P2 {
             set {
                 if (value != p2) {
-                    InitializeFigure(P1, value);
+                    Location = MyGeometry.FindLeftUpCornerCoord(p1, value);
+
                 }
             }
             get {
@@ -55,30 +56,24 @@ namespace CAD_Client {
             InitializeFigure(p1, p2);
         }
         private void InitializeFigure(PointF p1, PointF p2) {
+            Location = MyGeometry.FindLeftUpCornerCoord(p1, p2);
             this.p1 = p1;
             this.p2 = p2;
-            Length = MyGeometry.FindLengthBetweenPoints(p1, p2);
-            ResetLocation();
+            Length = MyGeometry.FindLengthBetweenPoints(P1, P2);
         }
 
 
 
-        protected void ResetLocation() {
-            PointF location = MyGeometry.FindLeftUpCornerCoord(P1.X, P1.Y, P2.X, P2.Y);
-            x = location.X;
-            y = location.Y;
+        internal override void Move(PointF newLocation) {
+            p1 = newLocation.Sum(P1.Substract(Location));
+            p2 = newLocation.Sum(P2.Substract(Location));
+            Location = newLocation;
         }
-        protected override void DrawFigure(Graphics screen, Pen pen) {
+
+
+        private protected override void Display(Graphics screen, Pen pen) {
             screen.DrawLine(pen, P1, P2);
         }
-
-
-        internal void Resize(PointF p1, PointF p2) {
-            InitializeFigure(p1, p2);
-        }
-        internal void Resize(float x1, float y1, float x2, float y2) {
-            InitializeFigure(new PointF(x1, y1), new PointF(x2, y2));
-        }
-
+        
     }
 }

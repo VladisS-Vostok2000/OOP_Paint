@@ -290,3 +290,20 @@ namespace CAD_Client {
 }
 //MainForm#46: Поменять таймер на MouseMowe
 //[Closed]: неактуально, пока используется Graphics.Clear()
+
+
+
+//[Вопросы]:
+//internal Pen Pen {
+//    set {
+//        if (value == null) {
+//            throw new ArgumentNullException();
+//        }
+//        if (value != pen) {
+//            pen = value;
+//        }
+//    }
+//    //??? pen имеет модификатор доступности блока set private, хотя по факту общедоступен.
+//    //Решено: pen можно менять как угодно, но присвоить ему null невозможно, так что ошибки исключены.
+//    get => pen;
+//}

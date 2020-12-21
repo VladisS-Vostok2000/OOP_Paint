@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace CAD_Client {
     internal class MyRectangle : MyPoligon {
-        private const int vetrexesCount = 4;
-        internal float Width { set; get; }
-        internal float Height { set; get; }
+        private const int vertexesCount = 4;
+        internal float Width { private protected set; get; }
+        internal float Height { private protected set; get; }
 
 
 
@@ -18,11 +18,11 @@ namespace CAD_Client {
             //???Повторяющийся код
             InitializeFigure(x1, y1, x2, y2);
         }
-        internal MyRectangle(in float x1, in float y1, in float x2, in float y2, Pen pen) : base(vetrexesCount, pen) {
+        internal MyRectangle(in float x1, in float y1, in float x2, in float y2, Pen pen) : base(vertexesCount, pen) {
             //???Повторяющийся код
             InitializeFigure(x1, y1, x2, y2);
         }
-        internal MyRectangle(in float x1, in float y1, in float x2, in float y2, Color color) : base(vetrexesCount, color) {
+        internal MyRectangle(in float x1, in float y1, in float x2, in float y2, Color color) : base(vertexesCount, color) {
             //???Повторяющийся код
             InitializeFigure(x1, y1, x2, y2);
         }
@@ -33,18 +33,14 @@ namespace CAD_Client {
         }
 
 
+
+        //????
         internal void Resize(in float x1, in float y1, in float x2, in float y2) {
             InitializeFigure(x1, y1, x2, y2);
         }
-        /// <summary>
-        /// Перенесёт верхний левый угол фигуры в заданную точку.
-        /// </summary>
-        internal void Move(PointF newPoint) {
-            x = newPoint.X;
-            y = newPoint.Y;
-        }
 
-        protected override void DrawFigure(Graphics screen, Pen pen) {
+
+        private protected override void Display(Graphics screen, Pen pen) {
             if (Width != 0 && Height != 0) {
                 if (IsFill) {
                     screen.FillRectangle(new SolidBrush(FillColor), X, Y, Width, Height);

@@ -79,7 +79,7 @@ namespace CAD_Client {
 
 
         private static readonly Pen polarPen = new Pen(Color.Lime, 1) { DashStyle = DashStyle.Dash };
-        private static readonly MyRay polarLine = new MyRay(polarPen);
+        private static readonly MyRay polarLine = new MyRay(polarPen, new PointF(0, 0), new PointF(1, 1));
 
         internal bool polarLineEnabled = true;
         internal bool PolarLineEnabled {

@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace CAD_Client {
+    /// <summary>
+    /// Замкнутая ломаная.
+    /// </summary>
     internal class MyPoligon : MyFigure {
         internal IReadOnlyList<PointF> Vertexes { get; }
         protected readonly PointF[] VertexesArray;
@@ -44,8 +47,16 @@ namespace CAD_Client {
         }
 
 
-        
-        protected override void DrawFigure(Graphics screen, Pen pen) {
+
+        internal override void Move(PointF newLocation) {
+            for (int i = 0; i < VertexesArray.Length; i++) {
+                VertexesArray[i] = newLocation.Sum(VertexesArray[i].Substract(Location));
+            }
+            Location = newLocation;
+        }
+
+
+        private protected override void Display(Graphics screen, Pen pen) {
             throw new NotImplementedException();
         }
 
