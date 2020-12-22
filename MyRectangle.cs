@@ -34,10 +34,8 @@ namespace CAD_Client {
 
 
 
-        //????
-        internal void Resize(in float x1, in float y1, in float x2, in float y2) {
-            InitializeFigure(x1, y1, x2, y2);
-        }
+        [Obsolete]
+        internal void Resize(in float x1, in float y1, in float x2, in float y2) => InitializeFigure(x1, y1, x2, y2);
 
 
         private protected override void Display(Graphics screen, Pen pen) {

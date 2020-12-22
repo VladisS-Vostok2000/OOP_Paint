@@ -14,13 +14,13 @@ using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
 
 namespace CAD_Client {
-    public sealed class ListBoxFigure {
-        public string DisplayMember { get; }
-        public int Id { get; }
+    internal sealed class ListBoxFigure {
+        internal string DisplayMember { get; }
+        internal int Id { get; }
 
 
 
-        public ListBoxFigure(MyFigure _object) {
+        internal ListBoxFigure(MyFigure _object) {
             Id = _object.Id;
             DisplayMember = $"[{_object.X},{_object.Y}]".PadRight(10) + _object.GetDescription();
         }

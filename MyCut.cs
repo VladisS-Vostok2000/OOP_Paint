@@ -31,8 +31,8 @@ namespace CAD_Client {
         internal PointF P2 {
             set {
                 if (value != p2) {
+                    p2 = value;
                     Location = MyGeometry.FindLeftUpCornerCoord(p1, value);
-
                 }
             }
             get {

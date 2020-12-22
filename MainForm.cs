@@ -14,24 +14,24 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
-using static CAD_Client.Debugger;
 using System.IO;
 
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
 //!!!Projekt#50: добавить масштаб
 //Projekt#40: добавить перемещение
 //!!!Пересмотреть snap: код не должен знать о существовании привязки
+//Projekt#02: добавить IReadOnlyMyContainer
+//Projekt#4?: инкапсулировать Tool в GUI_Form[MainForm]
 
 namespace CAD_Client {
     //!!!MainForm#20: добавить плавающие контролы
     internal sealed partial class GUI_Form : Form {
         private int scale = 1;
-        private int screenX;
-        private int screenY;
 
         private readonly MyClient code;
         private readonly MyCursor myCursor;
         private readonly MyScreen myScreen;
+        private int snapDistancePx = 10;
 
 
 
@@ -66,25 +66,47 @@ namespace CAD_Client {
             }
             else
             if (code.SelectedTool == Tool.Moving && e.Button == MouseButtons.Middle) {
-                myCursor.DoSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen), int.MaxValue);
-                PointToScreen(new Point(1, 1));
+                //myCursor.CreateSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen), int.MaxValue);
             }
         }
         private void MainFormPctrbxScreen_MouseMove(object sender, MouseEventArgs e) {
+            Debugger.Log($"Начат MainFormPctrbxScreen_MouseMove,");
+            Debugger.Log($"e.Location = ({e.X}; {e.Y})");
             code.AddSoftPoint(e.Location);
 
-            //int figCount = code.GetFiguresCount();
-            //if (figCount != 0) {
-            //    PointF vertex = code.FindNearestVertex(cursor);
-            //    //Привязка считается в отображаемых пикселях
-            //    ConvertRealCoordToPx(vertex, out Point vertexPx);
-            //    bool isNearlyVertex = IsPxInSquare(cursor, vertexPx, snapDistancePx);
-            //    if (isNearlyVertex) {
-            //        //Snap выполняется для экранных координат.
-            //        Point vertexScreenLocation = PointToScreen(vertexPx);
-            //        myCursor.DoSnap(vertexScreenLocation, snapDistancePx);
-            //    }
-            //}
+            #region Привязка
+            if (myCursor.Snapped) {
+                Point mouseScreenLocation = (sender as Control).PointToScreen(e.Location);
+                Debugger.Log($"mouseScreenLocation = ({mouseScreenLocation.X}; {mouseScreenLocation.Y})");
+                myCursor.ContinueSnap(mouseScreenLocation);
+                if (code.SelectedTool == Tool.Moving) {
+                    myScreen.X += myCursor.Cumulate.X;
+                    myScreen.Y += myCursor.Cumulate.Y;
+                }
+                return;
+            }
+
+            //Создание привязки
+            //???Не очень нравится это решение. Почему ФОРМА должна знать о количестве фигур?
+            if (e.Button == MouseButtons.Middle) {
+                //????SomeCodeHere
+            }
+            else
+            if (code.GetFiguresCount() != 0 && code.SelectedTool == Tool.None) {
+                //Всё считается с реальными координатами, но привязка производится экранными
+                PointF vertex = code.FindNearestVertex(e.Location);
+                Debugger.Log($"nearestVertex: ({vertex.X}; {vertex.Y})");
+                Point vertexPx = vertex.RealToPx();
+                Debugger.Log($"nearestPxVertex: ({vertexPx.X}; {vertexPx.Y})");
+                bool IsVertexClose = myScreen.CheckSnap(e.Location, vertexPx, snapDistancePx);
+                if (IsVertexClose) {
+                    //Snap выполняется для экранных координат.
+                    Point vertexScreenLocation = (sender as Control).PointToScreen(vertex.RealToPx());
+                    Debugger.Log($"vertexScreenLocation: ({vertexScreenLocation.X}; {vertexScreenLocation.Y})");
+                    myCursor.CreateSnap(vertexScreenLocation, snapDistancePx);
+                }
+            }
+            #endregion
 
             MainFormSttsstpLblMouseX.Text = e.Location.X.ToString().PadLeft(3);
             MainFormSttsstpLblMouseY.Text = e.Location.Y.ToString().PadLeft(3);
@@ -103,40 +125,13 @@ namespace CAD_Client {
             code.SetPoint(e.Location);
         }
 
-        /// <summary>
-        /// Создаст, продолжит или прервёт привязку на экране при соответствущих условиях.
-        /// </summary>
-        private void Snap() {
-            //????
-            //if (code.SelectedTool == Tool.Moving) {
-            //    screenX += myCursor.Cumulate.X;
-            //    screenY += myCursor.Cumulate.Y;
-            //}
-            //????
-            //if (e.Button == MouseButtons.None)
-            {
-                bool nearVertex = IsPointInSquare(cursor, vertex, snapDistancePx);
-                if (nearVertex) {
-                    //Snap выполняется для экранных координат.
-                    Point vertexScreenLocation = System.Windows.Forms.Control.PointToScreen(vertexPx);
-                    myCursor.DoSnap(vertexScreenLocation, snapDistancePx);
-                }
-            }
-            //Snap выполняется для экранных координат.
-            Point vertexScreenLocation = System.Windows.Forms.Control.PointToScreen(vertexPx);
-            myCursor.DoSnap(vertexScreenLocation, snapDistancePx);
-        }
+
         private void MainFormTmr_Tick(object sender, EventArgs e) {
             MainFromPctrbxScreen.Image = myScreen.RedrawFigures(code.GetFiguresList(), code.GetSupportFiguresList(), code.GetPolarLine());
         }
         /// <summary>
         /// Нарисует сетку на экране с центром координат в (0; 0).
         /// </summary>
-        
-
-
-
-
         #endregion
 
         #region Кнопки
@@ -179,8 +174,6 @@ namespace CAD_Client {
             foreach (int index in (sender as ListBox).SelectedIndices) {
                 code.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
             }
-
-            code.DrawFigures(screen);
         }
 
         private void MainFormTlstrpSpltbttnPolarLine_Click(object sender, EventArgs e) {
@@ -252,7 +245,6 @@ namespace CAD_Client {
             }
             else
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Finished) {
-                code.DrawFigures(screen);
                 MainFormSttsstpLblHint.Text = "Успешно.";
             }
         }
@@ -279,13 +271,16 @@ namespace CAD_Client {
 
 
         private void button1_Click(object sender, EventArgs e) {
-            screenX += 2;
-            screenY += 2;
+            
+        }
+        private void button1_MouseUp(object sender, MouseEventArgs e) {
+            //Cursor.Position = (sender as Control).PointToScreen(e.Location);
         }
 
         private void MainFormBttnMove_Click(object sender, EventArgs e) {
             code.SelectedTool = Tool.Moving;
         }
+
     }
 }
 //MainForm#46: Поменять таймер на MouseMowe

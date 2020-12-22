@@ -19,12 +19,13 @@ namespace CAD_Client {
 
 
 
-        protected override void Display(Graphics screen, Pen pen) {
+        private protected override void Display(Graphics screen, Pen pen) {
             screen.DrawEllipse(pen, X, Y, 2, 2);
         }
 
         internal override void Move(PointF newLocation) {
             throw new NotImplementedException();
         }
+
     }
 }

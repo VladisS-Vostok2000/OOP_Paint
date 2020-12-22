@@ -13,13 +13,13 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
 namespace CAD_Client {
-    public sealed class ComboboxBuildingMethod {
-        public readonly BuildingMethod BuildingMethod;
-        public string DisplayMember { get; }
+    internal sealed class ComboboxBuildingMethod {
+        internal readonly BuildingMethod BuildingMethod;
+        internal string DisplayMember { get; }
 
 
 
-        public ComboboxBuildingMethod(BuildingMethod _buildingMethod) {
+        internal ComboboxBuildingMethod(BuildingMethod _buildingMethod) {
             BuildingMethod = _buildingMethod;
             DisplayMember = _buildingMethod.GetDescription();
         }

@@ -14,22 +14,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
-
+//MyClient#41: вычленить SnapPoint из MainCode[MyClient]
 //!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
 namespace CAD_Client {
 
     internal sealed class MyClient {
-        internal delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
-        internal delegate void FigureHandler(Tool figure, EventArgs e);
-        internal delegate void ConstructorOperationStatusHandler(ConstructorOperationStatus ConstructorOperationStatus, EventArgs e);
-        #region API
-        internal event FigureHandler SelectedToolChanged;
-        internal event BuildingMethodHandler SelectedBuildingVariantChanged;
-        internal event EventHandler FiguresListChanged;
-        internal event ConstructorOperationStatusHandler ConstructorOperationStatusChanged;
-        internal event EventHandler PolarLineEnablingChanged;
-        #endregion
-
         private Tool selectedTool;
         internal Tool SelectedTool {
             set {
@@ -68,19 +57,35 @@ namespace CAD_Client {
 
 
         internal readonly MyListContainer<MyFigure> figuresContainer = new MyListContainer<MyFigure>();
+        //!!!Исправить List на MyContainer
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
-
 
         private static readonly Pen supportPen = new Pen(Color.Gray) { Width = 1, DashStyle = DashStyle.Dash };
         private static readonly Pen supportFigurePen = new Pen(Color.White, 2);
         private static readonly Pen figurePen = new Pen(Color.Black);
         private static readonly Pen selectPen = new Pen(Color.White) { Width = 1, DashStyle = DashStyle.Dash };
 
-
         private static readonly Pen polarPen = new Pen(Color.Lime, 1) { DashStyle = DashStyle.Dash };
-        private static readonly MyRay polarLine = new MyRay(polarPen, new PointF(0, 0), new PointF(1, 1));
+        private static readonly MyRay polarLine = new MyRay(polarPen, new PointF(0, 0), new PointF(1, 1)) { IsHide = true };
 
+
+        internal delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
+        internal delegate void FigureHandler(Tool figure, EventArgs e);
+        internal delegate void ConstructorOperationStatusHandler(ConstructorOperationStatus ConstructorOperationStatus, EventArgs e);
+
+        #region API
+        internal event FigureHandler SelectedToolChanged;
+        internal event BuildingMethodHandler SelectedBuildingVariantChanged;
+        internal event EventHandler FiguresListChanged;
+        internal event ConstructorOperationStatusHandler ConstructorOperationStatusChanged;
+        internal event EventHandler PolarLineEnablingChanged;
+        #endregion
+
+
+        /// <summary>
+        /// Построение и прорисовка полярной линии.
+        /// </summary>
         internal bool polarLineEnabled = true;
         internal bool PolarLineEnabled {
             set {
@@ -94,17 +99,8 @@ namespace CAD_Client {
             }
         }
 
-        internal MyRay GetPolarLine() {
-            throw new NotImplementedException();
-        }
 
-        internal MyListContainer<MyFigure> GetSupportFiguresList() {
-            throw new NotImplementedException();
-        }
 
-        internal MyListContainer<MyFigure> GetFiguresList() {
-            throw new NotImplementedException();
-        }
 
         internal MyClient() {
             figuresContainer.ContainerChanged += FiguresContainer_ContainerChanged;
@@ -115,9 +111,10 @@ namespace CAD_Client {
         private void FiguresContainer_ContainerChanged(object sender, EventArgs e) => FiguresListChanged?.Invoke(sender, e);
 
 
+        #region Построение
         //!!!MyClient#10: реализовать динамический показ сообщений при движении мыши тоже (ConstructorOperationStatus += Continius)
         //!!!MyClient#01: Запретить выделение "линией"
-        /// <param name="pointOnPolar"> Должна ли введённая точка быть спроецирована на ближайщую полярной прямую. </param>
+        /// <param name="pointOnPolar"> Должна ли введённая точка быть спроецирована на ближайшую полярной прямую. </param>
         internal void AddSoftPoint(in PointF softPoint, bool pointOnPolar = true) {
             if (currConstructorStage == 0 && SelectedTool != Tool.None) {
                 return;
@@ -188,12 +185,18 @@ namespace CAD_Client {
                         case BuildingMethod.CutTwoPoints:
                             switch (currConstructorStage) {
                                 case 1:
-                                    PointF target = softPoint;
+                                    PointF target;
                                     if (PolarLineEnabled) {
-                                        AddPolarLine(softPoint);
-                                        if (pointOnPolar) {
+                                        DirectPolarLine(softPoint);
+                                        if (pointOnPolar && !polarLine.IsPoint) {
                                             target = MakeProjectionOnPolarLine(softPoint);
                                         }
+                                        else {
+                                            target = softPoint;
+                                        }
+                                    }
+                                    else {
+                                        target = softPoint;
                                     }
 
                                     (supportFigures[0] as MyCut).P2 = target;
@@ -205,6 +208,7 @@ namespace CAD_Client {
                 default: throw new NotImplementedException($"Фигура {SelectedTool} не реализована.");
             }
         }
+
         /// <summary> Задаст следующую точку построения. </summary>
         /// <param name="pointOnPolar"> Должна ли точка быть спроецирована на полярной прямую </param>
         internal void SetPoint(in Point target, bool pointOnPolar = true) {
@@ -317,6 +321,13 @@ namespace CAD_Client {
                                     pointsList.Add(target);
                                     supportFigures.Add(new MyCut(supportFigurePen, pointsList[0], pointsList[0]));
                                     currConstructorStage++;
+
+                                    //Полярная линия отслеживает построение даже будучи выключенной, т.к. может быть включена в процессе.
+                                    polarLine.Location = target;
+                                    if (polarLineEnabled) {
+                                        polarLine.IsHide = false;
+                                    }
+
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Continious, $"Первая точка: ({pointsList[0].X}, {pointsList[0].Y}). Задайте вторую точку");
                                     return;
                                 case 1:
@@ -353,8 +364,43 @@ namespace CAD_Client {
                 default: throw new NotImplementedException($"Для фигуры {SelectedTool} нет построения.");
             }
         }
+        /// <summary>
+        /// Свернёт конструктор построения, очистит список вспомогательных фигур.
+        /// </summary>
+        private void CloseConstructor() {
+            currConstructorStage = 0;
+            supportFigures.Clear();
+            pointsList.Clear();
+            polarLine.IsHide = true;
+        }
 
+        /// <summary>
+        /// Направляет полярную линию с последней точки построения в сторону данной.
+        /// </summary>
+        private void DirectPolarLine(in PointF vector) {
+            if (currConstructorStage == 0) {
+                throw new Exception("Построение не ведётся, но производится создание полярной линии.");
+            }
+            if (!polarLineEnabled) {
+                throw new Exception("Построение полярной линии не ведётся, но запрошено вопреки.");
+            }
 
+            PointF p1 = pointsList[pointsList.Count - 1];
+            try {
+                //????сократить p2
+                PointF p2 = MyGeometry.DirectToPolarLine(p1, vector);
+                polarLine.Vector = p2;
+            }
+            catch (ArgumentException) { }
+        }
+
+        /// <summary> Вернёт спроецированную точку на текущую полярную линию. </summary>
+        /// <exception cref="Exception"> Полярная линия отсуствует </exception>
+        /// <param name="p3"> Точка, выпускающая перпендикуляр </param>
+        private PointF MakeProjectionOnPolarLine(in PointF p3) => MyGeometry.MakePointProjectionOnLine(polarLine.Location, polarLine.Vector, p3);
+        #endregion
+
+        #region API
         internal void SelectFigure(in int id) {
             for (int i = 0; i < figuresContainer.Count; i++) {
                 if (figuresContainer[i].Id == id) {
@@ -374,40 +420,18 @@ namespace CAD_Client {
         internal int GetFiguresCount() {
             return figuresContainer.Count;
         }
-
-        ////MyClient#41: вычленить SnapPoint из MainCode
-        //internal void AddSnapPoint(in Point location) {
-        //    snapPoint.Location = new Point(location.X - 3, location.Y - 3);
-        //    snapPoint.IsHide = false;
-        //}
-        //internal void RemoveSnapPoint() {
-        //    snapPoint.IsHide = true;
-        //}
-
-        /// <summary> Выстраивает полярную линию с последней точки построения в сторону данной. </summary>
-        private void AddPolarLine(in PointF vector) {
-            if (currConstructorStage == 0 || pointsList.Count == 0) {
-                throw new Exception();
-            }
-
-            PointF p1 = pointsList[pointsList.Count - 1];
-            PointF p2 = MyGeometry.DirectToPolarLine(p1, vector);
-            polarLine.InitializeFigure(p1, p2);
-            polarLine.IsHide = false;
+        internal MyRay GetPolarLine() {
+            return polarLine;
         }
-
-        /// <summary> Вернёт спроецированную точку на текущую полярную линию. </summary>
-        /// <exception cref="Exception"> Полярная линия отсуствует </exception>
-        /// <param name="p3"> Точка, выпускающая перпендикуляр </param>
-        private PointF MakeProjectionOnPolarLine(in PointF p3) {
-            if (polarLine.IsHide) {
-                throw new Exception();
-            }
-
-            return MyGeometry.MakePointProjectionOnLine(polarLine.P1, polarLine.P2, p3);
+        internal List<MyFigure> GetSupportFiguresList() {
+            return supportFigures;
         }
+        internal MyListContainer<MyFigure> GetFiguresList() {
+            return figuresContainer;
+        }
+        #endregion
 
-
+        #region Другое
         /// <summary>
         /// Вернёт координаты ближайшей к точке вершины фигуры.
         /// </summary>
@@ -421,12 +445,11 @@ namespace CAD_Client {
         /// <exception cref="Exception"> Вершина не найдена при непустом листе. </exception>
         /// <exception cref="ArgumentNullException"> Лист null. </exception>
         internal PointF FindNearestVertex(MyListContainer<MyFigure> figures, PointF target) {
-            //???Почему-то методу очень плохо.
             if (figures == null) {
                 throw new ArgumentNullException();
             }
             if (figures.Count == 0) {
-                throw new Exception();
+                throw new Exception("Фигур нет, но проверка на поиск вершины произошла.");
             }
 
             float minDistance = float.PositiveInfinity;
@@ -481,10 +504,31 @@ namespace CAD_Client {
             }
             return false;
         }
+        /// <summary>
+        /// Находит все фигуры на заданном от цели расстоянии
+        /// </summary>
+        /// <returns>
+        /// Целочисленный массив с индексами figures
+        /// </returns>
+        private List<int> FindFiguresNearPoint(in PointF target, in float interval = 5) {
+            var outlist = new List<int>();
+            for (int i = 0; i < figuresContainer.Count; i++) {
+                if (figuresContainer[i] is MyCut) {
+                    var cut = figuresContainer[i] as MyCut;
+                    PointF[] area = MyGeometry.FindCutArea(cut.P1, cut.P2, interval);
+                    bool isInArea = MyGeometry.IsPointInArea(target, area);
+                    if (isInArea) {
+                        outlist.Add(i);
+                    }
+                }
+            }
+
+            return outlist;
+        }
 
 
-        //!!!MyClient#45: добавить выделение прямоугольника и круга
-        //!!!MyClient#07: расчленить FindFiguresTouchesRect на MyGeomtry и MainCode
+        //!!!MyClient: добавить выделение прямоугольника и круга
+        //!!!MyClient: расчленить FindFiguresTouchesRect на MyGeomtry и MainCode
         private List<MyFigure> FindFiguresTouchesRect(in Point p1, in Point p2) {
             var outlist = new List<MyFigure>();
 
@@ -518,38 +562,7 @@ namespace CAD_Client {
 
             return outlist;
         }
-
-
-        /// <summary>
-        /// Находит все фигуры на заданном от цели расстоянии
-        /// </summary>
-        /// <returns>
-        /// Целочисленный массив с индексами figures
-        /// </returns>
-        private List<int> FindFiguresNearPoint(in PointF target, in float interval = 5) {
-            var outlist = new List<int>();
-            for (int i = 0; i < figuresContainer.Count; i++) {
-                if (figuresContainer[i] is MyCut) {
-                    var cut = figuresContainer[i] as MyCut;
-                    PointF[] area = MyGeometry.FindCutArea(cut.P1, cut.P2, interval);
-                    bool isInArea = MyGeometry.IsPointInArea(target, area);
-                    if (isInArea) {
-                        outlist.Add(i);
-                    }
-                }
-            }
-
-            return outlist;
-        }
-
-
-        private void CloseConstructor() {
-            //CurrBuildingVariant = BuildingVariants.None;
-            currConstructorStage = 0;
-            supportFigures.Clear();
-            pointsList.Clear();
-            polarLine.IsHide = true;
-        }
+        #endregion
 
     }
 }

@@ -6,7 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 namespace CAD_Client {
     internal class MyRay : MyFigure {
-        private PointF vector;
+        internal PointF Vector { set; get; }
+        /// <summary>
+        /// Вернёт true, если начало и точка направления совпадают.
+        /// </summary>
+        internal bool IsPoint => Vector == Location;
 
 
 
@@ -30,19 +34,21 @@ namespace CAD_Client {
             }
 
             Location = start;
-            this.vector = vector;
+            Vector = vector;
         }
 
 
 
         internal override void Move(PointF newLocation) {
-            vector = newLocation.Sum(vector.Substract(Location));
+            Vector = newLocation.Sum(Vector.Substract(Location));
             Location = newLocation;
         }
         
         
         private protected override void Display(Graphics screen, Pen pen) {
-            screen.DrawLine(pen, Location, vector.Multiply(1000));
+            if (!IsPoint) {
+                screen.DrawLine(pen, Location, Vector.Sum(Vector.Substract(Location).Multiply(1000)));
+            }
         }
 
     }

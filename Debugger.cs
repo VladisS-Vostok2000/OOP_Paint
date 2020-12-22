@@ -19,17 +19,20 @@ using System.IO;
 
 namespace CAD_Client {
     public static class Debugger {
-        private static FileStream fileStream = new FileStream(@"C:\OOP_PaintLog.log", FileMode.Create);
+        private static FileStream fileStream = new FileStream(@"C:\OOP_PaintLog.log", FileMode.Create, FileAccess.Write);
         private static StreamWriter streamWriter = new StreamWriter(fileStream);
 
 
 
         public static void Log(string log) {
-            streamWriter.Write(log + "\r\n");
+            //using(var streamWriter = new StreamWriter(fileStream)) ;Это не работает
+            streamWriter.Write(log + "\r\n"); //А тут норм
         }
         public static void Stop() {
             streamWriter.Close();
         }
+
+
 
     }
 }

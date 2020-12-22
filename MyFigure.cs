@@ -15,7 +15,7 @@ namespace CAD_Client {
     /// цветопредставления. Локация содержит верхнюю левую точку описывающего горизонтального прямоугольника фигуру. При
     /// задании локации все соответствующие геометрические параметры сдвигаются, т.к. считаются не относительно локации.
     /// </summary>
-    //MyFigure#20: реализовать сдвиг фигур по локации
+    //???Отличие Private protected от public в internal классе?
     internal abstract class MyFigure : IDisposable {
         internal static int FiguresCount { private set; get; }
         internal int Id { private set; get; }

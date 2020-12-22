@@ -77,7 +77,7 @@ namespace CAD_Client {
         }
 
 
-        protected override void Display(Graphics screen, Pen pen) {
+        private protected override void Display(Graphics screen, Pen pen) {
             screen.DrawEllipse(pen, X, Y, Radius * 2, Radius * 2);
         }
 

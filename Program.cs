@@ -14,6 +14,7 @@ namespace CAD_Client {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new GUI_Form(new MyClient()));
+            Debugger.Stop();
         }
     }
 }

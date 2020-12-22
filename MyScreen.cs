@@ -22,11 +22,11 @@ namespace CAD_Client {
         /// <summary>
         /// Реальная координата левой верхней точки дисплея.
         /// </summary>
-        internal int X { private set; get; }
+        internal int X { set; get; }
         /// <summary>
         /// Реальная координата левой верхней точки дисплея.
         /// </summary>
-        internal int Y { private set; get; }
+        internal int Y { set; get; }
         internal int Width { private set; get; }
         internal int Height { private set; get; }
 
@@ -47,7 +47,6 @@ namespace CAD_Client {
         //}
         //internal bool Snapped;
         private static readonly MyRectangle snap = new MyRectangle(0, 0, 9, 9) { IsHide = true, Pen = new Pen(Color.Green, 2) };
-        private readonly int snapDistancePx = 5;
         private readonly MyCursor myCursor;
 
 
@@ -57,8 +56,8 @@ namespace CAD_Client {
             screen = Graphics.FromImage(bitmap);
             Width = this.bitmap.Size.Width;
             Height = this.bitmap.Size.Height;
-            X = -Width / 2;
-            Y = -Height / 2;
+            X = -5;//-Width / 2;
+            Y = -5;//-Height / 2;
 
             this.myCursor = myCursor;
         }
@@ -70,9 +69,11 @@ namespace CAD_Client {
         /// Прорисует все существующие фигуры.
         /// </summary>
         /// <returns><see cref="Bitmap"/> изображение. </returns>
-        internal Bitmap RedrawFigures(MyListContainer<MyFigure> figures, MyListContainer<MyFigure> supportFigures, MyRay polarLine) {
-            //???Выглядит как ужас.
+        internal Bitmap RedrawFigures(MyListContainer<MyFigure> figures, List<MyFigure> supportFigures, MyRay polarLine) {
+            //???Сигнатура выглядит как ужас.
             screen.Clear(Color.FromArgb(250, 64, 64, 64));
+            DrawGrid();
+            polarLine.Draw(screen);
             foreach (var figure in figures) {
                 figure.Draw(screen);
             }
@@ -80,25 +81,37 @@ namespace CAD_Client {
                 figure.Draw(screen);
             }
             DrawSnapPoint();
-            DrawGrid();
-            polarLine.Draw(screen);
             return bitmap;
         }
         /// <summary>
         /// Нарисует сетку на экране размерностью <see cref="gridSizePx"/>.
         /// </summary>
         private void DrawGrid() {
+            //-------------------------------------------------------------------------------------------------------------------------------------------------------
+            //Дано расположение пиксельной координаты в реальных: (0; 0)* = (X; Y). Тогда:
+            //delta = (X - 0; Y - 0) = (X; Y) - смещение пиксельных координат от реальных.
+            //delta % gridPxSize = (X; Y) % gridPxSize - в частном порядке смещение левого верхнего угла от центра координат в пикселях, но для единичного разряда (узлы сетки)
+            //offset - это координаты первого вхождения прямой через центры координат единичного разряда (узлов сетки).
+            //Когда смещение нулевое или отрицательное, т.е. реальный центр координат ниже или правее, модуль смещения == offset.
+            //Иначе это расстояние до левого, т.е. отрицательного узла. Тогда offset = gridPxSize - смещение, т.е. следующее вхождение.
+            //-------------------------------------------------------------------------------------------------------------------------------------------------------
+
             //Вертикальные
-            Point delta = new Point(X % gridSizePx, Y % gridSizePx);
-            for (int i = gridSizePx - delta.X; i < bitmap.Width; i += gridSizePx) {
+            int i = CalculateOffset(X, gridSizePx);
+            for (; i < bitmap.Width; i += gridSizePx) {
                 screen.DrawLine(gridPen, i, 0, i, bitmap.Height);
             }
 
+            i = CalculateOffset(Y, gridSizePx);
             //Горизонтальные
-            for (int i = gridSizePx - delta.Y; i < bitmap.Height; i += gridSizePx) {
+            for (; i < bitmap.Height; i += gridSizePx) {
                 screen.DrawLine(gridPen, 0, i, bitmap.Width, i);
             }
         }
+        /// <summary>
+        /// Вернёт координаты первого "узла" для прорисовки сетки соответствующей координаты.
+        /// </summary>
+        private static int CalculateOffset(in int coord, in int gridSizePx) => coord % gridSizePx <= 0 ? Math.Abs(coord % gridSizePx) : gridSizePx - coord % gridSizePx;
         /// <summary>
         /// Визуализирует точку привязки.
         /// </summary>
@@ -107,18 +120,19 @@ namespace CAD_Client {
                 return;
             }
 
-            snap.Location = new PointF(myCursor.SnapLocation.X - snapDistancePx, myCursor.SnapLocation.Y - snapDistancePx);
+            snap.Location = new PointF(myCursor.SnapLocation.X - snap.Width / 2, myCursor.SnapLocation.Y - snap.Width / 2);
             snap.Draw(screen);
         }
         #endregion
 
         #region Snap
         /// <summary>
-        /// Проверит, следует ли создавать привязку курсора к заданной вершине в пиксельном отображении. 
+        /// Проверит, следует ли создавать привязку курсора к заданному пикселю. 
         /// </summary>
         /// <param name="cursor"> Положение курсора мыши относительно <see cref="Bitmap"/>. </param>
-        /// <param name="vertex"> Положение ближайшей к курсору вершины относительно <see cref="Bitmap"/>. </param>
-        private bool CheckSnap(Point cursor, Point vertex) {
+        /// <param name="pxLocation"> Положение пикселя относительно <see cref="Bitmap"/>. </param>
+        /// <param name="snapDistancePx"> Достаточное расстояние от курсора до пикселя для создания привязки. </param>
+        internal bool CheckSnap(Point cursor, Point pxLocation, int snapDistancePx) {
             if (myCursor.Snapped) {
                 return true;
             }
@@ -128,21 +142,12 @@ namespace CAD_Client {
                 return false;
             }
 
-            bool nearVertex = IsPointInSquare(cursor, vertex, snapDistancePx);
+            bool nearVertex = IsPointInSquare(cursor, pxLocation, snapDistancePx);
             if (nearVertex) {
                 return true;
             }
 
             return false;
-        }
-        /// <summary>
-        /// Возвращает реальное расположение точки в отображаемое пиксельное экранное.
-        /// </summary>
-        private void ConvertRealCoordToPx(in PointF location, out Point pxLocation) {
-            pxLocation = new Point {
-                X = (int)Math.Round(location.X),
-                Y = (int)Math.Round(location.Y)
-            };
         }
         /// <summary>
         /// Определит, лежит ли пиксель в квадрате (или на его грани) с заданным центром и расстоянием от грани до центра в пикселях.

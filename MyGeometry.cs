@@ -19,9 +19,16 @@ using System.IO;
 
 namespace CAD_Client {
     internal static class MyGeometry {
-        /// <summary> По двум точкам находит ближайшую горизонтальную, вертикальную или диагональную прямую, проходящие через первую точку. </summary>
+        /// <summary>
+        /// По двум точкам находит ближайшую горизонтальную, вертикальную или диагональную прямую, проходящие через первую точку.
+        /// </summary>
         /// <returns> Точка, лежащая на ближайшей прямой с направлением второй точки. </returns>
+        /// <exception cref="ArgumentException"> Точки совпадают. </exception>
         internal static PointF DirectToPolarLine(in PointF p1, in PointF p2) {
+            if (p1 == p2) {
+                throw new ArgumentException("Точки совпадают.");
+            }
+
             float a = p2.X - p1.X;
             float b = p2.Y - p1.Y;
             float k = b / a;
@@ -299,18 +306,39 @@ namespace CAD_Client {
 
             return new PointF(x, y);
         }
-        /// <summary>
-        /// Вычитает из экземпляра соответствующие координаты заданной <see cref="PointF"/>.
-        /// </summary>
-        internal static PointF Substract(this PointF p1, in PointF p2) => new PointF(p1.X - p2.X, p1.Y - p2.Y);
+
+
         /// <summary>
         /// Складывает из экземпляра и заданной <see cref="PointF"/> соответствующие координаты.
         /// </summary>
         internal static PointF Sum(this PointF p1, in PointF p2) => new PointF(p1.X + p2.X, p1.Y + p2.Y);
         /// <summary>
+        /// Вычитает из экземпляра соответствующие координаты заданной <see cref="PointF"/>.
+        /// </summary>
+        internal static PointF Substract(this PointF p1, in PointF p2) => new PointF(p1.X - p2.X, p1.Y - p2.Y);
+        /// <summary>
         /// Вернёт точку с помноженными координатами на заданное число.
         /// </summary>
         internal static PointF Multiply(this PointF p1,in float factor) => new PointF(p1.X * factor, p1.Y * factor);
+        /// <summary>
+        /// Возвращает координаты пиксельного оторбражения реальной точки.
+        /// </summary>
+        internal static Point RealToPx(this PointF p1) => new Point((int)Math.Round(p1.X), (int)Math.Round(p1.Y));
+
+
+        /// <summary>
+        /// Складывает из экземпляра и заданной <see cref="Point"/> соответствующие координаты.
+        /// </summary>
+        internal static Point Sum(this Point p1, in Point p2) => new Point(p1.X + p2.X, p1.Y + p2.Y);
+        /// <summary>
+        /// Вычитает из экземпляра соответствующие координаты заданной <see cref="Point"/>.
+        /// </summary>
+        internal static Point Substract(this Point p1, in Point p2) => new Point(p1.X - p2.X, p1.Y - p2.Y);
+        /// <summary>
+        /// Вернёт точку с помноженными координатами на заданное число.
+        /// </summary>
+        internal static Point Multiply(this Point p1, in int factor) => new Point(p1.X * factor, p1.Y * factor);
+
 
     }
 }
