@@ -50,9 +50,10 @@
     <Compile Include="ConstructorOperationStatus.cs" />
     <Compile Include="Debugger.cs" />
     <Compile Include="Dummy.cs" />
-    <Compile Include="FiguresEnum.cs" />
+    <Compile Include="MyScreen.cs" />
+    <Compile Include="ToolEnum.cs" />
     <Compile Include="ListBoxFigure.cs" />
-    <Compile Include="MainCode.cs" />
+    <Compile Include="MyClient.cs" />
     <Compile Include="MyCursor.cs" />
     <Compile Include="MyCut.cs" />
     <Compile Include="MyFigure.cs" />
@@ -63,8 +64,10 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MyCircle.cs" />
+    <Compile Include="MyGeometry.cs" />
     <Compile Include="MyListContainer.cs" />
     <Compile Include="MyPoint.cs" />
+    <Compile Include="MyPoligon.cs" />
     <Compile Include="MyRay.cs" />
     <Compile Include="MyRectangle.cs" />
     <Compile Include="Program.cs" />
@@ -76,11 +79,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <CustomToolNamespace>CAD_Client.Properties</CustomToolNamespace>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
+      <CustomToolNamespace>CAD_Client</CustomToolNamespace>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

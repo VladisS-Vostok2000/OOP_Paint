@@ -6,12 +6,11 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-namespace OOP_Paint {
-    public class MyCircle : MyFigure {
-        private const Int32 vetrexesCount = 0;
-        protected Single radius;
-        public Single Radius {
+namespace CAD_Client {
+    [Obsolete("Тяжело поддерживать много фигур", false)]
+    internal class MyCircle : MyFigure {
+        protected float radius;
+        internal float Radius {
             set {
                 if (value != radius) {
                     X += Radius - value;
@@ -23,7 +22,7 @@ namespace OOP_Paint {
                 return radius;
             }
         }
-        public PointF Center {
+        internal PointF Center {
             set {
                 X = Math.Abs(value.X - (X + Radius)) + X;
                 Y = Math.Abs(value.Y - (Y + Radius)) + Y;
@@ -33,59 +32,57 @@ namespace OOP_Paint {
             }
         }
 
+        
 
         /// <summary>
         /// Ограничивающий прямоугольник
         /// </summary>
-        public MyCircle(Single _x1, Single _y1, Single _x2, Single _y2, Pen _pen) : base(_pen, vetrexesCount) {
+        internal MyCircle(in float x1, in float y1, in float x2, in float y2, Pen pen) : base(pen) {
             //???Повторяющийся код
-            InitializeFigure(_x1, _y1, _x2, _y2);
+            InitializeFigure(x1, y1, x2, y2);
         }
         /// <summary>
         /// Ограничивающий прямоугольник
         /// </summary>
-        public MyCircle(Single _x1, Single _y1, Single _x2, Single _y2, Color _color) : base(_color, vetrexesCount) {
+        internal MyCircle(in float x1, in float y1, in float x2, in float y2, Color color) : base(color) {
             //???Повторяющийся код
-            InitializeFigure(_x1, _y1, _x2, _y2);
+            InitializeFigure(x1, y1, x2, y2);
         }
         /// <summary>
         /// Центр, радиус
         /// </summary>
-        public MyCircle(Pen _pen, Point _center, Single _radius) : base(_pen, vetrexesCount) {
-            InitializeFigure(_center, _radius);
+        internal MyCircle(Pen pen, in Point center, in float radius) : base(pen) {
+            InitializeFigure(center, radius);
         }
         /// <summary>
-        /// Инициализирует вписанную в прямоугольник окружность в угол первой точки
+        /// Инициализирует вписанную в прямоугольник окружность в угол первой точки.
         /// </summary>
-        public void InitializeFigure(Single _x1, Single _y1, Single _x2, Single _y2) {
-            (PointF p1, PointF p2) = CutCoordinatesRectangleToSquare(_x1, _y1, _x2, _y2);
-            {
-                Radius = Math.Abs(p1.X - p2.X) / 2;
-                Location = FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
-            }
+        internal void InitializeFigure(in float x1, in float y1, in float x2, in float y2) {
+            (PointF p1, PointF p2) = MyGeometry.CutCoordinatesRectangleToSquare(x1, y1, x2, y2);
+            float radius = Math.Abs(p1.X - p2.X) / 2;
+            PointF center = MyGeometry.FindLeftUpCornerCoord(p1.X, p1.Y, p2.X, p2.Y);
+            InitializeFigure(center, radius);
         }
-        protected void InitializeFigure(PointF _center, Single _radius) {
-            Radius = _radius;
-            Center = _center;
-        }
-
-
-        public void Resize(Single _x1, Single _y1, Single _x2, Single _y2) {
-            //???Повторяющийся код
-            InitializeFigure(_x1, _y1, _x2, _y2);
-        }
-        public void Resize(PointF _center, Single _radius) {
-            //???Повторяющийся код
-            InitializeFigure(
-                _center,
-                _radius
-            );
+        protected void InitializeFigure(in PointF center, in float radius) {
+            Radius = radius;
+            Center = center;
         }
 
 
-        protected override void DrawFigure(Graphics _screen, Pen _pen) {
-            _screen.DrawEllipse(_pen, X, Y, Radius * 2, Radius * 2);
+        internal void Resize(in float x1, in float y1, in float x2, in float y2) {
+            InitializeFigure(x1, y1, x2, y2);
+        }
+        internal void Resize(in PointF center, in float radius) {
+            InitializeFigure(center, radius );
         }
 
+
+        private protected override void Display(Graphics screen, Pen pen, Point center) {
+            screen.DrawEllipse(pen, X - center.X, Y - center.Y, Radius * 2, Radius * 2);
+        }
+
+        internal override void Move(PointF newLocation) {
+            throw new NotImplementedException();
+        }
     }
 }

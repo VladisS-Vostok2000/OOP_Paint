@@ -12,14 +12,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
+using static CAD_Client.ToolEnum;
 
-namespace OOP_Paint {
-    public class MyCut : MyFigure{
-        private const Int32 VetrexesCount = 2;
-        private PointF p1;
-        public PointF P1 { 
-            set {
+namespace CAD_Client {
+    internal class MyCut : MyFigure {
+        private protected PointF p1;
+        internal PointF P1 { 
+            private protected set {
                 if (value != p1) {
                     InitializeFigure(value, P2);
                 }
@@ -28,56 +27,53 @@ namespace OOP_Paint {
                 return p1;
             }
         }
-        private PointF p2;
-        public PointF P2 {
+        private protected PointF p2;
+        internal PointF P2 {
             set {
                 if (value != p2) {
-                    InitializeFigure(P1, value);
+                    p2 = value;
+                    Location = MyGeometry.FindLeftUpCornerCoord(p1, value);
                 }
             }
             get {
                 return p2;
             }
         }
-        public Single Length { private set; get; }
+        internal float Length { private set; get; }
 
 
 
-        public MyCut(Color color, PointF p1, PointF p2) : base(color, VetrexesCount) {
+        internal MyCut(PointF p1, PointF p2) {
             //???Повторяющийся код
             InitializeFigure(p1, p2);
         }
-        public MyCut(Pen pen, PointF p1, PointF p2) : base (pen, VetrexesCount) {
+        internal MyCut(Color color, PointF p1, PointF p2) : base(color) {
+            //???Повторяющийся код
+            InitializeFigure(p1, p2);
+        }
+        internal MyCut(Pen pen, PointF p1, PointF p2) : base (pen) {
             //???Повторяющийся код
             InitializeFigure(p1, p2);
         }
         private void InitializeFigure(PointF p1, PointF p2) {
+            Location = MyGeometry.FindLeftUpCornerCoord(p1, p2);
             this.p1 = p1;
             this.p2 = p2;
-            VertexesArray[0] = p1;
-            VertexesArray[1] = p2;
-            Length = FindLength(p1, p2);
-            ResetLocation();
+            Length = MyGeometry.FindLengthBetweenPoints(P1, P2);
         }
 
 
 
-        protected void ResetLocation() {
-            PointF location = FindLeftUpCornerCoord(P1.X, P1.Y, P2.X, P2.Y);
-            x = location.X;
-            y = location.Y;
-        }
-        protected override void DrawFigure(Graphics screen, Pen pen) {
-            screen.DrawLine(pen, P1, P2);
+        internal override void Move(PointF newLocation) {
+            p1 = newLocation.Sum(P1.Substract(Location));
+            p2 = newLocation.Sum(P2.Substract(Location));
+            Location = newLocation;
         }
 
 
-        public void Resize(PointF p1, PointF p2) {
-            InitializeFigure(p1, p2);
+        private protected override void Display(Graphics screen, Pen pen, Point center) {
+            screen.DrawLine(pen, P1.Substract(center), P2.Substract(center));
         }
-        public void Resize(Single x1, Single y1, Single x2, Single y2) {
-            InitializeFigure(new PointF(x1, y1), new PointF(x2, y2));
-        }
-
+        
     }
 }

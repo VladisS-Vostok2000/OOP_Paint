@@ -6,19 +6,31 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OOP_Paint {
-    public class MyPoint : MyFigure {
-        private const Int32 vetrexesCount = 1;
-        public MyPoint(Single _x, Single _y, Color _color) : base(_color, vetrexesCount) {
-            X = _x;
-            Y = _y;
+namespace CAD_Client {
+    [Obsolete("Тяжело поддерживать много фигур", false)]
+    internal class MyPoint : MyFigure {
 
+
+
+        internal MyPoint(float x, float y, Color color) : base(color) {
+            X = x;
+            Y = y;
         }
 
 
 
-        protected override void DrawFigure(Graphics _screen, Pen _pen) {
-            _screen.DrawEllipse(_pen, X, Y, 2, 2);
+        [Obsolete]
+        private protected void Display(Graphics screen, Pen pen) {
+            screen.DrawEllipse(pen, X, Y, 2, 2);
+        }
+
+        private protected override void Display(Graphics screen, Pen pen, Point center) {
+            throw new NotImplementedException();
+        }
+
+
+        internal override void Move(PointF newLocation) {
+            throw new NotImplementedException();
         }
 
     }

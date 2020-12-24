@@ -6,61 +6,118 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace OOP_Paint {
-    public sealed class MyCursor {
-        public Boolean IsSnapped { get; set; }
-        private Point SnapLocation;
-        public Int32 SnapDistance { get; set; }
-        private Int32 cumulateX;
-        private Int32 cumulateY;
+namespace CAD_Client {
+    //???Сделать статическим?
+    //MyCursor: разделить длину создания привязки и силу, с которой нужно вытянуть курсор (Cumulate).
+    //MyCursor: превратить в статический. //Этот класс использует статический курсор, что может негативно отразиться при создании нескольких объектов.
+    internal sealed class MyCursor {
+        internal bool Snapped { private set; get; }
+        internal Point SnapLocation { private set; get; }
+        internal int SnapDistance { private set; get; }
+        internal Point Offset { private set; get; }
+        //!!!!Удалить isStatic и всё, что с этим связано.
+        /// <summary>
+        /// Для привязки ведётся накопление смещений <see cref="Offset"/>?
+        /// </summary>
+        private bool isStatic;
+        private bool jumpCumulate;
+
+        internal event EventHandler SnapTorned;
 
 
 
-        public MyCursor(Int32 snapDistance) {
-            SnapDistance = snapDistance;
-        }
-
-
-
-        public event EventHandler SnapTorned;
-
-
-
-        public void DoSnap(Point target) {
-            IsSnapped = true;
-            SnapLocation = target;
-            Cursor.Position = target;
-            Debugger.Log($"SnapCreated: ({target.X};{target.Y})");
-            Debugger.Log($"Mouse new Location: ({Cursor.Position.X};{Cursor.Position.Y})");
-        }
-        public void ContinueSnap(Point target) {
-            if (!IsSnapped) {
-                throw new Exception();
-            }
-            Debugger.Log("SnapContinue");
-            Debugger.Log($"Snap cumulateX: {cumulateX}");
-            Debugger.Log($"Snap cumulateY: {cumulateY}");
-            Debugger.Log($"MouseLocation: ({Cursor.Position.X};{Cursor.Position.Y})");
-            cumulateX += SnapLocation.X - target.X;
-            cumulateY += SnapLocation.Y - target.Y;
-            Debugger.Log($"Snap cumulateX now: {cumulateX}");
-            Debugger.Log($"Snap cumulateY now: {cumulateY}");
-            Cursor.Position = SnapLocation;
-            Debugger.Log($"Mouse new Location: ({Cursor.Position.X};{Cursor.Position.Y})");
-
-            if (Math.Abs(cumulateX) > SnapDistance || Math.Abs(cumulateY) > SnapDistance) {
+        /// <summary>
+        /// Привязывает курсор к заданному экранному пикселю. По накопленному смещению включительно большему
+        /// заданному интервалу привязка будет разорвана.
+        /// <para>S-></para>
+        /// </summary>
+        /// <param name="target"> Расположение мыши в экранных координатах. </param>
+        /// <param name="jumpCumulate"> Следует ли переместить мышь на её накопленные смещения после разрыва привязки. </param>
+        internal void CreateSnap(in Point target, in int snapDistance, in bool jumpCumulate) {
+            Debugger.Log($"Начат CreateSnap");
+            Debugger.Log($"target: ({target.X}; {target.Y})");
+            if (Snapped) {
                 StopSnap();
             }
+            else {
+                Snapped = true;
+            }
+
+            isStatic = false;
+            this.jumpCumulate = jumpCumulate;
+            SnapLocation = target;
+            Cursor.Position = target;
+            Debugger.Log($"SnapLocation, Cursor.Position: ({target.X}; {target.Y})");
+            SnapDistance = snapDistance;
         }
+        /// <summary>
+        /// Привязывает курсор к заданному экранному пикселю. Для разрыва используйте <see cref="StopSnap"/>.
+        /// Последнее смещение будет записано в <see cref="Offset"/>.
+        /// <para>S-></para>
+        /// </summary>
+        /// <param name="target"> Расположение мыши в экранных координатах. </param>
+        internal void CreateSnap(in Point target) {
+            Debugger.Log($"Начат CreateSnap");
+            Debugger.Log($"target: ({target.X}; {target.Y})");
+            if (Snapped) {
+                StopSnap();
+            }
+            else {
+                Snapped = true;
+            }
 
+            SnapLocation = target;
+            Cursor.Position = target;
+            Debugger.Log($"SnapLocation, Cursor.Position: ({target.X}; {target.Y})");
+        }
+        /// <summary>
+        /// Вернёт курсор на <see cref="SnapLocation"/> экранных координат. Заданное смещение мыши в экранных координатах будет записано в <see cref="Offset"/>.
+        /// <para>S-></para>
+        /// </summary>
+        /// <param name="target">Расположение мыши в экранных координатах.</param>
+        /// <exception cref="Exception">Метод вызван, но привязки в данный момент не существует.</exception>
+        internal void ContinueSnap(in Point target) {
+            Debugger.Log($"Начат ContinueSnap");
+            Debugger.Log($"SnapPoLocation: ({SnapLocation.X}; {SnapLocation.Y})");
+            Debugger.Log($"target: ({target.X}; {target.Y})");
+            if (!Snapped) {
+                throw new Exception("Привязки не существует, но вызыван.");
+            }
+            if (isStatic) {
+                Offset = new Point(SnapLocation.X - target.X, SnapLocation.Y - target.Y);
+                Debugger.Log($"Offset: ({Offset.X}; {Offset.Y})");
+                Cursor.Position = SnapLocation;
+                Debugger.Log($"newMouseScreenLocation: ({Cursor.Position.X}; {Cursor.Position.Y})");
+            }
+            else {
+                //???Попался на Structure - evil. Если мы изменяем поле структуры, она неявно создаётся и присваивается сама себе с новым полем?
+                //????
+                //Cumulate = Cumulate.Sum(SnapLocation.Substract(target));
+                Offset = new Point(Offset.X + SnapLocation.X - target.X, Offset.Y + SnapLocation.Y - target.Y);
+                Debugger.Log($"Offset: ({Offset.X}; {Offset.Y})");
 
-        public void StopSnap() {
-            IsSnapped = false;
-            Cursor.Position = new Point(Cursor.Position.X - cumulateX, Cursor.Position.Y - cumulateY);
-            cumulateX = 0;
-            cumulateY = 0;
-            Debugger.Log($"Snap torned\r\n");
-            SnapTorned.Invoke(this, EventArgs.Empty);
+                if (Math.Abs(Offset.X) > SnapDistance || Math.Abs(Offset.Y) > SnapDistance) {
+                    StopSnap();
+                }
+                else {
+                    Cursor.Position = SnapLocation;
+                    Debugger.Log($"newMouseScreenLocation: ({Cursor.Position.X}; {Cursor.Position.Y})");
+                }
+            }
+        }
+        /// <summary>
+        /// Разрывает привязку курсора.
+        /// </summary>
+        /// <param name="jumpCumulate"> Следует ли курсору переместиться на накопленные координаты смещения. </param>
+        internal void StopSnap() {
+            Debugger.Log($"StopSnap\r\n");
+            Snapped = false;
+            if (jumpCumulate == true) {
+                Cursor.Position = new Point(Cursor.Position.X - Offset.X, Cursor.Position.Y - Offset.Y);
+            }
+            //???Смещение может быть нулём и при присутствующей привязке. Следует определить Exception на свойство?
+            Offset = new Point(0, 0);
+            SnapTorned?.Invoke(this, EventArgs.Empty);
         }
 
     }

@@ -11,16 +11,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
+using static CAD_Client.ToolEnum;
 
-namespace OOP_Paint {
-    public sealed class ListBoxFigure {
-        public String DisplayMember { get; }
-        public Int32 Id { get; }
+namespace CAD_Client {
+    internal sealed class ListBoxFigure {
+        internal string DisplayMember { get; }
+        internal int Id { get; }
 
 
 
-        public ListBoxFigure(MyFigure _object) {
+        internal ListBoxFigure(MyFigure _object) {
             Id = _object.Id;
             DisplayMember = $"[{_object.X},{_object.Y}]".PadRight(10) + _object.GetDescription();
         }
