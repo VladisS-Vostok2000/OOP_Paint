@@ -33,6 +33,8 @@ namespace CAD_Client {
         private readonly MyScreen myScreen;
         private int snapDistancePx = 10;
 
+        private Point prewiousCursorScreenPosition;
+
 
 
         internal GUI_Form(MyClient code) {
@@ -61,68 +63,83 @@ namespace CAD_Client {
 
         #region Работа с экраном
         private void MainFromPctrbxScreen_MouseDown(object sender, MouseEventArgs e) {
+            Debugger.Log($"Начато: MainFromPctrbxScreen_MouseDown");
             if (code.SelectedTool == Tool.Select) {
-                code.SetPoint(e.Location);
-            }
-            else
-            if (code.SelectedTool == Tool.Moving && e.Button == MouseButtons.Middle) {
-                //myCursor.CreateSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen), int.MaxValue);
+                //SomeCodeHere - Selection
             }
         }
         private void MainFormPctrbxScreen_MouseMove(object sender, MouseEventArgs e) {
+            // Пиксельное - отображение на экране относительно bitmap
+            // Экранное - отображение на экране относительно самого экрана
+            // Реальное - точка в настоящих координатах
+            // Cursor == Mouse
+            // RealCoord == RealLocation
+            // Px == BitmapLocation
+            Point cursorPxLocation = e.Location;
             Debugger.Log($"Начат MainFormPctrbxScreen_MouseMove,");
-            Debugger.Log($"e.Location = ({e.X}; {e.Y})");
-            code.AddSoftPoint(e.Location);
+            Debugger.Log($"cursorPxLocation = e.Location = ({e.X}; {e.Y})");
+            Debugger.Log($"myScreenOffset: ({myScreen.Location.X}; {myScreen.Location.Y})");
+            PointF cursorRealLocation = myScreen.ToReal(cursorPxLocation);
+            Debugger.Log($"realCoord = ({cursorRealLocation.X}; {cursorRealLocation.Y})");
+            code.AddSoftPoint(cursorRealLocation);
 
             #region Привязка
             if (myCursor.Snapped) {
-                Point mouseScreenLocation = (sender as Control).PointToScreen(e.Location);
-                Debugger.Log($"mouseScreenLocation = ({mouseScreenLocation.X}; {mouseScreenLocation.Y})");
-                myCursor.ContinueSnap(mouseScreenLocation);
-                if (code.SelectedTool == Tool.Moving) {
-                    myScreen.X += myCursor.Cumulate.X;
-                    myScreen.Y += myCursor.Cumulate.Y;
-                }
-                return;
+                Point cursorScreenLocation = (sender as Control).PointToScreen(cursorPxLocation);
+                Debugger.Log($"cursorScreenLocation = ({cursorScreenLocation.X}; {cursorScreenLocation.Y})");
+                myCursor.ContinueSnap(cursorScreenLocation);
             }
-
             //Создание привязки
-            //???Не очень нравится это решение. Почему ФОРМА должна знать о количестве фигур?
-            if (e.Button == MouseButtons.Middle) {
-                //????SomeCodeHere
-            }
             else
+            //???Не очень нравится это решение. Почему ФОРМА должна знать о количестве фигур?
             if (code.GetFiguresCount() != 0 && code.SelectedTool == Tool.None) {
-                //Всё считается с реальными координатами, но привязка производится экранными
-                PointF vertex = code.FindNearestVertex(e.Location);
-                Debugger.Log($"nearestVertex: ({vertex.X}; {vertex.Y})");
-                Point vertexPx = vertex.RealToPx();
-                Debugger.Log($"nearestPxVertex: ({vertexPx.X}; {vertexPx.Y})");
-                bool IsVertexClose = myScreen.CheckSnap(e.Location, vertexPx, snapDistancePx);
+                PointF vertexRealLocation = code.FindNearestVertex(cursorRealLocation);
+                Debugger.Log($"vertexRealLocation: ({vertexRealLocation.X}; {vertexRealLocation.Y})");
+                Point vertexPxLocation = myScreen.ToPx(vertexRealLocation);
+                Debugger.Log($"vertexPxLocation: ({vertexPxLocation.X}; {vertexPxLocation.Y})");
+                bool IsVertexClose = myScreen.CheckSnap(cursorPxLocation, vertexPxLocation, snapDistancePx);
                 if (IsVertexClose) {
                     //Snap выполняется для экранных координат.
-                    Point vertexScreenLocation = (sender as Control).PointToScreen(vertex.RealToPx());
+                    Point vertexScreenLocation = (sender as Control).PointToScreen(vertexPxLocation);
                     Debugger.Log($"vertexScreenLocation: ({vertexScreenLocation.X}; {vertexScreenLocation.Y})");
-                    myCursor.CreateSnap(vertexScreenLocation, snapDistancePx);
+                    myCursor.CreateSnap(vertexScreenLocation, snapDistancePx, true);
                 }
             }
             #endregion
+
+            #region Перемещение экрана
+            if (code.SelectedTool == Tool.Moving && e.Button == MouseButtons.Middle) {
+                Point mouseScreenLocation = (sender as Control).PointToScreen(e.Location);
+                Debugger.Log($"mouseScreenLocation: ({mouseScreenLocation.X}; {mouseScreenLocation.Y})");
+                Debugger.Log($"offset: ({prewiousCursorScreenPosition.X}; {prewiousCursorScreenPosition.Y})");
+                Point offset = (mouseScreenLocation.Substract(prewiousCursorScreenPosition)).Invert();
+                Debugger.Log($"offset: ({offset.X}; {offset.Y})");
+                myScreen.MoveOn(offset);
+            }
+            #endregion
+
+            prewiousCursorScreenPosition = (sender as Control).PointToScreen(e.Location);
 
             MainFormSttsstpLblMouseX.Text = e.Location.X.ToString().PadLeft(3);
             MainFormSttsstpLblMouseY.Text = e.Location.Y.ToString().PadLeft(3);
         }
         private void MainFromPctrbxScreen_MouseUp(object sender, MouseEventArgs e) {
+            Debugger.Log($"Начато: MainFromPctrbxScreen_MouseUp");
             //За пределами экрана
             if (e.X > (sender as PictureBox).Width || e.X < 0 ||
                 e.Y > (sender as PictureBox).Height || e.Y < 0) {
                 return;
             }
 
-            if (code.SelectedTool == Tool.Moving) {
+            if (code.SelectedTool == Tool.Moving && e.Button != MouseButtons.Middle) {
                 myCursor.StopSnap();
             }
 
-            code.SetPoint(e.Location);
+            Debugger.Log($"e.Location = ({e.Location.X}; {e.Location.Y})");
+            Debugger.Log($"myScreenLocation: ({myScreen.Location.X}; {myScreen.Location.Y})");
+            Point realCoord = e.Location.Sum(myScreen.Location);
+            Debugger.Log($"realCoord = ({realCoord.X}; {realCoord.Y})");
+            code.SetPoint(realCoord);
         }
 
 
@@ -271,7 +288,7 @@ namespace CAD_Client {
 
 
         private void button1_Click(object sender, EventArgs e) {
-            
+
         }
         private void button1_MouseUp(object sender, MouseEventArgs e) {
             //Cursor.Position = (sender as Control).PointToScreen(e.Location);

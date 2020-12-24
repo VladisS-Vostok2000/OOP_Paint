@@ -43,11 +43,11 @@ namespace CAD_Client {
             Vector = newLocation.Sum(Vector.Substract(Location));
             Location = newLocation;
         }
-        
-        
-        private protected override void Display(Graphics screen, Pen pen) {
+
+
+        private protected override void Display(Graphics screen, Pen pen, Point center) {
             if (!IsPoint) {
-                screen.DrawLine(pen, Location, Vector.Sum(Vector.Substract(Location).Multiply(1000)));
+                screen.DrawLine(pen, Location.Substract(center), Vector.Sum(Vector.Substract(Location).Multiply(1000)).Substract(center));
             }
         }
 

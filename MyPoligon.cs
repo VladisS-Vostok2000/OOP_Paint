@@ -56,7 +56,7 @@ namespace CAD_Client {
         }
 
 
-        private protected override void Display(Graphics screen, Pen pen) {
+        private protected override void Display(Graphics screen, Pen pen, Point center) {
             throw new NotImplementedException();
         }
 

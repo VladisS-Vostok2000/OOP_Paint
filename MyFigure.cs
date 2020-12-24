@@ -86,13 +86,20 @@ namespace CAD_Client {
         internal abstract void Move(PointF newLocation);
 
 
-        internal virtual void Draw(Graphics screen) {
+
+
+        #region Визуализация
+        /// <summary>
+        /// Визуализирует фигуру на заданном <see cref="Graphics"/>.
+        /// </summary>
+        /// <param name="center"> Пиксельное выражение центра реальных координат относительно первого пикселя. </param>
+        internal virtual void Display(Graphics screen, Point center) {
             if (IsHide) {
                 return;
             }
 
             ChoosePen(out Pen pen);
-            Display(screen, pen);
+            Display(screen, pen, center);
         }
         private protected virtual Pen ChoosePen(out Pen pen) {
             if (IsSelected) {
@@ -107,7 +114,8 @@ namespace CAD_Client {
             }
             return pen;
         }
-        private protected abstract void Display(Graphics screen, Pen pen);
+        private protected abstract void Display(Graphics screen, Pen pen, Point center);
+        #endregion
 
 
         internal string GetDescription() {

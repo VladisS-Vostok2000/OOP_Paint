@@ -37,8 +37,8 @@ namespace CAD_Client {
         [Obsolete]
         internal void Resize(in float x1, in float y1, in float x2, in float y2) => InitializeFigure(x1, y1, x2, y2);
 
-
-        private protected override void Display(Graphics screen, Pen pen) {
+        [Obsolete]
+        private protected void Display(Graphics screen, Pen pen) {
             if (Width != 0 && Height != 0) {
                 if (IsFill) {
                     screen.FillRectangle(new SolidBrush(FillColor), X, Y, Width, Height);

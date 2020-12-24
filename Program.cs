@@ -10,7 +10,7 @@ namespace CAD_Client {
         /// Главная точка входа для приложения.
         /// </summary>
         [STAThread]
-        static void Main() {
+        private static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new GUI_Form(new MyClient()));

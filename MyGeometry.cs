@@ -321,9 +321,9 @@ namespace CAD_Client {
         /// </summary>
         internal static PointF Multiply(this PointF p1,in float factor) => new PointF(p1.X * factor, p1.Y * factor);
         /// <summary>
-        /// Возвращает координаты пиксельного оторбражения реальной точки.
+        /// Вернёт точку с противоположными координатами.
         /// </summary>
-        internal static Point RealToPx(this PointF p1) => new Point((int)Math.Round(p1.X), (int)Math.Round(p1.Y));
+        internal static PointF Invert(this PointF p1) => new PointF(-p1.X, -p1.Y);
 
 
         /// <summary>
@@ -338,7 +338,10 @@ namespace CAD_Client {
         /// Вернёт точку с помноженными координатами на заданное число.
         /// </summary>
         internal static Point Multiply(this Point p1, in int factor) => new Point(p1.X * factor, p1.Y * factor);
-
+        /// <summary>
+        /// Вернёт точку с противоположными координатами.
+        /// </summary>
+        internal static Point Invert(this Point p1) => new Point(-p1.X, -p1.Y);
 
     }
 }

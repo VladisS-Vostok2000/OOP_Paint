@@ -14,10 +14,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
-//MyClient#41: вычленить SnapPoint из MainCode[MyClient]
-//!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
 namespace CAD_Client {
-
+    //!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
     internal sealed class MyClient {
         private Tool selectedTool;
         internal Tool SelectedTool {
@@ -98,7 +96,6 @@ namespace CAD_Client {
                 return polarLineEnabled;
             }
         }
-
 
 
 
@@ -431,12 +428,12 @@ namespace CAD_Client {
         }
         #endregion
 
+
         #region Другое
         /// <summary>
-        /// Вернёт координаты ближайшей к точке вершины фигуры.
+        /// Вернёт координаты ближайшей вершины фигуры к заданной точке в реальных координатах. <para>R->R.</para>
         /// </summary>
         /// <exception cref="Exception"> Лист пуст. </exception>
-        /// <exception cref="ArgumentNullException"> Лист null. </exception>
         internal PointF FindNearestVertex(in PointF target) => FindNearestVertex(figuresContainer, target);
         /// <summary>
         /// Вернёт координаты ближайшей к точке вершины фигуры.
@@ -445,9 +442,6 @@ namespace CAD_Client {
         /// <exception cref="Exception"> Вершина не найдена при непустом листе. </exception>
         /// <exception cref="ArgumentNullException"> Лист null. </exception>
         internal PointF FindNearestVertex(MyListContainer<MyFigure> figures, PointF target) {
-            if (figures == null) {
-                throw new ArgumentNullException();
-            }
             if (figures.Count == 0) {
                 throw new Exception("Фигур нет, но проверка на поиск вершины произошла.");
             }

@@ -71,8 +71,8 @@ namespace CAD_Client {
         }
 
 
-        private protected override void Display(Graphics screen, Pen pen) {
-            screen.DrawLine(pen, P1, P2);
+        private protected override void Display(Graphics screen, Pen pen, Point center) {
+            screen.DrawLine(pen, P1.Substract(center), P2.Substract(center));
         }
         
     }

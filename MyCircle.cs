@@ -77,8 +77,8 @@ namespace CAD_Client {
         }
 
 
-        private protected override void Display(Graphics screen, Pen pen) {
-            screen.DrawEllipse(pen, X, Y, Radius * 2, Radius * 2);
+        private protected override void Display(Graphics screen, Pen pen, Point center) {
+            screen.DrawEllipse(pen, X - center.X, Y - center.Y, Radius * 2, Radius * 2);
         }
 
         internal override void Move(PointF newLocation) {

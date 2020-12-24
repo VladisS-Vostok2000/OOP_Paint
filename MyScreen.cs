@@ -14,19 +14,35 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
-using static CAD_Client.Debugger;
 using System.IO;
 
 namespace CAD_Client {
+    /// <summary>
+    /// Содержит <see cref="Bitmap"/> и инструменты взаимодействия экрана, прорисовки.
+    /// </summary>
     internal sealed partial class MyScreen {
         /// <summary>
-        /// Реальная координата левой верхней точки дисплея.
+        /// Положение первого пикселя экрана в реальных координатах.
         /// </summary>
         internal int X { set; get; }
         /// <summary>
-        /// Реальная координата левой верхней точки дисплея.
+        /// Положение первого пикселя экрана в реальных координатах.
         /// </summary>
         internal int Y { set; get; }
+        /// <summary>
+        /// Положение первого пикселя экрана в реальных координатах. Смещение, дельта.
+        /// </summary>
+        internal Point Location {
+            set {
+                if (value != new Point(X, Y)) {
+                    X = value.X;
+                    Y = value.Y;
+
+                }
+            }
+            get => new Point(X, Y);
+        }
+
         internal int Width { private set; get; }
         internal int Height { private set; get; }
 
@@ -51,13 +67,14 @@ namespace CAD_Client {
 
 
 
+        //????Добавить ограничение на пустой bitmap и т.д.
         internal MyScreen(Bitmap bitmap, MyCursor myCursor) {
             this.bitmap = bitmap;
             screen = Graphics.FromImage(bitmap);
             Width = this.bitmap.Size.Width;
             Height = this.bitmap.Size.Height;
-            X = -5;//-Width / 2;
-            Y = -5;//-Height / 2;
+            X = Width / 2;
+            Y = Height / 2;
 
             this.myCursor = myCursor;
         }
@@ -73,12 +90,12 @@ namespace CAD_Client {
             //???Сигнатура выглядит как ужас.
             screen.Clear(Color.FromArgb(250, 64, 64, 64));
             DrawGrid();
-            polarLine.Draw(screen);
+            polarLine.Display(screen, Location);
             foreach (var figure in figures) {
-                figure.Draw(screen);
+                figure.Display(screen, Location);
             }
             foreach (var figure in supportFigures) {
-                figure.Draw(screen);
+                figure.Display(screen, Location);
             }
             DrawSnapPoint();
             return bitmap;
@@ -108,6 +125,8 @@ namespace CAD_Client {
                 screen.DrawLine(gridPen, 0, i, bitmap.Width, i);
             }
         }
+
+
         /// <summary>
         /// Вернёт координаты первого "узла" для прорисовки сетки соответствующей координаты.
         /// </summary>
@@ -121,13 +140,42 @@ namespace CAD_Client {
             }
 
             snap.Location = new PointF(myCursor.SnapLocation.X - snap.Width / 2, myCursor.SnapLocation.Y - snap.Width / 2);
-            snap.Draw(screen);
+            snap.Display(screen, Location);
         }
         #endregion
 
+
+        #region API
+        /// <summary>
+        /// Сместит экран на заданную величину.
+        /// </summary>
+        internal void MoveOn(Point offset) {
+            Debugger.Log($"Начат MoveOn:");
+            Debugger.Log($"X: {X}, Y: {Y}");
+            X += offset.X;
+            Y += offset.Y;
+            Debugger.Log($"X: {X}, Y: {Y}");
+        }
+
+        /// <summary>
+        /// Вернёт координаты пикселеля относительно <see cref="Bitmap"/>, отображеющего заданную в реальных координатах точку.
+        /// <para>R->P</para>
+        /// </summary>
+        internal Point ToPx(PointF realCoord) {
+            return new Point((int)Math.Round(realCoord.X) - X, (int)Math.Round(realCoord.Y) - Y);
+        }
+        /// <summary>
+        /// Вернёт координаты реального расположения заданной относительно <see cref="Bitmap"/> точки.
+        /// <para>P->R</para>
+        /// </summary>
+        internal PointF ToReal(PointF pointPx) => pointPx.Sum(Location);
+        #endregion
+
+
         #region Snap
         /// <summary>
-        /// Проверит, следует ли создавать привязку курсора к заданному пикселю. 
+        /// Проверит, следует ли создавать привязку курсора к заданному относительно <see cref="Bitmap"/> пикселю.
+        /// <para>P-></para>
         /// </summary>
         /// <param name="cursor"> Положение курсора мыши относительно <see cref="Bitmap"/>. </param>
         /// <param name="pxLocation"> Положение пикселя относительно <see cref="Bitmap"/>. </param>

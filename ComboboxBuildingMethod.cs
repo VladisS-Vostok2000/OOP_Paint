@@ -23,5 +23,6 @@ namespace CAD_Client {
             BuildingMethod = _buildingMethod;
             DisplayMember = _buildingMethod.GetDescription();
         }
+
     }
 }

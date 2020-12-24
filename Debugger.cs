@@ -19,20 +19,35 @@ using System.IO;
 
 namespace CAD_Client {
     public static class Debugger {
-        private static FileStream fileStream = new FileStream(@"C:\OOP_PaintLog.log", FileMode.Create, FileAccess.Write);
-        private static StreamWriter streamWriter = new StreamWriter(fileStream);
+        private static string path = @"C:\OOP_PaintLog.log";
+        private static StreamWriter streamWriter = new StreamWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
 
 
 
         public static void Log(string log) {
-            //using(var streamWriter = new StreamWriter(fileStream)) ;Это не работает
-            streamWriter.Write(log + "\r\n"); //А тут норм
+            streamWriter.WriteLine(log);
         }
         public static void Stop() {
             streamWriter.Close();
         }
 
+        #region Это затратный режим (хз как сделать переключение)
+        //private static bool hard;
+        //public static string path { get; } = @"C:\OOP_PaintLog.log";
+        //static Debugger() {
+        //    using (var file = File.Create(path));
+        //}
 
+
+
+        //public static void Log(string log) {
+        //    if (hard) {
+        //        using (var streamWriter = new StreamWriter(path, true)) {
+        //            streamWriter.WriteLine(log);
+        //        }
+        //    }
+        //}
+        #endregion
 
     }
 }
