@@ -18,11 +18,9 @@ using System.IO;
 
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
 //!!!Projekt#50: добавить масштаб
-//Projekt#40: добавить перемещение
-//!!!Пересмотреть snap: код не должен знать о существовании привязки
 //Projekt#02: добавить IReadOnlyMyContainer
-//Projekt#4?: инкапсулировать Tool в GUI_Form[MainForm]
-
+//!!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
+//Projekt#60: расчленить MyClient на MyFigureConstructor и MyFile
 namespace CAD_Client {
     //!!!MainForm#20: добавить плавающие контролы
     internal sealed partial class GUI_Form : Form {
@@ -151,6 +149,7 @@ namespace CAD_Client {
         /// </summary>
         #endregion
 
+
         #region Кнопки
         private void MainFormBttnCircle_Click(object sender, EventArgs e) {
             Tool firgureToSelect = Tool.Circle;
@@ -176,6 +175,9 @@ namespace CAD_Client {
         private void MainFormBttnNothing_Click(object sender, EventArgs e) {
             code.SelectedTool = Tool.None;
         }
+        private void MainFormBttnMove_Click(object sender, EventArgs e) {
+            code.SelectedTool = Tool.Moving;
+        }
 
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(object sender, EventArgs e) {
             code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
@@ -192,11 +194,11 @@ namespace CAD_Client {
                 code.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
             }
         }
-
         private void MainFormTlstrpSpltbttnPolarLine_Click(object sender, EventArgs e) {
             code.PolarLineEnabled = !code.PolarLineEnabled;
         }
         #endregion
+
 
         #region API
         private void Code_SelectedTool_Changed(Tool value, EventArgs e) {
@@ -278,15 +280,6 @@ namespace CAD_Client {
         #endregion
 
 
-        /// <summary> Вычисляет местоположение мыши в координатах контрола. </summary>
-        private Point ControlPointToScreen(Point location, Control controlOnForm) {
-            Point out_point = PointToScreen(location);
-            out_point.X += controlOnForm.Location.X;
-            out_point.Y += controlOnForm.Location.Y;
-            return out_point;
-        }
-
-
         private void button1_Click(object sender, EventArgs e) {
 
         }
@@ -294,9 +287,6 @@ namespace CAD_Client {
             //Cursor.Position = (sender as Control).PointToScreen(e.Location);
         }
 
-        private void MainFormBttnMove_Click(object sender, EventArgs e) {
-            code.SelectedTool = Tool.Moving;
-        }
 
     }
 }

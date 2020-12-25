@@ -20,6 +20,7 @@ namespace CAD_Client {
     /// <summary>
     /// Содержит <see cref="Bitmap"/> и инструменты взаимодействия экрана, прорисовки.
     /// </summary>
+    //MyScreen#01: исправить прорисовку snap
     internal sealed partial class MyScreen {
         /// <summary>
         /// Положение первого пикселя экрана в реальных координатах.

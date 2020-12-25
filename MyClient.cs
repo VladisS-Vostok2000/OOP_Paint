@@ -15,7 +15,6 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
 namespace CAD_Client {
-    //!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
     internal sealed class MyClient {
         private Tool selectedTool;
         internal Tool SelectedTool {
