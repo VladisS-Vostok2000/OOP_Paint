@@ -14,9 +14,10 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
+using System.IO;
 
 namespace CAD_Client {
-    internal class MyListContainer<T> : IEnumerable<T> {
+    internal class ReadOnlyMyListContainer<T> : IEnumerable<T> {
         private readonly List<T> list = new List<T>();
 
         internal int Count => list.Count;
@@ -25,17 +26,15 @@ namespace CAD_Client {
 
 
 
-        internal MyListContainer() { }
+        internal ReadOnlyMyListContainer(List<T> myListContainer) => list = myListContainer;
 
 
 
-        internal T this[int index] {
-            set => list[index] = value;
-            get => list[index];
-        }
+        internal T this[int index] => list[index];
 
 
 
+        //???Даже близко не понимаю, что это значит. Мне просто нужен был foreach.
         public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
 
@@ -49,9 +48,6 @@ namespace CAD_Client {
             list.RemoveAt(index);
             ContainerChanged?.Invoke(this, EventArgs.Empty);
         }
-
-
-        internal ReadOnlyMyListContainer<T> ToReadOnly() => new ReadOnlyMyListContainer<T>(list);
         #endregion
 
 
