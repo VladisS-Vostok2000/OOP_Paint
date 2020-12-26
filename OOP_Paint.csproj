@@ -51,6 +51,7 @@
     <Compile Include="Debugger.cs" />
     <Compile Include="Dummy.cs" />
     <Compile Include="MyCanvas.cs" />
+    <Compile Include="MyMathPlane.cs" />
     <Compile Include="ToolEnum.cs" />
     <Compile Include="ListBoxFigure.cs" />
     <Compile Include="MyClient.cs" />

@@ -18,9 +18,9 @@ using System.IO;
 
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
 //!!!Projekt#50: добавить масштаб
-//Projekt#02: добавить IReadOnlyMyContainer
+//Projekt#03: добавить MyReadOnlyListContainer
 //!!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
-//Projekt#60: расчленить MyClient на MyFigureConstructor и MyFile
+//!!!Projekt#60: расчленить MyClient на MyFigureConstructor и MyFile
 namespace CAD_Client {
     //!!!MainForm#20: добавить плавающие контролы
     internal sealed partial class GUI_Form : Form {
