@@ -50,7 +50,7 @@
     <Compile Include="ConstructorOperationStatus.cs" />
     <Compile Include="Debugger.cs" />
     <Compile Include="Dummy.cs" />
-    <Compile Include="MyScreen.cs" />
+    <Compile Include="MyCanvas.cs" />
     <Compile Include="ToolEnum.cs" />
     <Compile Include="ListBoxFigure.cs" />
     <Compile Include="MyClient.cs" />

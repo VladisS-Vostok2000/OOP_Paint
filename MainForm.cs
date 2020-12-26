@@ -28,7 +28,7 @@ namespace CAD_Client {
 
         private readonly MyClient code;
         private readonly MyCursor myCursor;
-        private readonly MyScreen myScreen;
+        private readonly MyCanvas myScreen;
         private int snapDistancePx = 10;
 
         private Point prewiousCursorScreenPosition;
@@ -40,7 +40,7 @@ namespace CAD_Client {
 
             this.code = code;
             myCursor = new MyCursor();
-            myScreen = new MyScreen(new Bitmap(496, 290), myCursor);
+            myScreen = new MyCanvas(new Bitmap(496, 290));
 
             this.code.SelectedToolChanged += Code_SelectedTool_Changed;
             this.code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
@@ -142,11 +142,17 @@ namespace CAD_Client {
 
 
         private void MainFormTmr_Tick(object sender, EventArgs e) {
-            MainFromPctrbxScreen.Image = myScreen.RedrawFigures(code.GetFiguresList(), code.GetSupportFiguresList(), code.GetPolarLine());
+            myScreen.RedrawFigures(code.GetFiguresList(), code.GetSupportFiguresList(), code.GetPolarLine());
+            try {
+                Point snapLocation = myCursor.SnapLocation;
+                myScreen.DrawSnapPoint(PointToClient(snapLocation));
+            }
+            catch (Exception) {
+
+                throw;
+            }
+            MainFromPctrbxScreen.Image = myScreen.Bitmap;
         }
-        /// <summary>
-        /// Нарисует сетку на экране с центром координат в (0; 0).
-        /// </summary>
         #endregion
 
 

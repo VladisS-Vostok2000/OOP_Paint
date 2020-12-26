@@ -90,16 +90,17 @@ namespace CAD_Client {
 
         #region Визуализация
         /// <summary>
-        /// Визуализирует фигуру на заданном <see cref="Graphics"/>.
+        /// Визуализирует фигуру на заданном <see cref="Graphics"/> по их координатам относительно заданного пикселя <see cref="Graphics"/>.
         /// </summary>
-        /// <param name="center"> Пиксельное выражение центра реальных координат относительно первого пикселя. </param>
-        internal virtual void Display(Graphics screen, Point center) {
+        /// <para>P-></para>
+        /// <param name="realCoordCenterPx"> Пиксельное выражение центра реальных координат относительно первого пикселя <see cref="Graphics"/>. </param>
+        internal virtual void Display(Graphics screen, Point realCoordCenterPx = new Point()) {
             if (IsHide) {
                 return;
             }
 
             ChoosePen(out Pen pen);
-            Display(screen, pen, center);
+            Display(screen, pen, realCoordCenterPx);
         }
         private protected virtual Pen ChoosePen(out Pen pen) {
             if (IsSelected) {
@@ -114,6 +115,8 @@ namespace CAD_Client {
             }
             return pen;
         }
+
+
         private protected abstract void Display(Graphics screen, Pen pen, Point center);
         #endregion
 

@@ -5,14 +5,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 namespace CAD_Client {
     //???Сделать статическим?
     //MyCursor: разделить длину создания привязки и силу, с которой нужно вытянуть курсор (Cumulate).
     //MyCursor: превратить в статический. //Этот класс использует статический курсор, что может негативно отразиться при создании нескольких объектов.
+    
+    //???Мне нужна причина, зачем MyCursor задан в экранных координатах.
+    //->Cursor.Position использует экранные координаты.
+    //???Не лучше бы тогда использовать клиентские, а конкретно для курсора PointToScreen? Рассмотреть вопрос, можно ли инкапсулировать курсор в форму.
     internal sealed class MyCursor {
         internal bool Snapped { private set; get; }
-        internal Point SnapLocation { private set; get; }
+        private Point snapLocation;
+        internal Point SnapLocation {
+            private set {
+                if (value != snapLocation) {
+                    snapLocation = value;
+                }
+            }
+            get {
+                if (Snapped) {
+                    return snapLocation;
+                }
+                else throw new Exception("Привязка отсутствует, но запрошено её расположение");
+            }
+        }
         internal int SnapDistance { private set; get; }
         internal Point Offset { private set; get; }
         //!!!!Удалить isStatic и всё, что с этим связано.
