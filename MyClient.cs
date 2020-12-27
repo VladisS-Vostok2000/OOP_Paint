@@ -53,8 +53,8 @@ namespace CAD_Client {
         private int currConstructorStage = 0;
 
 
-        internal readonly MyListContainer<MyFigure> figuresContainer = new MyListContainer<MyFigure>();
-        //!!!Исправить List на MyContainer
+        internal readonly MyMathPlane myMathPlane = new MyMathPlane();
+        //!!!MyClient#04: Исправить List на MyMathPlane
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 

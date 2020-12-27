@@ -50,6 +50,7 @@
     <Compile Include="ConstructorOperationStatus.cs" />
     <Compile Include="Debugger.cs" />
     <Compile Include="Dummy.cs" />
+    <Compile Include="IBitmapable.cs" />
     <Compile Include="MyCanvas.cs" />
     <Compile Include="MyMathPlane.cs" />
     <Compile Include="ReadOnlyMyListContainer.cs" />

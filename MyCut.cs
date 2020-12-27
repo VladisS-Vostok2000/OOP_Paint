@@ -20,7 +20,8 @@ namespace CAD_Client {
         internal PointF P1 { 
             private protected set {
                 if (value != p1) {
-                    InitializeFigure(value, P2);
+                    p1 = value;
+                    FindLocation();
                 }
             } 
             get {
@@ -32,7 +33,7 @@ namespace CAD_Client {
             set {
                 if (value != p2) {
                     p2 = value;
-                    Location = MyGeometry.FindLeftUpCornerCoord(p1, value);
+                    FindLocation();
                 }
             }
             get {
@@ -64,16 +65,16 @@ namespace CAD_Client {
 
 
 
+        private protected override void FindLocation() => Location = MyGeometry.FindLeftUpCornerCoord(P1, P2);
+
+        private protected override void Display(Graphics screen, Pen pen, PointF graphicsCenterInRealCoord) => screen.DrawLine(pen, P1.Substract(graphicsCenterInRealCoord), P2.Substract(graphicsCenterInRealCoord));
+
+
         internal override void Move(PointF newLocation) {
             p1 = newLocation.Sum(P1.Substract(Location));
             p2 = newLocation.Sum(P2.Substract(Location));
             Location = newLocation;
         }
 
-
-        private protected override void Display(Graphics screen, Pen pen, Point center) {
-            screen.DrawLine(pen, P1.Substract(center), P2.Substract(center));
-        }
-        
     }
 }

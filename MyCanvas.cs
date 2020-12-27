@@ -20,9 +20,8 @@ namespace CAD_Client {
     //MyScreen#01: исправить прорисовку snap
     //MyScreen#02: расчленить MyCanvas на математическую плоскость и холст дополнительной прорисовки
     /// <summary>
-    /// Холст. Всегда ненулевой и отображает заданный участок математической плоскости
-    /// относительно смещения реальных координат левого верхнего угла пикселя холста от реального центра координат.
-    /// Содержит инструменты дополнительной прорисовки на плоскости. Содержит все существующие фигуры.
+    /// Холст. Всегда ненулевой и отображает заданный своим иместоположением участок математической плоскости
+    /// Содержит инструменты дополнительной прорисовки на плоскости.
     /// </summary>
     internal sealed class MyCanvas {
         /// <summary>
@@ -51,16 +50,18 @@ namespace CAD_Client {
 
         internal Bitmap Bitmap { private set; get; }
         private readonly Graphics screen;
+        private readonly IBitmapable mathPlane;
         private readonly int gridSizePx = 25;
         private readonly Pen gridPen = new Pen(Color.DarkGray, 1);
         private readonly int snapSideLength = 10;
 
 
 
-        //????Добавить ограничение на пустой bitmap и т.д.
-        internal MyCanvas(Bitmap bitmap) {
-            Bitmap = bitmap ?? throw new ArgumentNullException();
+        internal MyCanvas(Bitmap bitmap, IBitmapable mathPlane) {
+            Bitmap = bitmap ?? throw new ArgumentNullException($"Заданный {bitmap} был null.");
+            this.mathPlane = mathPlane ?? throw new ArgumentNullException($"Заданный {mathPlane} был null.");
             screen = Graphics.FromImage(bitmap);
+            //Задаёт центр реальных координат посередине холста. Необязательно.
             X = Width / 2;
             Y = Height / 2;
         }
@@ -69,24 +70,16 @@ namespace CAD_Client {
 
         #region Прорисовка
         /// <summary>
-        /// Прорисует все существующие фигуры. Холст будет предварительно очищен.
+        /// Перересует участок математической плоскости. Вспомогательные надписи будут удалены.
         /// </summary>
-        internal void RedrawFigures(MyListContainer<MyFigure> figures, List<MyFigure> supportFigures, MyRay polarLine) {
-            //???Сигнатура выглядит как ужас.
-            screen.Clear(Color.FromArgb(250, 64, 64, 64));
-            polarLine.Display(screen, Location);
-            foreach (var figure in figures) {
-                figure.Display(screen, Location);
-            }
-            foreach (var figure in supportFigures) {
-                figure.Display(screen, Location);
-            }
-        }
+        internal void Clear() => Bitmap = mathPlane.ToBitmap(Location, Width, Height);
 
         /// <summary>
-        /// Визуализирует сетку на холсте с заданной размерностью через пиксельное выражение реального центра координат.
+        /// Визуализирует сетку на холсте через пиксельное выражение реального центра координат.
+        /// <para>Внимание! <see cref="Bitmap"/> будет обновлён!</para>
         /// </summary>
-        private void DrawGrid(int gridInterval) {
+        internal void DrawGrid() {
+            //????Надо здесь что-то поменять, он создан для целочисленного смещения, а сейчас дробное.
             //-------------------------------------------------------------------------------------------------------------------------------------------------------
             //Дано расположение пиксельной координаты в реальных: (0; 0)* = (X; Y). Тогда:
             //delta = (X - 0; Y - 0) = (X; Y) - смещение пиксельных координат от реальных.
@@ -111,7 +104,7 @@ namespace CAD_Client {
         /// <summary>
         /// Вернёт координаты первого "узла" для прорисовки сетки соответствующей координаты.
         /// </summary>
-        private static int CalculateOffset(in int coord, in int gridSizePx) => coord % gridSizePx <= 0 ? Math.Abs(coord % gridSizePx) : gridSizePx - coord % gridSizePx;
+        private static int CalculateOffset(in int coordType, in int gridSizePx) => coordType % gridSizePx <= 0 ? Math.Abs(coordType % gridSizePx) : gridSizePx - coordType % gridSizePx;
 
 
         /// <summary>

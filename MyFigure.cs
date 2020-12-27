@@ -76,31 +76,31 @@ namespace CAD_Client {
 
 
 
-        //MyFigure#81: реализовать удаление фигуры и присваивание ID.
+        //!!!MyFigure#81: реализовать удаление фигуры и присваивание ID.
         public void Dispose() { }
 
 
         /// <summary>
-        /// Переместит все геометрическе параметры в новое положение относительно <see cref="Location"/>.
+        /// Присвоит локации фигуры верхнюю левую точку описывающего горизонтального прямоугольника фигуру.
+        /// Используется при изменении геометрических параметров.
         /// </summary>
-        internal abstract void Move(PointF newLocation);
+        private protected abstract void FindLocation();
 
 
-
-
-        #region Визуализация
+        #region Прорисовка
         /// <summary>
-        /// Визуализирует фигуру на заданном <see cref="Graphics"/> по их координатам относительно заданного пикселя <see cref="Graphics"/>.
+        /// Визуализирует фигуру на заданном <see cref="Graphics"/> относительно реальных координат.
         /// </summary>
         /// <para>P-></para>
-        /// <param name="realCoordCenterPx"> Пиксельное выражение центра реальных координат относительно первого пикселя <see cref="Graphics"/>. </param>
-        internal virtual void Display(Graphics screen, Point realCoordCenterPx = new Point()) {
+        /// <param name="graphicsCenterInRealCoord"> Координаты верхнего левого пикселя <see cref="Graphics"/> на реальной плоскости. </param>
+        internal virtual void Draw(Graphics screen, PointF graphicsCenterInRealCoord) {
             if (IsHide) {
                 return;
             }
 
             ChoosePen(out Pen pen);
-            Display(screen, pen, realCoordCenterPx);
+
+            Display(screen, pen, graphicsCenterInRealCoord);
         }
         private protected virtual Pen ChoosePen(out Pen pen) {
             if (IsSelected) {
@@ -115,15 +115,22 @@ namespace CAD_Client {
             }
             return pen;
         }
-
-
-        private protected abstract void Display(Graphics screen, Pen pen, Point center);
+        /// <summary>
+        /// Визуализирует фигуру на заданном <see cref="Graphics"/> относительно реальных координат.
+        /// </summary>
+        private protected abstract void Display(Graphics screen, Pen pen, PointF graphicsCenterInRealCoord);
         #endregion
 
 
+        #region API
         internal string GetDescription() {
             return ToolEnum.GetDescription(this);
         }
+        /// <summary>
+        /// Переместит все геометрическе параметры в новое положение относительно <see cref="Location"/>.
+        /// </summary>
+        internal abstract void Move(PointF newLocation);
+        #endregion
 
     }
 }
