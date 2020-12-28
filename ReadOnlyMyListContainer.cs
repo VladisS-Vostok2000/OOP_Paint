@@ -14,39 +14,36 @@ using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
+using System.IO;
 
 namespace CAD_Client {
-    internal class MyListContainer<T> : IEnumerable<T>, ICollection<T> {
+    internal class ReadOnlyMyListContainer<T> : IEnumerable<T>, ICollection<T> {
         private readonly List<T> list = new List<T>();
+        internal event EventHandler ContainerChanged;
 
         internal int Count => list.Count;
 
-
-        public bool IsReadOnly => throw new NotImplementedException();
-
-        internal event EventHandler ContainerChanged;
-
-
-
-        internal MyListContainer() { }
+        int ICollection<T>.Count => list.Count;
+        bool ICollection<T>.IsReadOnly => true;
+        
+        
+        
+        internal ReadOnlyMyListContainer(List<T> myListContainer) => list = myListContainer;
 
 
 
-        internal T this[int index] {
-            set => list[index] = value;
-            get => list[index];
-        }
+        internal T this[int index] => list[index];
 
 
 
-        public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
-        IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
-        int ICollection<T>.Count => list.Count();
         void ICollection<T>.Add(T item) => list.Add(item);
         void ICollection<T>.Clear() => list.Clear();
-        public bool Contains(T item) => list.Contains(item);
-        public void CopyTo(T[] array, int arrayIndex) => list.CopyTo(array, arrayIndex);
-        public bool Remove(T item) => list.Remove(item);
+        bool ICollection<T>.Contains(T item) => list.Contains(item);
+        void ICollection<T>.CopyTo(T[] array, int arrayIndex) => list.CopyTo(array, arrayIndex);
+        bool ICollection<T>.Remove(T item) => list.Remove(item);
+        //???Даже близко не понимаю, что это значит. Мне просто нужен был foreach.
+        public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
 
 
         #region API
@@ -58,13 +55,6 @@ namespace CAD_Client {
             list.RemoveAt(index);
             ContainerChanged?.Invoke(this, EventArgs.Empty);
         }
-        internal void Clear() {
-            list.Clear();
-            ContainerChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-
-        internal ReadOnlyMyListContainer<T> ToReadOnly() => new ReadOnlyMyListContainer<T>(list);
         #endregion
 
 
@@ -75,6 +65,7 @@ namespace CAD_Client {
         internal void FromXml(string filename) {
             XmlReader reader = XmlReader.Create(filename);
         }
+
         #endregion
 
     }

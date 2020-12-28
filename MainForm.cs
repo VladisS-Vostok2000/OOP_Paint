@@ -13,184 +13,218 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
-using static OOP_Paint.FiguresEnum;
-using static OOP_Paint.Debugger;
+using static CAD_Client.ToolEnum;
 using System.IO;
 
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
-//Projekt#30: добавить полярные линии
 //!!!Projekt#50: добавить масштаб
-//!!!Projekt#07: добавить модификаторы in
-//!!!Projekt#02: Добавить статический класс MyGeometry
-//!!!Пересмотреть snap: код не должен знать о существовании привязки
-namespace OOP_Paint {
+//!!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
+namespace CAD_Client {
     //!!!MainForm#20: добавить плавающие контролы
-    public sealed partial class MainForm : Form {
-        private Int32 scale = 1;
-        private readonly Int32 snapDistancePx = 10;
+    internal sealed partial class GUI_Form : Form {
+        private int scale = 1;
 
-        private readonly Bitmap bitmap;
-        private readonly Graphics screen;
-        private readonly MainCode code;
+        private readonly MyMathPlane myMathPlane;
+        private readonly MyClient constructor;
         private readonly MyCursor myCursor;
+        private readonly MyCanvas myCanvas;
+        private int snapDistancePx = 10;
+
+        private Point prewiousCursorScreenPosition;
 
 
 
-        public MainForm(MainCode code) {
-            Debugger.Log("Start");
-            this.code = code;
-
+        internal GUI_Form(MyMathPlane myMathPlane) {
             InitializeComponent();
 
-            bitmap = new Bitmap(496, 290);
-            screen = Graphics.FromImage(bitmap);
-            myCursor = new MyCursor(snapDistancePx);
+            myCursor = new MyCursor();
+            myCanvas = new MyCanvas(MainFromPctrbxScreen.Width, MainFromPctrbxScreen.Height);
+            constructor = new MyClient(myMathPlane);
+            this.myMathPlane = myMathPlane;
 
-            this.code.SelectedToolChanged += Code_SelectedTool_Changed;
-            this.code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
-            this.code.FiguresListChanged += Code_FiguresList_Changed;
-            this.code.ConstructorOperationStatusChanged += MainCode_ConstructorOperationStatus_Changed;
-            this.code.PolarLineEnablingChanged += Code_PolarLineEnabling_Changed;
-            myCursor.SnapTorned += MyCursor_SnapTorned;
+            this.constructor.SelectedToolChanged += Code_SelectedTool_Changed;
+            this.constructor.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
+            this.constructor.FiguresListChanged += Code_FiguresList_Changed;
+            this.constructor.ConstructorOperationStatusChanged += MainCode_ConstructorOperationStatus_Changed;
+            this.constructor.PolarLineEnablingChanged += Code_PolarLineEnabling_Changed;
 
             MainFormCmbbxBuildingVariants.DisplayMember = "DisplayMember";
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
             MainFormLstbxFigures.DisplayMember = "DisplayMember";
             MainFormLstbxFigures.ValueMember = "Id";
         }
-        private void MainForm_Load(Object sender, EventArgs e) {
+        private void MainForm_Load(object sender, EventArgs e) {
 
         }
 
 
 
-
-
-        private void MainFromPctrbxScreen_MouseDown(Object sender, MouseEventArgs e) {
-            //MainFormTmr.Stop();
-            if (code.SelectedTool == Figure.Select) {
-                //MainFormTmr.Enabled = true;
-                code.SetPoint(e.Location);
+        #region Работа с экраном
+        private void MainFromPctrbxScreen_MouseDown(object sender, MouseEventArgs e) {
+            Debugger.Log($"Начато: MainFromPctrbxScreen_MouseDown");
+            if (constructor.SelectedTool == Tool.Select) {
+                //SomeCodeHere - Selection
             }
-            //MainFormTmr.Start();
         }
-        private void MainFormPctrbxScreen_MouseMove(Object sender, MouseEventArgs e) {
-            Point mouseLocation = e.Location;
-            MainFormSttsstpLblMouseX.Text = mouseLocation.X.ToString().PadLeft(3);
-            MainFormSttsstpLblMouseY.Text = mouseLocation.Y.ToString().PadLeft(3);
+        private void MainFormPctrbxScreen_MouseMove(object sender, MouseEventArgs e) {
+            // Пиксельное - отображение на экране относительно bitmap
+            // Экранное - отображение на экране относительно самого экрана
+            // Реальное - точка в настоящих координатах матплоскости
+            // Cursor == Mouse
+            // RealCoord == RealLocation == MathPlateCoord
+            // Px == BitmapLocation
+            Point cursorPxLocation = e.Location;
+            Debugger.Log($"Начат MainFormPctrbxScreen_MouseMove,");
+            Debugger.Log($"cursorPxLocation = e.Location = ({e.X}; {e.Y})");
+            Debugger.Log($"myScreenOffset: ({myCanvas.Location.X}; {myCanvas.Location.Y})");
+            PointF cursorRealLocation = myCanvas.ToReal(cursorPxLocation);
+            Debugger.Log($"realCoord = ({cursorRealLocation.X}; {cursorRealLocation.Y})");
+            constructor.AddSoftPoint(cursorRealLocation);
 
-            code.AddSoftPoint(e.Location);
-
-            #region Snap
-            if (myCursor.IsSnapped) {
-                myCursor.ContinueSnap(ControlPointToScreen(e.Location, MainFromPctrbxScreen));
+            #region Привязка
+            if (myCursor.Snapped) {
+                Point cursorScreenLocation = (sender as Control).PointToScreen(cursorPxLocation);
+                Debugger.Log($"cursorScreenLocation = ({cursorScreenLocation.X}; {cursorScreenLocation.Y})");
+                myCursor.ContinueSnap(cursorScreenLocation);
             }
-            else {
-                if (e.Button == MouseButtons.None) {
-                    Int32 figCount = code.GetFiguresCount();
-                    if (figCount != 0) {
-                        PointF vetrex = code.FindNearestVertex(e.Location);
-                        //Привязка считается в отображаемых пикселях
-                        ConvertRealCoordToPx(vetrex, out Point vetrexPx);
-                        Single distance = MyFigure.FindLength(vetrexPx, e.Location);
-                        if (distance < snapDistancePx) {
-                            Int32 x = (Int32)Math.Round(vetrex.X);
-                            Int32 y = (Int32)Math.Round(vetrex.Y);
-                            Point point = ControlPointToScreen(new Point(x, y), MainFromPctrbxScreen);
-                            myCursor.DoSnap(point);
-                            //У кода - координаты реальные. 
-                            code.AddSnapPoint(new Point(x, y));
-                        }
-                    }
+            //Создание привязки
+            else
+            //???Не очень нравится это решение. Почему ФОРМА должна знать о количестве фигур?
+            if (myMathPlane.Count != 0 && constructor.SelectedTool == Tool.None) {
+                PointF vertexRealLocation = constructor.FindNearestVertex(cursorRealLocation);
+                Debugger.Log($"vertexRealLocation: ({vertexRealLocation.X}; {vertexRealLocation.Y})");
+                Point vertexPxLocation = myCanvas.ToPx(vertexRealLocation);
+                Debugger.Log($"vertexPxLocation: ({vertexPxLocation.X}; {vertexPxLocation.Y})");
+                bool IsVertexClose = myCanvas.CheckSnap(cursorPxLocation, vertexPxLocation, snapDistancePx);
+                if (IsVertexClose) {
+                    //Snap выполняется для экранных координат.
+                    Point vertexScreenLocation = (sender as Control).PointToScreen(vertexPxLocation);
+                    Debugger.Log($"vertexScreenLocation: ({vertexScreenLocation.X}; {vertexScreenLocation.Y})");
+                    myCursor.CreateSnap(vertexScreenLocation, snapDistancePx, true);
                 }
-
             }
             #endregion
 
+            #region Перемещение экрана
+            if (constructor.SelectedTool == Tool.Moving && e.Button == MouseButtons.Middle) {
+                Point mouseScreenLocation = (sender as Control).PointToScreen(e.Location);
+                Debugger.Log($"mouseScreenLocation: ({mouseScreenLocation.X}; {mouseScreenLocation.Y})");
+                Debugger.Log($"offset: ({prewiousCursorScreenPosition.X}; {prewiousCursorScreenPosition.Y})");
+                Point offset = (mouseScreenLocation.Substract(prewiousCursorScreenPosition)).Invert();
+                Debugger.Log($"offset: ({offset.X}; {offset.Y})");
+                myCanvas.MoveOn(offset);
+            }
+            #endregion
 
+            prewiousCursorScreenPosition = (sender as Control).PointToScreen(e.Location);
+
+            MainFormSttsstpLblMouseX.Text = e.Location.X.ToString().PadLeft(3);
+            MainFormSttsstpLblMouseY.Text = e.Location.Y.ToString().PadLeft(3);
         }
-        private void MainFromPctrbxScreen_MouseUp(Object sender, MouseEventArgs e) {
+        private void MainFromPctrbxScreen_MouseUp(object sender, MouseEventArgs e) {
+            Debugger.Log($"Начато: MainFromPctrbxScreen_MouseUp");
             //За пределами экрана
             if (e.X > (sender as PictureBox).Width || e.X < 0 ||
                 e.Y > (sender as PictureBox).Height || e.Y < 0) {
                 return;
             }
 
-            code.SetPoint(e.Location);
-        }
-        private void MainFormTmr_Tick(Object sender, EventArgs e) {
-            code.DrawFigures(screen);
-            Display();
-            //Debugger.Log("Display");
-        }
-        private void Display() {
-            MainFromPctrbxScreen.Image = bitmap;
+            if (constructor.SelectedTool == Tool.Moving && e.Button != MouseButtons.Middle) {
+                myCursor.StopSnap();
+            }
+
+            Debugger.Log($"e.Location = ({e.Location.X}; {e.Location.Y})");
+            Debugger.Log($"myScreenLocation: ({myCanvas.Location.X}; {myCanvas.Location.Y})");
+            Point realCoord = e.Location.Sum(myCanvas.Location);
+            Debugger.Log($"realCoord = ({realCoord.X}; {realCoord.Y})");
+            constructor.SetPoint(realCoord);
         }
 
-        private void ConvertRealCoordToPx(PointF location, out Point pxLocation) {
-            pxLocation = new Point {
-                X = (Int32)Math.Round(location.X),
-                Y = (Int32)Math.Round(location.Y)
-            };
+
+        private void MainFormTmr_Tick(object sender, EventArgs e) {
+            myCanvas.Clear();
+            myCanvas.DrawGrid();
+            ICollection<MyFigure> myFigures = myMathPlane.GetMyFigures();
+            myCanvas.DrawFigures(myFigures);
+            var constructorStatus = constructor.ConstructorOperationStatus;
+            if (constructorStatus.Result == ConstructorOperationStatus.OperationStatus.Continious) {
+                myFigures = constructor.GetSupportFiguresList();
+                myCanvas.DrawFigures(myFigures);
+            }
+            try {
+                Point snapLocation = myCursor.SnapLocation;
+                myCanvas.DrawSnapPoint(MainFromPctrbxScreen.PointToClient(snapLocation));
+            }
+            catch (Exception) { }
+            MainFromPctrbxScreen.Image = myCanvas.Bitmap;
+            MainFormSttsstrpLblHint.Text = constructorStatus.OperationMessage;
         }
+        #endregion
 
-        private void MainFormBttnCircle_Click(Object sender, EventArgs e) {
-            Figure firgureToSelect = Figure.Circle;
-            code.SelectedTool = firgureToSelect;
 
-            //Это, наверное, всё же лучше запихуть в Code в этой реализации, т.к.
+        #region Кнопки
+        private void MainFormBttnCircle_Click(object sender, EventArgs e) {
+            Tool firgureToSelect = Tool.Circle;
+            constructor.SelectedTool = firgureToSelect;
+
+            //???Это, наверное, всё же лучше запихуть в Code в этой реализации, т.к.
             //сообщение одно для всех платформ. Однако для разных людей это не так.
-            //Вопрос отложен.
-            MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
+            //->Вопрос отложен.
+            MainFormSttsstrpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
 
         }
-        private void MainFormBttnRectangle_Click(Object sender, EventArgs e) {
-            code.SelectedTool = Figure.Rectangle;
-            MainFormSttsstpLblHint.Text = "Прямоугольник. Выберете первую точку";
+        private void MainFormBttnRectangle_Click(object sender, EventArgs e) {
+            constructor.SelectedTool = Tool.Rectangle;
+            MainFormSttsstrpLblHint.Text = "Прямоугольник. Выберете первую точку";
         }
-        private void MainFormBttnCut_Click(Object sender, EventArgs e) {
-            code.SelectedTool = Figure.Cut;
-            MainFormSttsstpLblHint.Text = "Отрезок. Выберете первую точку";
+        private void MainFormBttnCut_Click(object sender, EventArgs e) {
+            constructor.SelectedTool = Tool.Cut;
+            MainFormSttsstrpLblHint.Text = "Отрезок. Выберете первую точку";
         }
-        private void MainFormBttnSelect_Click(Object sender, EventArgs e) {
-            code.SelectedTool = Figure.Select;
+        private void MainFormBttnSelect_Click(object sender, EventArgs e) {
+            constructor.SelectedTool = Tool.Select;
         }
-        private void MainFormBttnNothing_Click(Object sender, EventArgs e) {
-            code.SelectedTool = Figure.None;
+        private void MainFormBttnNothing_Click(object sender, EventArgs e) {
+            constructor.SelectedTool = Tool.None;
+        }
+        private void MainFormBttnMove_Click(object sender, EventArgs e) {
+            constructor.SelectedTool = Tool.Moving;
         }
 
-        private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(Object sender, EventArgs e) {
-            code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
+        private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(object sender, EventArgs e) {
+            constructor.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
         }
-        private void MainFormLstbxFigures_SelectedIndexChanged(Object sender, EventArgs e) {
+        private void MainFormLstbxFigures_SelectedIndexChanged(object sender, EventArgs e) {
             //Мы не можем знать, снялось выделение или появилось, таким образом нужно снять выделения
             //со всех фигур и задать их заново
-            Int32 figuresCount = code.GetFiguresCount();
-            for (Int32 i = 0; i < figuresCount; i++) {
-                code.UnselectFigure(((sender as ListBox).Items[0] as ListBoxFigure).Id);
+            int figuresCount = myMathPlane.Count;
+            for (int i = 0; i < figuresCount; i++) {
+                constructor.UnselectFigure(((sender as ListBox).Items[0] as ListBoxFigure).Id);
             }
 
-            foreach (Int32 index in (sender as ListBox).SelectedIndices) {
-                code.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
+            foreach (int index in (sender as ListBox).SelectedIndices) {
+                constructor.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
             }
-
-            code.DrawFigures(screen);
         }
+        private void MainFormTlstrpSpltbttnPolarLine_Click(object sender, EventArgs e) {
+            constructor.PolarLineEnabled = !constructor.PolarLineEnabled;
+        }
+        #endregion
 
 
         #region API
-        private void Code_SelectedTool_Changed(Figure value, EventArgs e) {
+        private void Code_SelectedTool_Changed(Tool value, EventArgs e) {
             List<BuildingMethod> pbm = ReturnPossibleBuildingVariants(value);
             MainFormCmbbxBuildingVariants.Items.Clear();
             var cbm = new ComboboxBuildingMethod[pbm.Count];
-            for (Int32 i = 0; i < pbm.Count; i++) {
+            for (int i = 0; i < pbm.Count; i++) {
                 cbm[i] = new ComboboxBuildingMethod(pbm[i]);
             }
             MainFormCmbbxBuildingVariants.Items.AddRange(cbm);
         }
         //!!!MainForm#42.1: выделение нескольких элементов некорректно работает
         private void Code_SelectedBuildingMethod_Changed(BuildingMethod value, EventArgs e) {
-            for (Int32 i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
+            for (int i = 0; i < MainFormCmbbxBuildingVariants.Items.Count; i++) {
                 if ((MainFormCmbbxBuildingVariants.Items[i] as ComboboxBuildingMethod).BuildingMethod == value) {
                     MainFormCmbbxBuildingVariants.SelectedIndex = i;
                     break;
@@ -200,9 +234,9 @@ namespace OOP_Paint {
         }
         //!!!MainForm#42: исправить в соответствии с возможностью выбрать несколько элементов
         private void Code_FiguresList_Changed(object sender, EventArgs e) {
-            Int32 currListSelectedIndex = MainFormLstbxFigures.SelectedIndex;
-            Boolean wasSmnSelected = currListSelectedIndex != -1;
-            Int32 currListSelectedItemId = -1;
+            int currListSelectedIndex = MainFormLstbxFigures.SelectedIndex;
+            bool wasSmnSelected = currListSelectedIndex != -1;
+            int currListSelectedItemId = -1;
             if (wasSmnSelected) {
                 currListSelectedItemId = (MainFormLstbxFigures.SelectedItem as ListBoxFigure).Id;
             }
@@ -210,15 +244,15 @@ namespace OOP_Paint {
             MainFormLstbxFigures.Items.Clear();
             var figuresToListboxList = new List<ListBoxFigure>();
             var figuresList = sender as MyListContainer<MyFigure>;
-            for (Int32 i = 0; i < figuresList.Count; i++) {
+            for (int i = 0; i < figuresList.Count; i++) {
                 figuresToListboxList.Add(
                     new ListBoxFigure(figuresList[i]));
             }
             MainFormLstbxFigures.Items.AddRange(figuresToListboxList.ToArray());
 
             if (wasSmnSelected) {
-                Int32 listBoxItemToSelectIndex = -1;
-                for (Int32 i = 0; i < MainFormLstbxFigures.Items.Count; i++) {
+                int listBoxItemToSelectIndex = -1;
+                for (int i = 0; i < MainFormLstbxFigures.Items.Count; i++) {
                     if ((MainFormLstbxFigures.Items[i] as ListBoxFigure).Id == currListSelectedItemId) {
                         listBoxItemToSelectIndex = i;
                         break;
@@ -233,52 +267,55 @@ namespace OOP_Paint {
         }
         private void MainCode_ConstructorOperationStatus_Changed(ConstructorOperationStatus sender, EventArgs e) {
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Continious) {
-                MainFormSttsstpLblHint.Text = sender.OperationMessage;
-                //code.AddPolarLine(ControlPointToScreen(Cursor.Position, MainFromPctrbxScreen));
+                MainFormSttsstrpLblHint.Text = sender.OperationMessage;
             }
             else
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Canselled) {
-                MainFormSttsstpLblHint.Text = "Отменено";
+                MainFormSttsstrpLblHint.Text = "Отменено";
             }
             else
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Finished) {
-                code.DrawFigures(screen);
-                MainFormSttsstpLblHint.Text = "Успешно.";
+                MainFormSttsstrpLblHint.Text = "Успешно.";
             }
-        }
-        private void MyCursor_SnapTorned(Object sender, EventArgs e) {
-            code.RemoveSnapPoint();
         }
         //???Вот в дефолтных ивентах названия PolarLineEnablingChanged или PolarLineEnabling_Changed?
         //Потому что всегда выдаёт имя ивента в методе без земли.
-        private void Code_PolarLineEnabling_Changed(Object sender, EventArgs e) {
-            if ((sender as MainCode).PolarLineEnabled) {
-                this.MainFormTlstrpSpltbttnPolarLine.Image = global::OOP_Paint.Properties.Resources.PolarLineEnabled;
+        private void Code_PolarLineEnabling_Changed(object sender, EventArgs e) {
+            if ((sender as MyClient).PolarLineEnabled) {
+                this.MainFormTlstrpSpltbttnPolarLine.Image = global::CAD_Client.Properties.Resources.PolarLineEnabled;
             }
             else {
-                this.MainFormTlstrpSpltbttnPolarLine.Image = global::OOP_Paint.Properties.Resources.PolarLineDisabled;
+                this.MainFormTlstrpSpltbttnPolarLine.Image = global::CAD_Client.Properties.Resources.PolarLineDisabled;
             }
         }
         #endregion
 
 
-        /// <summary> Вычисляет местоположение мыши в координатах контрола. </summary>
-        private Point ControlPointToScreen(Point location, Control controlOnForm) {
-            Point out_point = PointToScreen(location);
-            out_point.X += controlOnForm.Location.X;
-            out_point.Y += controlOnForm.Location.Y;
-            return out_point;
-        }
-
-        private void button1_Click(Object sender, EventArgs e) {
+        private void button1_Click(object sender, EventArgs e) {
 
         }
-
-
-        private void MainFormTlstrpSpltbttnPolarLine_Click(Object sender, EventArgs e) {
-            code.PolarLineEnabled = !code.PolarLineEnabled;
+        private void button1_MouseUp(object sender, MouseEventArgs e) {
+            //Cursor.Position = (sender as Control).PointToScreen(e.Location);
         }
+
     }
 }
 //MainForm#46: Поменять таймер на MouseMowe
 //[Closed]: неактуально, пока используется Graphics.Clear()
+
+
+
+//[Вопросы]:
+//internal Pen Pen {
+//    set {
+//        if (value == null) {
+//            throw new ArgumentNullException();
+//        }
+//        if (value != pen) {
+//            pen = value;
+//        }
+//    }
+//    //??? pen имеет модификатор доступности блока set private, хотя по факту общедоступен.
+//    //Решено: pen можно менять как угодно, но присвоить ему null невозможно, так что ошибки исключены.
+//    get => pen;
+//}

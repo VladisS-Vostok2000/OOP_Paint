@@ -1,5 +1,5 @@
-﻿namespace OOP_Paint {
-    partial class MainForm {
+﻿namespace CAD_Client {
+    partial class GUI_Form {
         /// <summary>
         /// Обязательная переменная конструктора.
         /// </summary>
@@ -37,7 +37,7 @@
             this.MainFormSttsstpLblMouseScreenX = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormSttsstpLblMouseScreenY = new System.Windows.Forms.ToolStripStatusLabel();
-            this.MainFormSttsstpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
+            this.MainFormTlstrpSpltbttnPolarLine = new System.Windows.Forms.ToolStripSplitButton();
             this.MainFormBttnCircle = new System.Windows.Forms.Button();
             this.MainFormCmbbxBuildingVariants = new System.Windows.Forms.ComboBox();
             this.MainFormBttnRectangle = new System.Windows.Forms.Button();
@@ -45,7 +45,8 @@
             this.MainFormBttnSelect = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.MainFormBttnNothing = new System.Windows.Forms.Button();
-            this.MainFormTlstrpSpltbttnPolarLine = new System.Windows.Forms.ToolStripSplitButton();
+            this.MainFormBttnMove = new System.Windows.Forms.Button();
+            this.MainFormSttsstrpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -93,7 +94,7 @@
             this.toolStripStatusLabel5,
             this.MainFormSttsstpLblMouseScreenY,
             this.MainFormTlstrpSpltbttnPolarLine,
-            this.MainFormSttsstpLblHint});
+            this.MainFormSttsstrpLblHint});
             this.MainFormSttsstp.Location = new System.Drawing.Point(0, 428);
             this.MainFormSttsstp.Name = "MainFormSttsstp";
             this.MainFormSttsstp.Size = new System.Drawing.Size(800, 22);
@@ -163,15 +164,12 @@
             this.MainFormSttsstpLblMouseScreenY.Size = new System.Drawing.Size(29, 17);
             this.MainFormSttsstpLblMouseScreenY.Text = "   ";
             // 
-            // MainFormSttsstpLblHint
+            // MainFormTlstrpSpltbttnPolarLine
             // 
-            this.MainFormSttsstpLblHint.AutoSize = false;
-            this.MainFormSttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.MainFormSttsstpLblHint.Name = "MainFormSttsstpLblHint";
-            this.MainFormSttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(597, 17);
-            this.MainFormSttsstpLblHint.Spring = true;
-            this.MainFormSttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.MainFormTlstrpSpltbttnPolarLine.Image = global::CAD_Client.Properties.Resources.PolarLineEnabled;
+            this.MainFormTlstrpSpltbttnPolarLine.Name = "MainFormTlstrpSpltbttnPolarLine";
+            this.MainFormTlstrpSpltbttnPolarLine.Size = new System.Drawing.Size(32, 20);
+            this.MainFormTlstrpSpltbttnPolarLine.Click += new System.EventHandler(this.MainFormTlstrpSpltbttnPolarLine_Click);
             // 
             // MainFormBttnCircle
             // 
@@ -232,6 +230,7 @@
             this.button1.Text = "Тест";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.button1_MouseUp);
             // 
             // MainFormBttnNothing
             // 
@@ -243,20 +242,31 @@
             this.MainFormBttnNothing.UseVisualStyleBackColor = true;
             this.MainFormBttnNothing.Click += new System.EventHandler(this.MainFormBttnNothing_Click);
             // 
-            // MainFormTlstrpSpltbttnPolarLine
+            // MainFormBttnMove
             // 
-            this.MainFormTlstrpSpltbttnPolarLine.Image = global::OOP_Paint.Properties.Resources.PolarLineEnabled;
-            this.MainFormTlstrpSpltbttnPolarLine.Name = "MainFormTlstrpSpltbttnPolarLine";
-            this.MainFormTlstrpSpltbttnPolarLine.Size = new System.Drawing.Size(32, 20);
-            this.MainFormTlstrpSpltbttnPolarLine.Click += new System.EventHandler(this.MainFormTlstrpSpltbttnPolarLine_Click);
+            this.MainFormBttnMove.Location = new System.Drawing.Point(542, 311);
+            this.MainFormBttnMove.Name = "MainFormBttnMove";
+            this.MainFormBttnMove.Size = new System.Drawing.Size(106, 23);
+            this.MainFormBttnMove.TabIndex = 11;
+            this.MainFormBttnMove.Text = "Перемещение";
+            this.MainFormBttnMove.UseVisualStyleBackColor = true;
+            this.MainFormBttnMove.Click += new System.EventHandler(this.MainFormBttnMove_Click);
             // 
-            // MainForm
+            // MainFormSttsstrpLblHint
+            // 
+            this.MainFormSttsstrpLblHint.Name = "MainFormSttsstrpLblHint";
+            this.MainFormSttsstrpLblHint.Size = new System.Drawing.Size(565, 17);
+            this.MainFormSttsstrpLblHint.Spring = true;
+            this.MainFormSttsstrpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // GUI_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.MainFormCmbbxBuildingVariants);
+            this.Controls.Add(this.MainFormBttnMove);
             this.Controls.Add(this.MainFormBttnNothing);
             this.Controls.Add(this.MainFormBttnSelect);
             this.Controls.Add(this.MainFormBttnCut);
@@ -266,7 +276,8 @@
             this.Controls.Add(this.MainFormLstbxFigures);
             this.Controls.Add(this.MainFromPctrbxScreen);
             this.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.Name = "MainForm";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.Name = "GUI_Form";
             this.Text = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).EndInit();
@@ -287,7 +298,6 @@
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseX;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseY;
-        private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblHint;
         private System.Windows.Forms.Button MainFormBttnCircle;
         private System.Windows.Forms.ComboBox MainFormCmbbxBuildingVariants;
         private System.Windows.Forms.Button MainFormBttnRectangle;
@@ -301,6 +311,8 @@
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel5;
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseScreenY;
         private System.Windows.Forms.ToolStripSplitButton MainFormTlstrpSpltbttnPolarLine;
+        private System.Windows.Forms.Button MainFormBttnMove;
+        private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstrpLblHint;
     }
 }
 
