@@ -16,6 +16,7 @@ using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
 namespace CAD_Client {
     //!!!MyClient#??: создать родителя без MyCanvas
+    //MyClient#04: исправить List на MyMathPlane
     internal sealed class MyClient {
         private Tool selectedTool;
         internal Tool SelectedTool {
