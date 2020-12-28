@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
 namespace CAD_Client {
+    //!!!MyClient#??: создать родителя без MyCanvas
     internal sealed class MyClient {
         private Tool selectedTool;
         internal Tool SelectedTool {
@@ -40,9 +41,14 @@ namespace CAD_Client {
             }
             get => selectedBuildingMethod;
         }
+        //???Почему он не возвращается с методов?
+        //По-моему его вообще с метода даже возвращать не нужно, можно сразу
+        //подключить как sender. Единственный плюс, что при использовании
+        //этого же контруктора в другом классе внезапно можно узнать его
+        //текущее состояние.
         private ConstructorOperationStatus constructorOperationStatus;
         internal ConstructorOperationStatus ConstructorOperationStatus {
-            set {
+            private set {
                 if (constructorOperationStatus != value) {
                     constructorOperationStatus = value;
                     ConstructorOperationStatusChanged?.Invoke(value, EventArgs.Empty);
@@ -53,16 +59,17 @@ namespace CAD_Client {
         private int currConstructorStage = 0;
 
 
-        internal readonly MyMathPlane myMathPlane = new MyMathPlane();
-        //MyClient#04: Исправить List на MyMathPlane
-        private readonly List<MyFigure> supportFigures = new List<MyFigure>();
+        private readonly MyMathPlane myMathPlane;
+        private readonly MyListContainer<MyFigure> supportFigures = new MyListContainer<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 
-        private static readonly Pen supportPen = new Pen(Color.Gray) { Width = 1, DashStyle = DashStyle.Dash };
-        private static readonly Pen supportFigurePen = new Pen(Color.White, 2);
-        private static readonly Pen figurePen = new Pen(Color.Black);
-        private static readonly Pen selectPen = new Pen(Color.White) { Width = 1, DashStyle = DashStyle.Dash };
 
+        //->MyClient должен реализовывать это, иначе с разными источниками будет бардак в этом
+        private static readonly Pen figurePen = new Pen(Color.Black);
+        private static readonly Pen supportFigurePen = new Pen(Color.White, 2);
+        //????Нах это? Подписать.
+        private static readonly Pen supportPen = new Pen(Color.Gray) { Width = 1, DashStyle = DashStyle.Dash };
+        private static readonly Pen selectPen = new Pen(Color.White) { Width = 1, DashStyle = DashStyle.Dash };
         private static readonly Pen polarPen = new Pen(Color.Lime, 1) { DashStyle = DashStyle.Dash };
         private static readonly MyRay polarLine = new MyRay(polarPen, new PointF(0, 0), new PointF(1, 1)) { IsHide = true };
 
@@ -70,6 +77,7 @@ namespace CAD_Client {
         internal delegate void BuildingMethodHandler(BuildingMethod buildingMethod, EventArgs e);
         internal delegate void FigureHandler(Tool figure, EventArgs e);
         internal delegate void ConstructorOperationStatusHandler(ConstructorOperationStatus ConstructorOperationStatus, EventArgs e);
+
 
         #region API
         internal event FigureHandler SelectedToolChanged;
@@ -91,15 +99,14 @@ namespace CAD_Client {
                     PolarLineEnablingChanged.Invoke(this, EventArgs.Empty);
                 }
             }
-            get {
-                return polarLineEnabled;
-            }
+            get => polarLineEnabled;
         }
 
 
 
-        internal MyClient() {
-            figuresContainer.ContainerChanged += FiguresContainer_ContainerChanged;
+        /// <param name="myMathPlane"> Плоскость, куда по завершению построения будет помещена фигура. </param>
+        internal MyClient(MyMathPlane myMathPlane) {
+            this.myMathPlane = myMathPlane;
         }
 
 
@@ -121,13 +128,13 @@ namespace CAD_Client {
             ///currConstructorStage -> Выбор текущей стадии построения (могут отличаться вспомогательные фигуры)
             switch (SelectedTool) {
                 case Tool.None:
-                    foreach (var figure in figuresContainer) {
+                    foreach (var figure in myMathPlane) {
                         figure.IsHightLighed = false;
                     }
 
                     List<int> indexes = FindFiguresNearPoint(softPoint);
                     for (int i = 0; i < indexes.Count; i++) {
-                        figuresContainer[indexes[i]].IsHightLighed = true;
+                        myMathPlane[indexes[i]].IsHightLighed = true;
                     }
                     return;
                 case Tool.Select:
@@ -204,7 +211,6 @@ namespace CAD_Client {
                 default: throw new NotImplementedException($"Фигура {SelectedTool} не реализована.");
             }
         }
-
         /// <summary> Задаст следующую точку построения. </summary>
         /// <param name="pointOnPolar"> Должна ли точка быть спроецирована на полярной прямую </param>
         internal void SetPoint(in Point target, bool pointOnPolar = true) {
@@ -257,7 +263,7 @@ namespace CAD_Client {
                                         return;
                                     }
 
-                                    figuresContainer.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, target.X, target.Y, figurePen));
+                                    myMathPlane.Add(new MyCircle(pointsList[0].X, pointsList[0].Y, target.X, target.Y, figurePen));
                                     CloseConstructor();
                                     return;
                                 default:
@@ -278,7 +284,7 @@ namespace CAD_Client {
                                         return;
                                     }
 
-                                    figuresContainer.Add(new MyCircle(figurePen, pointsList[0], radius));
+                                    myMathPlane.Add(new MyCircle(figurePen, pointsList[0], radius));
                                     CloseConstructor();
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Finished, "");
                                     return;
@@ -301,7 +307,7 @@ namespace CAD_Client {
                                         return;
                                     }
 
-                                    figuresContainer.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, target.X, target.Y, figurePen));
+                                    myMathPlane.Add(new MyRectangle(pointsList[0].X, pointsList[0].Y, target.X, target.Y, figurePen));
                                     CloseConstructor();
                                     return;
                                 default:
@@ -339,7 +345,7 @@ namespace CAD_Client {
                                         }
                                     }
 
-                                    figuresContainer.Add(new MyCut(figurePen, pointsList[0], setPoint));
+                                    myMathPlane.Add(new MyCut(figurePen, pointsList[0], setPoint));
                                     CloseConstructor();
                                     ConstructorOperationStatus = new ConstructorOperationStatus(ConstructorOperationStatus.OperationStatus.Finished, "");
                                     return;
@@ -389,41 +395,43 @@ namespace CAD_Client {
             }
             catch (ArgumentException) { }
         }
-
         /// <summary> Вернёт спроецированную точку на текущую полярную линию. </summary>
         /// <exception cref="Exception"> Полярная линия отсуствует </exception>
         /// <param name="p3"> Точка, выпускающая перпендикуляр </param>
         private PointF MakeProjectionOnPolarLine(in PointF p3) => MyGeometry.MakePointProjectionOnLine(polarLine.Location, polarLine.Vector, p3);
         #endregion
 
+
         #region API
         internal void SelectFigure(in int id) {
-            for (int i = 0; i < figuresContainer.Count; i++) {
-                if (figuresContainer[i].Id == id) {
-                    figuresContainer[i].IsSelected = true;
+            for (int i = 0; i < myMathPlane.Count; i++) {
+                if (myMathPlane[i].Id == id) {
+                    myMathPlane[i].IsSelected = true;
                     break;
                 }
             }
         }
         internal void UnselectFigure(in int id) {
-            for (int i = 0; i < figuresContainer.Count; i++) {
-                if (figuresContainer[i].Id == id) {
-                    figuresContainer[i].IsSelected = false;
+            for (int i = 0; i < myMathPlane.Count; i++) {
+                if (myMathPlane[i].Id == id) {
+                    myMathPlane[i].IsSelected = false;
                     break;
                 }
             }
         }
-        internal int GetFiguresCount() {
-            return figuresContainer.Count;
-        }
-        internal MyRay GetPolarLine() {
-            return polarLine;
-        }
-        internal List<MyFigure> GetSupportFiguresList() {
-            return supportFigures;
-        }
-        internal MyListContainer<MyFigure> GetFiguresList() {
-            return figuresContainer;
+
+
+        internal ICollection<MyFigure> GetSupportFiguresList() {
+            var figures = new MyListContainer<MyFigure>();
+            foreach (var figure in supportFigures) {
+                figures.Add(figure);
+            }
+            //???Если эту линию снаружи изменят, будет очень плохо. Действительно ли нужно передавать на прорисовку так?
+            figures.Add(polarLine);
+            //???ReadOnly тут вообще просто блокирует фигурки новые добавлять, а все линии, что должны быть
+            //изменяемы только конструктором, в открытом доступе.
+            //Следует передавать интерфейс IDrawable вместо MyFigure?
+            return figures.ToReadOnly();
         }
         #endregion
 
@@ -433,21 +441,21 @@ namespace CAD_Client {
         /// Вернёт координаты ближайшей вершины фигуры к заданной точке в реальных координатах. <para>R->R.</para>
         /// </summary>
         /// <exception cref="Exception"> Лист пуст. </exception>
-        internal PointF FindNearestVertex(in PointF target) => FindNearestVertex(figuresContainer, target);
+        internal PointF FindNearestVertex(in PointF target) => FindNearestVertex(myMathPlane, target);
         /// <summary>
         /// Вернёт координаты ближайшей к точке вершины фигуры.
         /// </summary>
         /// <exception cref="Exception"> Лист пуст. </exception>
         /// <exception cref="Exception"> Вершина не найдена при непустом листе. </exception>
         /// <exception cref="ArgumentNullException"> Лист null. </exception>
-        internal PointF FindNearestVertex(MyListContainer<MyFigure> figures, PointF target) {
-            if (figures.Count == 0) {
+        internal PointF FindNearestVertex(MyMathPlane mathPlane, PointF target) {
+            if (mathPlane.Count == 0) {
                 throw new Exception("Фигур нет, но проверка на поиск вершины произошла.");
             }
 
             float minDistance = float.PositiveInfinity;
-            PointF out_vertex = new PointF(0, 0);
-            foreach (var figure in figures) {
+            PointF out_vertex = default;
+            foreach (var figure in mathPlane) {
                 switch (figure) {
                     case MyPoligon myPoligon:
                         foreach (var vertex in myPoligon.Vertexes) {
@@ -479,7 +487,7 @@ namespace CAD_Client {
             }
 
             if (minDistance == float.PositiveInfinity) {
-                throw new Exception("Вершина не найдена, хотя список фигур не пустой.");
+                throw new Exception("Вершина не найдена, хотя список фигур не пуст.");
             }
             else {
                 return out_vertex;
@@ -505,9 +513,9 @@ namespace CAD_Client {
         /// </returns>
         private List<int> FindFiguresNearPoint(in PointF target, in float interval = 5) {
             var outlist = new List<int>();
-            for (int i = 0; i < figuresContainer.Count; i++) {
-                if (figuresContainer[i] is MyCut) {
-                    var cut = figuresContainer[i] as MyCut;
+            for (int i = 0; i < myMathPlane.Count; i++) {
+                if (myMathPlane[i] is MyCut) {
+                    var cut = myMathPlane[i] as MyCut;
                     PointF[] area = MyGeometry.FindCutArea(cut.P1, cut.P2, interval);
                     bool isInArea = MyGeometry.IsPointInArea(target, area);
                     if (isInArea) {
@@ -533,7 +541,7 @@ namespace CAD_Client {
                 { p1, new Point(p1.X, p2.Y) }
             };
 
-            foreach (var figure in figuresContainer) {
+            foreach (var figure in myMathPlane) {
                 if (figure is MyCut) {
                     var myCut = figure as MyCut;
                     for (int i = 0; i < selectRectLinePoints.GetLength(0); i++) {

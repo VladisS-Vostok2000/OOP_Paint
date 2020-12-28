@@ -56,9 +56,12 @@ namespace CAD_Client {
         }
 
 
-        private protected override void Display(Graphics screen, Pen pen, Point center) {
+        private protected override void FindLocation() {
             throw new NotImplementedException();
         }
 
+        private protected override void Display(Graphics screen, Pen pen, PointF graphicsCenterInRealCoord) {
+            throw new NotImplementedException();
+        }
     }
 }

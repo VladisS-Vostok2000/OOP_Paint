@@ -38,7 +38,6 @@
             this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormSttsstpLblMouseScreenY = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormTlstrpSpltbttnPolarLine = new System.Windows.Forms.ToolStripSplitButton();
-            this.MainFormSttsstpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainFormBttnCircle = new System.Windows.Forms.Button();
             this.MainFormCmbbxBuildingVariants = new System.Windows.Forms.ComboBox();
             this.MainFormBttnRectangle = new System.Windows.Forms.Button();
@@ -47,6 +46,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.MainFormBttnNothing = new System.Windows.Forms.Button();
             this.MainFormBttnMove = new System.Windows.Forms.Button();
+            this.MainFormSttsstrpLblHint = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.MainFromPctrbxScreen)).BeginInit();
             this.MainFormSttsstp.SuspendLayout();
             this.SuspendLayout();
@@ -94,7 +94,7 @@
             this.toolStripStatusLabel5,
             this.MainFormSttsstpLblMouseScreenY,
             this.MainFormTlstrpSpltbttnPolarLine,
-            this.MainFormSttsstpLblHint});
+            this.MainFormSttsstrpLblHint});
             this.MainFormSttsstp.Location = new System.Drawing.Point(0, 428);
             this.MainFormSttsstp.Name = "MainFormSttsstp";
             this.MainFormSttsstp.Size = new System.Drawing.Size(800, 22);
@@ -170,16 +170,6 @@
             this.MainFormTlstrpSpltbttnPolarLine.Name = "MainFormTlstrpSpltbttnPolarLine";
             this.MainFormTlstrpSpltbttnPolarLine.Size = new System.Drawing.Size(32, 20);
             this.MainFormTlstrpSpltbttnPolarLine.Click += new System.EventHandler(this.MainFormTlstrpSpltbttnPolarLine_Click);
-            // 
-            // MainFormSttsstpLblHint
-            // 
-            this.MainFormSttsstpLblHint.AutoSize = false;
-            this.MainFormSttsstpLblHint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.MainFormSttsstpLblHint.Name = "MainFormSttsstpLblHint";
-            this.MainFormSttsstpLblHint.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.MainFormSttsstpLblHint.Size = new System.Drawing.Size(597, 17);
-            this.MainFormSttsstpLblHint.Spring = true;
-            this.MainFormSttsstpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // MainFormBttnCircle
             // 
@@ -262,6 +252,13 @@
             this.MainFormBttnMove.UseVisualStyleBackColor = true;
             this.MainFormBttnMove.Click += new System.EventHandler(this.MainFormBttnMove_Click);
             // 
+            // MainFormSttsstrpLblHint
+            // 
+            this.MainFormSttsstrpLblHint.Name = "MainFormSttsstrpLblHint";
+            this.MainFormSttsstrpLblHint.Size = new System.Drawing.Size(565, 17);
+            this.MainFormSttsstrpLblHint.Spring = true;
+            this.MainFormSttsstrpLblHint.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // GUI_Form
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -301,7 +298,6 @@
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseX;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseY;
-        private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblHint;
         private System.Windows.Forms.Button MainFormBttnCircle;
         private System.Windows.Forms.ComboBox MainFormCmbbxBuildingVariants;
         private System.Windows.Forms.Button MainFormBttnRectangle;
@@ -316,6 +312,7 @@
         private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstpLblMouseScreenY;
         private System.Windows.Forms.ToolStripSplitButton MainFormTlstrpSpltbttnPolarLine;
         private System.Windows.Forms.Button MainFormBttnMove;
+        private System.Windows.Forms.ToolStripStatusLabel MainFormSttsstrpLblHint;
     }
 }
 

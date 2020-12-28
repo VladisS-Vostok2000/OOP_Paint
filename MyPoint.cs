@@ -24,14 +24,17 @@ namespace CAD_Client {
             screen.DrawEllipse(pen, X, Y, 2, 2);
         }
 
-        private protected override void Display(Graphics screen, Pen pen, Point center) {
-            throw new NotImplementedException();
-        }
-
 
         internal override void Move(PointF newLocation) {
             throw new NotImplementedException();
         }
 
+        private protected override void FindLocation() {
+            throw new NotImplementedException();
+        }
+
+        private protected override void Display(Graphics screen, Pen pen, PointF graphicsCenterInRealCoord) {
+            throw new NotImplementedException();
+        }
     }
 }

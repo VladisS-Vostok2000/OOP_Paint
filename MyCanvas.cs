@@ -20,8 +20,9 @@ namespace CAD_Client {
     //MyScreen#01: исправить прорисовку snap
     //MyScreen#02: расчленить MyCanvas на математическую плоскость и холст дополнительной прорисовки
     /// <summary>
-    /// Холст. Всегда ненулевой и отображает заданный своим иместоположением участок математической плоскости
-    /// Содержит инструменты дополнительной прорисовки на плоскости.
+    /// Холст. Инкапсулирует метоположение полотна в реальных координатах, визуализирует фигуры в нужной для них локации
+    /// Содержит инструменты дополнительной прорисовки на плоскости. Позволяет рисовать дополнительные
+    /// фигуры с реальными координатами прямо на холсте.
     /// </summary>
     internal sealed class MyCanvas {
         /// <summary>
@@ -50,20 +51,19 @@ namespace CAD_Client {
 
         internal Bitmap Bitmap { private set; get; }
         private readonly Graphics screen;
-        private readonly IBitmapable mathPlane;
         private readonly int gridSizePx = 25;
         private readonly Pen gridPen = new Pen(Color.DarkGray, 1);
         private readonly int snapSideLength = 10;
 
 
 
-        internal MyCanvas(Bitmap bitmap, IBitmapable mathPlane) {
-            Bitmap = bitmap ?? throw new ArgumentNullException($"Заданный {bitmap} был null.");
-            this.mathPlane = mathPlane ?? throw new ArgumentNullException($"Заданный {mathPlane} был null.");
-            screen = Graphics.FromImage(bitmap);
+        internal MyCanvas(int width, int height) {
             //Задаёт центр реальных координат посередине холста. Необязательно.
-            X = Width / 2;
-            Y = Height / 2;
+            X = width / 2;
+            Y = height / 2;
+
+            Bitmap = new Bitmap(width, height);
+            screen = Graphics.FromImage(Bitmap);
         }
 
 
@@ -72,7 +72,7 @@ namespace CAD_Client {
         /// <summary>
         /// Перересует участок математической плоскости. Вспомогательные надписи будут удалены.
         /// </summary>
-        internal void Clear() => Bitmap = mathPlane.ToBitmap(Location, Width, Height);
+        internal void Clear() => screen.Clear(Color.DarkSlateGray);
 
         /// <summary>
         /// Визуализирует сетку на холсте через пиксельное выражение реального центра координат.
@@ -112,6 +112,14 @@ namespace CAD_Client {
         /// </summary>
         /// <para>P-></para>
         internal void DrawSnapPoint(Point snapPxLocation) => screen.DrawRectangle(new Pen(Color.Green, 2), snapPxLocation.X, snapPxLocation.Y, snapSideLength, snapSideLength);
+        
+        //???Слишком частный случай ReadOnlyCollection для метода... И отнаследовать тоже нельзя.
+        //->По идее интерфейс тут весьма к месту
+        internal void DrawFigures(ICollection<MyFigure> myFigures) {
+            foreach (var figure in myFigures) {
+                figure.Draw(screen, Location);
+            }
+        }
         #endregion
 
 

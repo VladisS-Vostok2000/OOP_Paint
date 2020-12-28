@@ -20,6 +20,7 @@ namespace CAD_Client {
     /// <summary>
     /// Позволяет визуализировать себя в объект <see cref="Bitmap"/>.
     /// </summary>
+    [Obsolete]
     internal interface IBitmapable {
         Bitmap ToBitmap(PointF bitmapLocation, int bitmapWidth, int bitmapHeight);
     }

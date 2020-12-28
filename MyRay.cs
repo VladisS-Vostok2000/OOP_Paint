@@ -39,16 +39,19 @@ namespace CAD_Client {
 
 
 
-        internal override void Move(PointF newLocation) {
-            Vector = newLocation.Sum(Vector.Substract(Location));
-            Location = newLocation;
+        private protected override void FindLocation() { }
+
+
+        private protected override void Display(Graphics screen, Pen pen, PointF graphicsCenterInRealCoord) {
+            if (!IsPoint) {
+                screen.DrawLine(pen, Location.Substract(graphicsCenterInRealCoord), Vector.Sum(Vector.Substract(Location).Multiply(1000)).Substract(graphicsCenterInRealCoord));
+            }
         }
 
 
-        private protected override void Display(Graphics screen, Pen pen, Point center) {
-            if (!IsPoint) {
-                screen.DrawLine(pen, Location.Substract(center), Vector.Sum(Vector.Substract(Location).Multiply(1000)).Substract(center));
-            }
+        internal override void Move(PointF newLocation) {
+            Vector = newLocation.Sum(Vector.Substract(Location));
+            Location = newLocation;
         }
 
     }

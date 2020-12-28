@@ -13,7 +13,8 @@ namespace CAD_Client {
         private static void Main() {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new GUI_Form(new MyClient()));
+            var myMathPlane = new MyMathPlane();
+            Application.Run(new GUI_Form(myMathPlane));
             Debugger.Stop();
         }
     }

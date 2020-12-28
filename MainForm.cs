@@ -19,34 +19,35 @@ using System.IO;
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
 //!!!Projekt#50: добавить масштаб
 //!!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
-//!!!Projekt#60: расчленить MyClient на MyFigureConstructor и MyFile
-//Projekt#05: обновить архитектуру
+//!!!Projekt#05: расчленить MyClient на MyFigureConstructor и MyCanvas
 namespace CAD_Client {
     //!!!MainForm#20: добавить плавающие контролы
     internal sealed partial class GUI_Form : Form {
         private int scale = 1;
 
-        private readonly MyClient code;
+        private readonly MyMathPlane myMathPlane;
+        private readonly MyClient constructor;
         private readonly MyCursor myCursor;
-        private readonly MyCanvas myScreen;
+        private readonly MyCanvas myCanvas;
         private int snapDistancePx = 10;
 
         private Point prewiousCursorScreenPosition;
 
 
 
-        internal GUI_Form(MyClient code) {
+        internal GUI_Form(MyMathPlane myMathPlane) {
             InitializeComponent();
 
-            this.code = code;
             myCursor = new MyCursor();
-            myScreen = new MyCanvas(new Bitmap(496, 290));
+            myCanvas = new MyCanvas(MainFromPctrbxScreen.Width, MainFromPctrbxScreen.Height);
+            constructor = new MyClient(myMathPlane);
+            this.myMathPlane = myMathPlane;
 
-            this.code.SelectedToolChanged += Code_SelectedTool_Changed;
-            this.code.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
-            this.code.FiguresListChanged += Code_FiguresList_Changed;
-            this.code.ConstructorOperationStatusChanged += MainCode_ConstructorOperationStatus_Changed;
-            this.code.PolarLineEnablingChanged += Code_PolarLineEnabling_Changed;
+            this.constructor.SelectedToolChanged += Code_SelectedTool_Changed;
+            this.constructor.SelectedBuildingVariantChanged += Code_SelectedBuildingMethod_Changed;
+            this.constructor.FiguresListChanged += Code_FiguresList_Changed;
+            this.constructor.ConstructorOperationStatusChanged += MainCode_ConstructorOperationStatus_Changed;
+            this.constructor.PolarLineEnablingChanged += Code_PolarLineEnabling_Changed;
 
             MainFormCmbbxBuildingVariants.DisplayMember = "DisplayMember";
             MainFormCmbbxBuildingVariants.ValueMember = "BuildingMethod";
@@ -62,7 +63,7 @@ namespace CAD_Client {
         #region Работа с экраном
         private void MainFromPctrbxScreen_MouseDown(object sender, MouseEventArgs e) {
             Debugger.Log($"Начато: MainFromPctrbxScreen_MouseDown");
-            if (code.SelectedTool == Tool.Select) {
+            if (constructor.SelectedTool == Tool.Select) {
                 //SomeCodeHere - Selection
             }
         }
@@ -76,10 +77,10 @@ namespace CAD_Client {
             Point cursorPxLocation = e.Location;
             Debugger.Log($"Начат MainFormPctrbxScreen_MouseMove,");
             Debugger.Log($"cursorPxLocation = e.Location = ({e.X}; {e.Y})");
-            Debugger.Log($"myScreenOffset: ({myScreen.Location.X}; {myScreen.Location.Y})");
-            PointF cursorRealLocation = myScreen.ToReal(cursorPxLocation);
+            Debugger.Log($"myScreenOffset: ({myCanvas.Location.X}; {myCanvas.Location.Y})");
+            PointF cursorRealLocation = myCanvas.ToReal(cursorPxLocation);
             Debugger.Log($"realCoord = ({cursorRealLocation.X}; {cursorRealLocation.Y})");
-            code.AddSoftPoint(cursorRealLocation);
+            constructor.AddSoftPoint(cursorRealLocation);
 
             #region Привязка
             if (myCursor.Snapped) {
@@ -90,12 +91,12 @@ namespace CAD_Client {
             //Создание привязки
             else
             //???Не очень нравится это решение. Почему ФОРМА должна знать о количестве фигур?
-            if (code.GetFiguresCount() != 0 && code.SelectedTool == Tool.None) {
-                PointF vertexRealLocation = code.FindNearestVertex(cursorRealLocation);
+            if (myMathPlane.Count != 0 && constructor.SelectedTool == Tool.None) {
+                PointF vertexRealLocation = constructor.FindNearestVertex(cursorRealLocation);
                 Debugger.Log($"vertexRealLocation: ({vertexRealLocation.X}; {vertexRealLocation.Y})");
-                Point vertexPxLocation = myScreen.ToPx(vertexRealLocation);
+                Point vertexPxLocation = myCanvas.ToPx(vertexRealLocation);
                 Debugger.Log($"vertexPxLocation: ({vertexPxLocation.X}; {vertexPxLocation.Y})");
-                bool IsVertexClose = myScreen.CheckSnap(cursorPxLocation, vertexPxLocation, snapDistancePx);
+                bool IsVertexClose = myCanvas.CheckSnap(cursorPxLocation, vertexPxLocation, snapDistancePx);
                 if (IsVertexClose) {
                     //Snap выполняется для экранных координат.
                     Point vertexScreenLocation = (sender as Control).PointToScreen(vertexPxLocation);
@@ -106,13 +107,13 @@ namespace CAD_Client {
             #endregion
 
             #region Перемещение экрана
-            if (code.SelectedTool == Tool.Moving && e.Button == MouseButtons.Middle) {
+            if (constructor.SelectedTool == Tool.Moving && e.Button == MouseButtons.Middle) {
                 Point mouseScreenLocation = (sender as Control).PointToScreen(e.Location);
                 Debugger.Log($"mouseScreenLocation: ({mouseScreenLocation.X}; {mouseScreenLocation.Y})");
                 Debugger.Log($"offset: ({prewiousCursorScreenPosition.X}; {prewiousCursorScreenPosition.Y})");
                 Point offset = (mouseScreenLocation.Substract(prewiousCursorScreenPosition)).Invert();
                 Debugger.Log($"offset: ({offset.X}; {offset.Y})");
-                myScreen.MoveOn(offset);
+                myCanvas.MoveOn(offset);
             }
             #endregion
 
@@ -129,29 +130,35 @@ namespace CAD_Client {
                 return;
             }
 
-            if (code.SelectedTool == Tool.Moving && e.Button != MouseButtons.Middle) {
+            if (constructor.SelectedTool == Tool.Moving && e.Button != MouseButtons.Middle) {
                 myCursor.StopSnap();
             }
 
             Debugger.Log($"e.Location = ({e.Location.X}; {e.Location.Y})");
-            Debugger.Log($"myScreenLocation: ({myScreen.Location.X}; {myScreen.Location.Y})");
-            Point realCoord = e.Location.Sum(myScreen.Location);
+            Debugger.Log($"myScreenLocation: ({myCanvas.Location.X}; {myCanvas.Location.Y})");
+            Point realCoord = e.Location.Sum(myCanvas.Location);
             Debugger.Log($"realCoord = ({realCoord.X}; {realCoord.Y})");
-            code.SetPoint(realCoord);
+            constructor.SetPoint(realCoord);
         }
 
 
         private void MainFormTmr_Tick(object sender, EventArgs e) {
-            myScreen.RedrawFigures(code.GetFiguresList(), code.GetSupportFiguresList(), code.GetPolarLine());
+            myCanvas.Clear();
+            myCanvas.DrawGrid();
+            ICollection<MyFigure> myFigures = myMathPlane.GetMyFigures();
+            myCanvas.DrawFigures(myFigures);
+            var constructorStatus = constructor.ConstructorOperationStatus;
+            if (constructorStatus.Result == ConstructorOperationStatus.OperationStatus.Continious) {
+                myFigures = constructor.GetSupportFiguresList();
+                myCanvas.DrawFigures(myFigures);
+            }
             try {
                 Point snapLocation = myCursor.SnapLocation;
-                myScreen.DrawSnapPoint(PointToClient(snapLocation));
+                myCanvas.DrawSnapPoint(PointToClient(snapLocation));
             }
-            catch (Exception) {
-
-                throw;
-            }
-            MainFromPctrbxScreen.Image = myScreen.Bitmap;
+            catch (Exception) { }
+            MainFromPctrbxScreen.Image = myCanvas.Bitmap;
+            MainFormSttsstrpLblHint.Text = constructorStatus.OperationMessage;
         }
         #endregion
 
@@ -159,49 +166,49 @@ namespace CAD_Client {
         #region Кнопки
         private void MainFormBttnCircle_Click(object sender, EventArgs e) {
             Tool firgureToSelect = Tool.Circle;
-            code.SelectedTool = firgureToSelect;
+            constructor.SelectedTool = firgureToSelect;
 
-            //Это, наверное, всё же лучше запихуть в Code в этой реализации, т.к.
+            //???Это, наверное, всё же лучше запихуть в Code в этой реализации, т.к.
             //сообщение одно для всех платформ. Однако для разных людей это не так.
-            //Вопрос отложен.
-            MainFormSttsstpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
+            //->Вопрос отложен.
+            MainFormSttsstrpLblHint.Text = "Окружность, ограниченная прямоугольником. Выберете первую точку";
 
         }
         private void MainFormBttnRectangle_Click(object sender, EventArgs e) {
-            code.SelectedTool = Tool.Rectangle;
-            MainFormSttsstpLblHint.Text = "Прямоугольник. Выберете первую точку";
+            constructor.SelectedTool = Tool.Rectangle;
+            MainFormSttsstrpLblHint.Text = "Прямоугольник. Выберете первую точку";
         }
         private void MainFormBttnCut_Click(object sender, EventArgs e) {
-            code.SelectedTool = Tool.Cut;
-            MainFormSttsstpLblHint.Text = "Отрезок. Выберете первую точку";
+            constructor.SelectedTool = Tool.Cut;
+            MainFormSttsstrpLblHint.Text = "Отрезок. Выберете первую точку";
         }
         private void MainFormBttnSelect_Click(object sender, EventArgs e) {
-            code.SelectedTool = Tool.Select;
+            constructor.SelectedTool = Tool.Select;
         }
         private void MainFormBttnNothing_Click(object sender, EventArgs e) {
-            code.SelectedTool = Tool.None;
+            constructor.SelectedTool = Tool.None;
         }
         private void MainFormBttnMove_Click(object sender, EventArgs e) {
-            code.SelectedTool = Tool.Moving;
+            constructor.SelectedTool = Tool.Moving;
         }
 
         private void MainFormCmbbxBuildingVariants_SelectedIndexChanged(object sender, EventArgs e) {
-            code.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
+            constructor.SelectedBuildingMethod = ((ComboboxBuildingMethod)MainFormCmbbxBuildingVariants.SelectedItem).BuildingMethod;
         }
         private void MainFormLstbxFigures_SelectedIndexChanged(object sender, EventArgs e) {
             //Мы не можем знать, снялось выделение или появилось, таким образом нужно снять выделения
             //со всех фигур и задать их заново
-            int figuresCount = code.GetFiguresCount();
+            int figuresCount = myMathPlane.Count;
             for (int i = 0; i < figuresCount; i++) {
-                code.UnselectFigure(((sender as ListBox).Items[0] as ListBoxFigure).Id);
+                constructor.UnselectFigure(((sender as ListBox).Items[0] as ListBoxFigure).Id);
             }
 
             foreach (int index in (sender as ListBox).SelectedIndices) {
-                code.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
+                constructor.SelectFigure(((sender as ListBox).Items[index] as ListBoxFigure).Id);
             }
         }
         private void MainFormTlstrpSpltbttnPolarLine_Click(object sender, EventArgs e) {
-            code.PolarLineEnabled = !code.PolarLineEnabled;
+            constructor.PolarLineEnabled = !constructor.PolarLineEnabled;
         }
         #endregion
 
@@ -261,16 +268,15 @@ namespace CAD_Client {
         }
         private void MainCode_ConstructorOperationStatus_Changed(ConstructorOperationStatus sender, EventArgs e) {
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Continious) {
-                MainFormSttsstpLblHint.Text = sender.OperationMessage;
-                //code.AddPolarLine(ControlPointToScreen(Cursor.Position, MainFromPctrbxScreen));
+                MainFormSttsstrpLblHint.Text = sender.OperationMessage;
             }
             else
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Canselled) {
-                MainFormSttsstpLblHint.Text = "Отменено";
+                MainFormSttsstrpLblHint.Text = "Отменено";
             }
             else
             if (sender.Result == ConstructorOperationStatus.OperationStatus.Finished) {
-                MainFormSttsstpLblHint.Text = "Успешно.";
+                MainFormSttsstrpLblHint.Text = "Успешно.";
             }
         }
         //???Вот в дефолтных ивентах названия PolarLineEnablingChanged или PolarLineEnabling_Changed?

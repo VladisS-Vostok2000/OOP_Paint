@@ -67,8 +67,9 @@ namespace CAD_Client {
 
         private protected override void FindLocation() => Location = MyGeometry.FindLeftUpCornerCoord(P1, P2);
 
-        private protected override void Display(Graphics screen, Pen pen, PointF graphicsCenterInRealCoord) => screen.DrawLine(pen, P1.Substract(graphicsCenterInRealCoord), P2.Substract(graphicsCenterInRealCoord));
 
+        private protected override void Display(Graphics screen, Pen pen, PointF graphicsCenterInRealCoord) => screen.DrawLine(pen, P1.Substract(graphicsCenterInRealCoord), P2.Substract(graphicsCenterInRealCoord));
+        
 
         internal override void Move(PointF newLocation) {
             p1 = newLocation.Sum(P1.Substract(Location));

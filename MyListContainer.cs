@@ -16,10 +16,13 @@ using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
 
 namespace CAD_Client {
-    internal class MyListContainer<T> : IEnumerable<T> {
+    internal class MyListContainer<T> : IEnumerable<T>, ICollection<T> {
         private readonly List<T> list = new List<T>();
 
         internal int Count => list.Count;
+
+
+        public bool IsReadOnly => throw new NotImplementedException();
 
         internal event EventHandler ContainerChanged;
 
@@ -38,6 +41,12 @@ namespace CAD_Client {
 
         public IEnumerator<T> GetEnumerator() => list.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => list.GetEnumerator();
+        int ICollection<T>.Count => list.Count();
+        void ICollection<T>.Add(T item) => list.Add(item);
+        void ICollection<T>.Clear() => list.Clear();
+        public bool Contains(T item) => list.Contains(item);
+        public void CopyTo(T[] array, int arrayIndex) => list.CopyTo(array, arrayIndex);
+        public bool Remove(T item) => list.Remove(item);
 
 
         #region API
@@ -47,6 +56,10 @@ namespace CAD_Client {
         }
         internal void RemoveAt(int index) {
             list.RemoveAt(index);
+            ContainerChanged?.Invoke(this, EventArgs.Empty);
+        }
+        internal void Clear() {
+            list.Clear();
             ContainerChanged?.Invoke(this, EventArgs.Empty);
         }
 

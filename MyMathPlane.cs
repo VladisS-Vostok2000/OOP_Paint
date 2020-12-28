@@ -20,10 +20,21 @@ namespace CAD_Client {
     /// <summary>
     /// Математическая плоскость, хранящая все существующие фигуры в реальных координатах.
     /// </summary>
-    internal sealed class MyMathPlane : IBitmapable {
-        private readonly MyListContainer<MyFigure> myFigures;
-        internal ReadOnlyMyListContainer<MyFigure> MyFigures => myFigures.ToReadOnly();
+    internal sealed class MyMathPlane : IBitmapable, IEnumerable<MyFigure> {
+        private readonly MyListContainer<MyFigure> myFigures = new MyListContainer<MyFigure>();
+        internal int Count => myFigures.Count;
 
+
+
+        internal MyFigure this[int index] {
+            set => myFigures[index] = value;
+            get => myFigures[index];
+        }
+
+
+
+        public IEnumerator<MyFigure> GetEnumerator() => myFigures.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => myFigures.GetEnumerator();
 
 
         #region API
@@ -31,7 +42,8 @@ namespace CAD_Client {
         /// Вернёт <see cref="Graphics"/> с визуализированными на нём фигурами.
         /// </summary>
         /// <param name="bitmapLocation"> Расположение левого верхнего пикселя возвращаемого <see cref="Bitmap"/> в реальных координатах. </param>
-        public Bitmap ToBitmap(PointF bitmapLocation, int bitmapWidth, int bitmapHeight) {
+        [Obsolete]
+        Bitmap IBitmapable.ToBitmap(PointF bitmapLocation, int bitmapWidth, int bitmapHeight) {
             /*--------------------------------------------------------------------------------
             Graphics все свои объекты рисует относительно левого верхнего пикселя.
             Фигуры же представлены в реальных координатах. Graphics - это участок
@@ -62,7 +74,14 @@ namespace CAD_Client {
             foreach (var figure in myFigures) figure.Draw(graphics, bitmapLocation);
             return bitmap;
         }
-        #endregion 
+
+
+        internal ReadOnlyMyListContainer<MyFigure> GetMyFigures() => myFigures.ToReadOnly();
+
+
+        internal void Add(MyFigure myFigure) => myFigures.Add(myFigure);
+        internal void RemoveAt(int index) => myFigures.RemoveAt(index);
+        #endregion
 
     }
 }
