@@ -54,7 +54,7 @@ namespace CAD_Client {
 
 
         internal readonly MyMathPlane myMathPlane = new MyMathPlane();
-        //!!!MyClient#04: Исправить List на MyMathPlane
+        //MyClient#04: Исправить List на MyMathPlane
         private readonly List<MyFigure> supportFigures = new List<MyFigure>();
         private readonly List<Point> pointsList = new List<Point>();
 

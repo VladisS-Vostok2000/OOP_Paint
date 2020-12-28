@@ -20,6 +20,7 @@ using System.IO;
 //!!!Projekt#50: добавить масштаб
 //!!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
 //!!!Projekt#60: расчленить MyClient на MyFigureConstructor и MyFile
+//Projekt#05: обновить архитектуру
 namespace CAD_Client {
     //!!!MainForm#20: добавить плавающие контролы
     internal sealed partial class GUI_Form : Form {
