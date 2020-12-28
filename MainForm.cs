@@ -19,7 +19,6 @@ using System.IO;
 //!!!Projekt#01: смена фигуры во время рисования вызывает непредвиденную ошибку.
 //!!!Projekt#50: добавить масштаб
 //!!!MyClient#20: переименовать перечисления-названия фигур в инструменты с соответствующим
-//!!!Projekt#05: расчленить MyClient на MyFigureConstructor и MyCanvas
 namespace CAD_Client {
     //!!!MainForm#20: добавить плавающие контролы
     internal sealed partial class GUI_Form : Form {
@@ -70,9 +69,9 @@ namespace CAD_Client {
         private void MainFormPctrbxScreen_MouseMove(object sender, MouseEventArgs e) {
             // Пиксельное - отображение на экране относительно bitmap
             // Экранное - отображение на экране относительно самого экрана
-            // Реальное - точка в настоящих координатах
+            // Реальное - точка в настоящих координатах матплоскости
             // Cursor == Mouse
-            // RealCoord == RealLocation
+            // RealCoord == RealLocation == MathPlateCoord
             // Px == BitmapLocation
             Point cursorPxLocation = e.Location;
             Debugger.Log($"Начат MainFormPctrbxScreen_MouseMove,");
@@ -154,7 +153,7 @@ namespace CAD_Client {
             }
             try {
                 Point snapLocation = myCursor.SnapLocation;
-                myCanvas.DrawSnapPoint(PointToClient(snapLocation));
+                myCanvas.DrawSnapPoint(MainFromPctrbxScreen.PointToClient(snapLocation));
             }
             catch (Exception) { }
             MainFromPctrbxScreen.Image = myCanvas.Bitmap;
@@ -298,7 +297,6 @@ namespace CAD_Client {
         private void button1_MouseUp(object sender, MouseEventArgs e) {
             //Cursor.Position = (sender as Control).PointToScreen(e.Location);
         }
-
 
     }
 }

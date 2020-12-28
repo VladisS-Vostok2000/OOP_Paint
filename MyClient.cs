@@ -15,8 +15,6 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using static CAD_Client.ToolEnum;
 namespace CAD_Client {
-    //!!!MyClient#??: создать родителя без MyCanvas
-    //MyClient#04: исправить List на MyMathPlane
     internal sealed class MyClient {
         private Tool selectedTool;
         internal Tool SelectedTool {
@@ -65,6 +63,7 @@ namespace CAD_Client {
         private readonly List<Point> pointsList = new List<Point>();
 
 
+        //???Зачем коду знать о ручках вспомогательных линий?
         //->MyClient должен реализовывать это, иначе с разными источниками будет бардак в этом
         private static readonly Pen figurePen = new Pen(Color.Black);
         private static readonly Pen supportFigurePen = new Pen(Color.White, 2);
@@ -326,7 +325,7 @@ namespace CAD_Client {
                                     currConstructorStage++;
 
                                     //Полярная линия отслеживает построение даже будучи выключенной, т.к. может быть включена в процессе.
-                                    polarLine.Location = target;
+                                    polarLine.Move(target);
                                     if (polarLineEnabled) {
                                         polarLine.IsHide = false;
                                     }
@@ -430,8 +429,7 @@ namespace CAD_Client {
             //???Если эту линию снаружи изменят, будет очень плохо. Действительно ли нужно передавать на прорисовку так?
             figures.Add(polarLine);
             //???ReadOnly тут вообще просто блокирует фигурки новые добавлять, а все линии, что должны быть
-            //изменяемы только конструктором, в открытом доступе.
-            //Следует передавать интерфейс IDrawable вместо MyFigure?
+            //изменяемы только конструктором, в открытом доступе. Следует передавать интерфейс IDrawable вместо MyFigure?
             return figures.ToReadOnly();
         }
         #endregion

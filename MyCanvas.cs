@@ -19,6 +19,8 @@ using System.IO;
 namespace CAD_Client {
     //MyScreen#01: исправить прорисовку snap
     //MyScreen#02: расчленить MyCanvas на математическую плоскость и холст дополнительной прорисовки
+    //???Что здесь static? Если он его статические поля будут обновляться для всех новооткрытых приложений, это одно,
+    //иначе это другое.
     /// <summary>
     /// Холст. Инкапсулирует метоположение полотна в реальных координатах, визуализирует фигуры в нужной для них локации
     /// Содержит инструменты дополнительной прорисовки на плоскости. Позволяет рисовать дополнительные
@@ -45,7 +47,6 @@ namespace CAD_Client {
             }
             get => new Point(X, Y);
         }
-
         internal int Width => Bitmap.Width;
         internal int Height => Bitmap.Height;
 
@@ -54,6 +55,8 @@ namespace CAD_Client {
         private readonly int gridSizePx = 25;
         private readonly Pen gridPen = new Pen(Color.DarkGray, 1);
         private readonly int snapSideLength = 10;
+
+        private readonly MyRectangle snapRect;
 
 
 
@@ -64,6 +67,7 @@ namespace CAD_Client {
 
             Bitmap = new Bitmap(width, height);
             screen = Graphics.FromImage(Bitmap);
+            snapRect = new MyRectangle(0, 0, snapSideLength, snapSideLength, new Pen(Color.Green, 2));
         }
 
 
@@ -109,10 +113,14 @@ namespace CAD_Client {
 
         /// <summary>
         /// Визуализирует на холсте точку привязки в заданной пиксельной координате относительно <see cref="System.Drawing.Bitmap"/>.
-        /// </summary>
         /// <para>P-></para>
-        internal void DrawSnapPoint(Point snapPxLocation) => screen.DrawRectangle(new Pen(Color.Green, 2), snapPxLocation.X, snapPxLocation.Y, snapSideLength, snapSideLength);
-        
+        /// </summary>
+        internal void DrawSnapPoint(Point snapPxLocation) {
+            //????Незачем обновлять локацию каждый раз заново. Ивент сюда что ли подтянуть...
+            snapRect.Move(ToReal(new PointF(snapPxLocation.X - snapRect.Width / 2, snapPxLocation.Y - snapRect.Height / 2)));
+            snapRect.Draw(screen, Location);
+        }
+
         //???Слишком частный случай ReadOnlyCollection для метода... И отнаследовать тоже нельзя.
         //->По идее интерфейс тут весьма к месту
         internal void DrawFigures(ICollection<MyFigure> myFigures) {

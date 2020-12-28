@@ -30,6 +30,10 @@ namespace CAD_Client {
             Location = MyGeometry.FindLeftUpCornerCoord(x1, y1, x2, y2);
             Width = Math.Abs(x1 - x2);
             Height = Math.Abs(y1 - y2);
+            VertexesArray[0] = new PointF(x1, y1);
+            VertexesArray[1] = new PointF(x2, y1);
+            VertexesArray[2] = new PointF(x2, y2);
+            VertexesArray[3] = new PointF(x1, y2);
         }
 
 

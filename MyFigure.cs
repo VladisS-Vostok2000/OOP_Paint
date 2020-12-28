@@ -23,10 +23,10 @@ namespace CAD_Client {
         internal float X { private protected set; get; }
         internal float Y { private protected set; get; }
         /// <summary>
-        /// Верхняя левая точка описывающего квадрата. При изменении перемещается вся фигура.
+        /// Верхняя левая точка описывающего квадрата. При изменении должна перемещаться вся фигура.
         /// </summary>
         internal PointF Location {
-            set {
+            private protected set {
                 if (value.X != X || value.Y != Y) {
                     X = value.X;
                     Y = value.Y;
@@ -64,11 +64,8 @@ namespace CAD_Client {
 
         private protected MyFigure() : this(Color.Black) { }
         private protected MyFigure(Pen pen) {
-            if (pen == null) {
-                throw new ArgumentNullException();
-            }
+            Pen = pen ?? throw new ArgumentNullException();
 
-            Pen = pen;
             FiguresCount++;
             Id = FiguresCount;
         }
@@ -118,7 +115,14 @@ namespace CAD_Client {
         /// <summary>
         /// Визуализирует фигуру на заданном <see cref="Graphics"/> относительно реальных координат.
         /// </summary>
-        private protected abstract void Display(Graphics screen, Pen pen, PointF graphicsCenterInRealCoord);
+        /// <param name="graphicsLocationInRealCoord"> Левый верхний пиксель заданного <see cref="Graphics"/> в реальных координатах. </param>
+        private protected abstract void Display(Graphics screen, Pen pen, PointF graphicsLocationInRealCoord);
+        /// <summary>
+        /// Вернёт точку реальных координат, выраженных в графические.
+        /// <para>R->P</para>
+        /// </summary>
+        /// <param name="graphicsLocationInRealCoord"> Левый верхний пиксель заданного <see cref="Graphics"/> в реальных координатах. </param>
+        private protected static PointF ToGraphicsCoord(PointF graphicsLocationInRealCoord, PointF pointInRealCoord) => pointInRealCoord.Substract(graphicsLocationInRealCoord);
         #endregion
 
 
@@ -126,10 +130,18 @@ namespace CAD_Client {
         internal string GetDescription() {
             return ToolEnum.GetDescription(this);
         }
+
+
         /// <summary>
-        /// Переместит все геометрическе параметры в новое положение относительно <see cref="Location"/>.
+        /// Переместит все геометрическе параметры в заданное положение.
+        /// <para>R-></para>
         /// </summary>
         internal abstract void Move(PointF newLocation);
+        /// <summary>
+        /// Переместит все геометрическе параметры в заданное положение.
+        /// <para>R-></para>
+        /// </summary>
+        internal virtual void Move(float x, float y) => Move(new PointF(x, y));
         #endregion
 
     }
